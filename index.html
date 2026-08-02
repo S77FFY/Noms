@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOMS · v1.5.0 · S77FFY</title>
+<title>NOMS · v1.8.0 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v1.5.0 — S77FFY
+   NOMS v1.8.0 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 :root{
@@ -17,6 +17,8 @@
   --gold:#d9a94c; --gold-hi:#f2c96e; --gold-dk:#8a6520;
   --red:#c0392b; --red-hi:#ff7a6b; --green:#2e7d4f; --green-hi:#69c98f;
   --line:rgba(244,236,217,.16);
+  --biro:#14141c;
+  --hand:'Bradley Hand','Noteworthy','Marker Felt','Segoe Print','Comic Sans MS',cursive;
   --cw:clamp(68px,21vw,112px);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -216,23 +218,46 @@ input{font:inherit}
 .warn{font-size:13px;color:var(--red-hi);font-style:italic}
 
 /* ---------- scoresheet ---------- */
-.sheetwrap{overflow-x:auto;background:var(--paper);border-radius:12px;border:1px solid #b9ab8a;
-  box-shadow:inset 0 0 30px rgba(114,89,52,.12);margin-bottom:16px}
-#sheetTbl,#sheetTbl2{border-collapse:collapse;width:100%;color:var(--ink);font-size:12px}
-.sheetT th{font-family:Georgia,serif;font-size:12px;letter-spacing:.03em;padding:7px 5px;border-bottom:2px solid #b9ab8a;
-  white-space:nowrap;font-weight:700}
-.sheetT td{padding:4px 5px;border-bottom:1px solid #e0d4b4;text-align:center;min-width:44px}
-.sheetT .rlab{font-family:Georgia,serif;font-weight:700;color:var(--ink);border-right:2px solid #b9ab8a;min-width:30px}
-.sheetT .dcol{font-size:10px;color:var(--ink-soft);white-space:nowrap;max-width:58px;overflow:hidden;text-overflow:ellipsis;min-width:36px;border-right:1px solid #d5c8a6;text-align:left;padding-left:6px}
-.sheetT th.dcol{font-size:10px;letter-spacing:.05em}
-.sheetT tr.cur td{background:rgba(217,169,76,.22)}
-.sheetT .nw{display:block;font-size:10px;color:var(--ink-soft);line-height:1.1}
-.sheetT .tt{display:block;font-weight:800;font-size:13px;line-height:1.15}
-.sheetT .hit .tt{color:var(--green)}
-.sheetT .miss .tt{color:var(--red)}
-.sheetT .pend{color:#c8bb98}
-.sheetT tfoot td{border-top:2px solid #b9ab8a;font-weight:800;font-size:13px;padding:6px 5px}
-.sheetT tfoot .rlab{font-size:11px}
+/* pre-printed white sheet, filled in with a black biro */
+.sheetwrap{overflow-x:auto;background:#fff;border-radius:10px;border:1px solid #cfcfd6;
+  box-shadow:0 2px 10px rgba(0,0,0,.35);margin-bottom:16px}
+#sheetTbl,#sheetTbl2{border-collapse:collapse;width:100%;color:var(--biro);font-size:12px;background:#fff}
+.sheetT th{font-family:Georgia,serif;font-size:11px;letter-spacing:.04em;padding:8px 5px;border-bottom:2px solid #9a9aa6;
+  white-space:nowrap;font-weight:700;color:#5c5c68;text-transform:uppercase}
+.sheetT th.pname{font-family:var(--hand);font-size:17px;font-weight:400;text-transform:none;letter-spacing:0;
+  color:var(--biro);padding-bottom:5px}
+.sheetT th.pname span{display:inline-block}
+.sheetT td{padding:4px 5px;border-bottom:1px solid #dcdce4;text-align:center;min-width:44px}
+.sheetT .rlab{font-family:Georgia,serif;font-weight:700;color:#5c5c68;border-right:2px solid #9a9aa6;min-width:30px;background:#f4f4f7}
+.sheetT .dcol{font-family:var(--hand);font-size:13px;color:var(--biro);white-space:nowrap;max-width:64px;overflow:hidden;
+  text-overflow:ellipsis;min-width:40px;border-right:1px solid #c6c6d0;text-align:center;padding:4px 6px}
+.sheetT th.dcol{font-family:Georgia,serif;font-size:11px;letter-spacing:.05em;color:#5c5c68}
+.sheetT tr.cur td{background:#fff8e2}
+.sheetT .nw{display:block;font-family:var(--hand);font-size:12px;color:#6a6a76;line-height:1.15}
+.sheetT .tt{display:block;font-family:var(--hand);font-weight:700;font-size:17px;line-height:1.2;color:var(--biro)}
+.sheetT .hit .tt{color:#0b6b3a}
+.sheetT .miss .tt{color:var(--biro)}
+.sheetT .pend{color:#c9c9d2}
+.sheetT tfoot td{border-top:2px solid #9a9aa6;font-family:var(--hand);font-weight:700;font-size:19px;padding:7px 5px;color:var(--biro)}
+.sheetT tfoot .rlab{font-family:Georgia,serif;font-size:11px}
+.cry{display:inline-block;vertical-align:-2px;color:#1b3fa8}
+
+/* the sheet takes the whole screen, like a real piece of paper */
+#sheetModal{align-items:stretch;justify-content:center;padding:0;background:rgba(15,7,26,.9)}
+#sheetModal .panel{width:100%;max-width:none;height:100%;max-height:none;border:none;border-radius:0;
+  background:#fff;padding:0;display:flex;flex-direction:column;overflow:hidden}
+.sheettop{flex:none;padding:calc(12px + env(safe-area-inset-top)) 16px 9px;background:#fff;border-bottom:1px solid #dcdce4}
+.sheettop .ptitle{color:var(--biro);margin-bottom:1px}
+.sheettop .psub{color:#6a6a76;margin-bottom:0;font-size:13px}
+#sheetModal .sheetwrap{flex:1;min-height:0;overflow:auto;margin:0;border:none;border-radius:0;box-shadow:none}
+#sheetModal #sheetTbl{height:100%}
+#sheetModal .sheetT td,#sheetModal .sheetT th{padding-left:4px;padding-right:4px}
+.sheetbar{flex:none;display:flex;flex-direction:column;gap:9px;background:#fff;border-top:1px solid #dcdce4;
+  padding:11px 16px calc(13px + env(safe-area-inset-bottom));box-shadow:0 -6px 16px rgba(0,0,0,.09)}
+.sheetbar .btn.ghost{background:#f2f2f6;color:#3a3a46;border:1px solid #c6c6d0}
+@media(min-width:700px){
+  #sheetModal .panel{max-width:760px;height:100%}
+}
 
 /* ---------- results ---------- */
 .standrow{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line)}
@@ -310,7 +335,7 @@ input{font:inherit}
     <button class="btn ghost wide" id="btnScorer">Score a table game</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v1.5.0 &middot; S77FFY</div>
+  <div class="foot">NOMS v1.8.0 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -448,10 +473,15 @@ input{font:inherit}
 
 <div class="modal" id="sheetModal">
   <div class="panel">
-    <div class="ptitle">Scoresheet</div>
-    <div class="psub" id="sheetSub"></div>
+    <div class="sheettop">
+      <div class="ptitle">Scoresheet</div>
+      <div class="psub" id="sheetSub"></div>
+    </div>
     <div class="sheetwrap" id="sheetHost"></div>
-    <button class="btn wide" id="btnSheetGo">Close</button>
+    <div class="sheetbar">
+      <button class="btn wide" id="btnSheetGo">Close</button>
+      <button class="btn ghost wide" id="btnSheetUndo" style="display:none">&#8630; Undo this round</button>
+    </div>
   </div>
 </div>
 
@@ -1004,7 +1034,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v1.5.0 — UI layer — S77FFY
+   NOMS v1.8.0 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1012,7 +1042,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '1.5.0';
+var VERSION = '1.8.0';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -1450,6 +1480,23 @@ function pump() {
 /* ============================================================
    SCORESHEET (shared by both modes)
    ============================================================ */
+/* hand-drawn crying face, for anyone sat on nothing */
+function cryFace(size) {
+  return '<svg class="cry" width="' + size + '" height="' + size + '" viewBox="0 0 40 40" ' +
+    'fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ' +
+    'role="img" aria-label="nothing yet">' +
+    // wobbly hand-drawn head
+    '<path d="M20.4 3.6C11 3.2 3.5 10.8 3.7 20.2c.2 9 7.2 16.4 16.4 16.3 9.4-.1 16.4-7.2 16.1-16.5C36 10.9 29.3 3.9 20.4 3.6z"/>' +
+    // screwed-shut eyes
+    '<path d="M10.9 17.4c1.5-2.6 4.4-2.7 6.1-.2"/>' +
+    '<path d="M23.2 17.2c1.6-2.5 4.5-2.5 6 .1"/>' +
+    // open wail of a mouth
+    '<path d="M14.2 29.8c1.3-4.2 9.6-4.4 11.4-.2"/>' +
+    // tears
+    '<path d="M13.4 21.1c-1.7 3.3-2.4 5.2-.9 6.3 1.4 1 3-.4 2.5-2.1-.4-1.4-1-2.8-1.6-4.2z" fill="currentColor" stroke-width="1.1"/>' +
+    '<path d="M26.6 20.8c-1.5 2.9-2.1 4.6-.8 5.6 1.2.9 2.7-.4 2.2-1.9-.3-1.2-.9-2.5-1.4-3.7z" fill="currentColor" stroke-width="1.1"/>' +
+    '</svg>';
+}
 function sheetOrder() {
   // names in round-one nom order: left of the first dealer first, first dealer last
   var o = [], k;
@@ -1459,7 +1506,10 @@ function sheetOrder() {
 function buildSheetHTML() {
   var ord = sheetOrder();
   var h = '<table class="sheetT" id="sheetTbl"><thead><tr><th class="rlab">Rd</th><th class="dcol">Deal</th>';
-  ord.forEach(function (p) { h += '<th>' + esc(st.names[p]) + '</th>'; });
+  ord.forEach(function (p, i) {
+    var tilt = [-2.4, 1.6, -1.1, 2.2, -1.8, 1.2, -2.0][i % 7];
+    h += '<th class="pname"><span style="transform:rotate(' + tilt + 'deg)">' + esc(st.names[p]) + '</span></th>';
+  });
   h += '</tr></thead><tbody>';
   for (var r = 0; r < 16; r++) {
     var cur = st.phase !== 'gameover' && r === st.round ? ' class="cur"' : '';
@@ -1469,16 +1519,21 @@ function buildSheetHTML() {
       if (r < st.sheet.length) {
         var c = st.sheet[r][p];
         var cls = c.won === c.nom ? 'hit' : 'miss';
-        h += '<td class="' + cls + '"><span class="nw">' + c.nom + '\u00B7' + c.won + '</span><span class="tt">' + c.total + '</span></td>';
+        var shown = c.total === 0 ? cryFace(20) : c.total;
+        h += '<td class="' + cls + '"><span class="nw">' + c.nom + '\u00B7' + c.won + '</span><span class="tt">' + shown + '</span></td>';
       } else {
         h += '<td class="pend">\u00B7</td>';
       }
     });
     h += '</tr>';
   }
-  h += '</tbody><tfoot><tr><td class="rlab">Tot</td><td class="dcol"></td>';
-  ord.forEach(function (p) { h += '<td>' + st.totals[p] + '</td>'; });
-  h += '</tr></tfoot></table>';
+  h += '</tbody>';
+  if (st.sheet.length === 16) { // final tally only once the last round is in
+    h += '<tfoot><tr><td class="rlab">Tot</td><td class="dcol"></td>';
+    ord.forEach(function (p) { h += '<td>' + (st.totals[p] === 0 ? cryFace(23) : st.totals[p]) + '</td>'; });
+    h += '</tr></tfoot>';
+  }
+  h += '</table>';
   return h;
 }
 function openSheet(modeStr) {
@@ -1489,6 +1544,14 @@ function openSheet(modeStr) {
     $('sheetSub').textContent = 'After round ' + (st.round + 1) + ' \u2014 ' +
       (E.ROUNDS[st.round].nt ? 'No Trumps' : E.ROUNDS[st.round].blind ? 'Blind' : E.ROUNDS[st.round].cards + ' cards');
     go.textContent = last ? 'Final reckoning \u2192' : (st.mode === 'scorer' ? 'Round ' + (st.round + 2) + ' \u2192' : 'Deal round ' + (st.round + 2) + ' \u2192');
+    var ub = $('btnSheetUndo');
+    if (st.mode === 'scorer') {
+      ub.style.display = '';
+      ub.textContent = '\u21BA Undo round ' + (st.round + 1);
+      ub.onclick = fixJustSaved;
+    } else {
+      ub.style.display = 'none';
+    }
     go.onclick = function () {
       modal('sheetModal', false);
       if (st.mode === 'scorer') {
@@ -1504,6 +1567,7 @@ function openSheet(modeStr) {
     $('sheetSub').textContent = st.mode === 'scorer' ?
       (st.sheet.length ? 'Tap a filled round to correct it' : 'Round ' + (st.round + 1) + ' in progress') : roundText();
     go.textContent = 'Close';
+    $('btnSheetUndo').style.display = 'none';
     go.onclick = function () {
       modal('sheetModal', false);
       if (st.phase === 'gameover') openResults();
@@ -1690,6 +1754,14 @@ function renderScorer(editRound, prefill) {
   $('btnSaveRound').textContent = isEdit ? 'Save correction \u2192' : 'Save round \u2192';
   $('btnCancelEdit').style.display = isEdit ? '' : 'none';
   updateScorerLive();
+}
+function fixJustSaved() {
+  var last = st.sheet[st.sheet.length - 1];
+  var pre = { noms: last.map(function (c) { return c.nom; }), tricks: last.map(function (c) { return c.won; }) };
+  E.scorerUndo(st);
+  modal('sheetModal', false);
+  renderScorer(null, pre);
+  toast('Round ' + (st.round + 1) + ' reopened \u2014 fix and save');
 }
 function beginEdit(r) {
   if (editing < 0 && st.phase !== 'gameover') stash = { noms: scNoms.slice(), tricks: scTricks.slice() };
