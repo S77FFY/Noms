@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOMS · v1.4.0 · S77FFY</title>
+<title>NOMS · v1.5.0 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v1.4.0 — S77FFY
+   NOMS v1.5.0 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 :root{
@@ -75,6 +75,11 @@ input{font:inherit}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chipbtn{padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(244,236,217,.05);font-weight:600}
 .chipbtn.sel{border-color:var(--gold);background:rgba(217,169,76,.16);color:var(--gold-hi)}
+.addrow{display:flex;gap:8px;margin-top:10px}
+.addrow input{flex:1;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:10px;color:var(--bone);padding:11px 12px}
+.addrow input::placeholder{color:var(--bone-dim)}
+.addrow button{padding:0 18px;border-radius:10px;border:1px solid var(--gold-dk);background:rgba(217,169,76,.2);color:var(--gold-hi);font-weight:700}
+.chipbtn .x{margin-left:7px;opacity:.55;font-weight:400}
 .stepper{display:flex;align-items:center;gap:14px}
 .stepper button{width:46px;height:46px;border-radius:12px;border:1px solid var(--line);background:rgba(244,236,217,.06);font-size:22px;font-weight:700}
 .stepper b{font-family:Georgia,serif;font-size:30px;min-width:44px;text-align:center}
@@ -253,6 +258,30 @@ input{font:inherit}
 .srow.forbid .mini-step b{color:var(--red-hi)}
 .tallyline{display:flex;gap:8px;align-items:center;margin:8px 0 4px;font-size:13px;color:var(--bone-dim);flex-wrap:wrap}
 
+/* ---------- round flash ---------- */
+#flash{position:fixed;inset:0;z-index:55;display:none;align-items:center;justify-content:center;
+  background:radial-gradient(80% 60% at 50% 50%, rgba(52,26,79,.97), rgba(20,10,34,.99));text-align:center}
+#flash.on{display:flex;animation:flashfade .3s ease-out}
+@keyframes flashfade{from{opacity:0}to{opacity:1}}
+#flash .fin{animation:flashpop .45s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes flashpop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+#flash .frd{font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+#flash .fbig{font-family:Georgia,serif;font-size:clamp(52px,17vw,110px);line-height:1;letter-spacing:.04em;
+  color:var(--bone);text-shadow:0 3px 0 rgba(0,0,0,.5),0 0 44px rgba(217,169,76,.35)}
+#flash .fsub{font-family:Georgia,serif;font-style:italic;font-size:clamp(17px,5vw,24px);color:var(--gold-hi);margin-top:14px}
+#flash .fdeal{font-size:14px;color:var(--bone-dim);margin-top:18px;letter-spacing:.05em}
+#flash .fsuits{font-size:20px;letter-spacing:12px;margin-right:-12px;color:var(--gold);margin-bottom:18px}
+#flash .fsuits .r{color:var(--red-hi)}
+
+/* ---------- scorer big header ---------- */
+.schead{padding:14px 16px 4px;max-width:560px;margin:0 auto;width:100%}
+.schead .scline1{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.schead .scr{font-family:Georgia,serif;font-size:clamp(30px,8.5vw,44px);line-height:1;letter-spacing:.02em}
+.schead .sccards{font-family:Georgia,serif;font-style:italic;font-size:clamp(16px,4.5vw,21px);color:var(--gold-hi)}
+.schead .scd{font-size:clamp(15px,4vw,18px);color:var(--bone-dim);margin-top:8px}
+.schead .scd b{color:var(--bone);font-weight:700}
+.schead .scd .dbadge{vertical-align:1px}
+
 /* ---------- toast ---------- */
 #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;
   background:var(--bone);color:var(--ink);padding:11px 18px;border-radius:999px;font-weight:600;font-size:14px;
@@ -281,7 +310,7 @@ input{font:inherit}
     <button class="btn ghost wide" id="btnScorer">Score a table game</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v1.4.0 &middot; S77FFY</div>
+  <div class="foot">NOMS v1.5.0 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -292,6 +321,10 @@ input{font:inherit}
 
     <div class="lbl">Who are you?</div>
     <div class="chips" id="whoChips"></div>
+    <div class="addrow">
+      <input id="newName1" placeholder="Add someone to the crew" maxlength="12">
+      <button id="btnAddName1">Add</button>
+    </div>
 
     <div class="lbl">Table size</div>
     <div class="stepper">
@@ -354,6 +387,10 @@ input{font:inherit}
 
     <div class="lbl">Tap players in seating order</div>
     <div id="pickRows"></div>
+    <div class="addrow">
+      <input id="newName2" placeholder="Add someone to the crew" maxlength="12">
+      <button id="btnAddName2">Add</button>
+    </div>
 
     <div class="lbl">First dealer</div>
     <div class="chips" id="dealerChips"></div>
@@ -370,12 +407,17 @@ input{font:inherit}
 <!-- ================= SCORER ROUNDS ================= -->
 <div id="scr-scorer" class="screen">
   <div class="topbar">
-    <div class="chip" id="scRound">R1</div>
-    <div class="chip" id="scDealer"></div>
-    <div class="chip blind" id="scSpecial" style="display:none"></div>
     <div class="spacer"></div>
     <button class="iconbtn" id="btnScSheet" aria-label="View scoresheet">&#9776; sheet</button>
     <button class="iconbtn" id="btnUndoRound" aria-label="Undo last round">&#8630; undo</button>
+  </div>
+  <div class="schead">
+    <div class="scline1">
+      <span class="scr" id="scRound">R1</span>
+      <span class="sccards" id="scCards"></span>
+      <span class="chip blind" id="scSpecial" style="display:none"></span>
+    </div>
+    <div class="scd" id="scDealer"></div>
   </div>
   <div id="scorerBody">
     <div class="lbl">Noms &mdash; left of dealer first, dealer last</div>
@@ -443,6 +485,14 @@ input{font:inherit}
     <button class="btn wide" id="btnRulesClose">Close</button>
   </div>
 </div>
+
+<div id="flash"><div class="fin">
+  <div class="fsuits">&#9824;<span class="r">&#9829;</span><span class="r">&#9830;</span>&#9827;</div>
+  <div class="frd" id="flashRd"></div>
+  <div class="fbig" id="flashBig"></div>
+  <div class="fsub" id="flashSub"></div>
+  <div class="fdeal" id="flashDeal"></div>
+</div></div>
 
 <div id="toast"></div>
 
@@ -954,7 +1004,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v1.4.0 — UI layer — S77FFY
+   NOMS v1.5.0 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -962,7 +1012,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '1.4.0';
+var VERSION = '1.5.0';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -988,6 +1038,33 @@ function ordinal(n) { return n + (n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'r
 function money(v) {
   var sign = v < 0 ? '\u2212' : '';
   return sign + '\u00A3' + Math.abs(v).toFixed(2);
+}
+
+/* ---------- fullscreen round flash ---------- */
+function roundFlash(r, done) {
+  var R = E.ROUNDS[r];
+  var big = R.nt ? 'NO TRUMPS' : R.blind ? 'BLIND' : R.cards + (R.cards === 1 ? ' CARD' : ' CARDS');
+  var sub = R.nt ? 'highest of the suit led takes it' :
+            R.blind ? 'nom before you look' :
+            'trumps as turned up';
+  $('flashRd').textContent = 'Round ' + (r + 1) + ' of 16';
+  $('flashBig').textContent = big;
+  $('flashSub').textContent = sub;
+  var dealer = st.names[(st.dealer0 + r) % st.n];
+  $('flashDeal').innerHTML = 'Dealer: <b style="color:var(--bone)">' + esc(dealer) + '</b>';
+  var el = $('flash');
+  el.classList.add('on');
+  var closed = false;
+  function close() {
+    if (closed) return;
+    closed = true;
+    el.classList.remove('on');
+    el.onclick = null;
+    clearTimeout(flashT);
+    if (done) done();
+  }
+  el.onclick = close;
+  var flashT = setTimeout(close, 1900);
 }
 
 /* ---------- card renderer ---------- */
@@ -1033,6 +1110,7 @@ function backEl() {
 }
 
 /* ---------- app state ---------- */
+var ROSTER = E.CREW.slice(); // crew names, extendable for the session
 var st = null;          // engine state
 var pumpT = null;       // CPU driver timer
 var justDealt = false;  // stagger the next hand render
@@ -1063,7 +1141,7 @@ function resetToTitle() {
 function buildSetup() {
   var wc = $('whoChips');
   wc.innerHTML = '';
-  E.CREW.forEach(function (nm, i) {
+  ROSTER.forEach(function (nm, i) {
     var b = document.createElement('button');
     b.className = 'chipbtn' + (i === setup.who ? ' sel' : '');
     b.textContent = nm;
@@ -1080,7 +1158,7 @@ function buildSetup() {
 
 function startGame() {
   var me = E.CREW[setup.who];
-  var others = E.CREW.filter(function (n) { return n !== me; }).slice(0, setup.size - 1);
+  var others = ROSTER.filter(function (n) { return n !== me; }).slice(0, setup.size - 1);
   var names = [me].concat(others);
   st = E.newGame({ names: names, humanSeat: 0, difficulty: setup.diff });
   runHunt();
@@ -1136,7 +1214,7 @@ function runHunt() {
     blindReveal = false;
     uiNote = '';
     show('scr-game');
-    dealSequence();
+    roundFlash(st.round, dealSequence);
   };
 }
 
@@ -1415,11 +1493,11 @@ function openSheet(modeStr) {
       modal('sheetModal', false);
       if (st.mode === 'scorer') {
         if (!E.scorerNext(st)) { openResults(); return; }
-        renderScorer();
+        roundFlash(st.round, function () { renderScorer(); });
       } else {
         if (!E.advanceRound(st)) { openResults(); return; }
         uiNote = '';
-        dealSequence();
+        roundFlash(st.round, dealSequence);
       }
     };
   } else {
@@ -1491,7 +1569,7 @@ var scNoms = [], scTricks = [], undoArmed = 0;
 function buildPickRows() {
   var host = $('pickRows');
   host.innerHTML = '';
-  E.CREW.forEach(function (nm, i) {
+  ROSTER.forEach(function (nm, i) {
     var row = document.createElement('div');
     var pos = pick.sel.indexOf(i);
     row.className = 'prow' + (pos !== -1 ? ' sel' : '');
@@ -1518,7 +1596,7 @@ function buildPickRows() {
 }
 function pickName(i) {
   var v = $('pn' + i) ? $('pn' + i).value.trim() : '';
-  return v || E.CREW[i];
+  return v || ROSTER[i];
 }
 function buildDealerChips() {
   var host = $('dealerChips');
@@ -1549,7 +1627,7 @@ function startScorer() {
   st = E.newGame({ names: names, mode: 'scorer' });
   E.scorerStart(st, dealerIdx);
   show('scr-scorer');
-  renderScorer();
+  roundFlash(0, function () { renderScorer(); });
 }
 function stepRow(name, isDealer, arr, seat, max, after) {
   var row = document.createElement('div');
@@ -1575,8 +1653,10 @@ function renderScorer(editRound, prefill) {
   entryRound = r;
   var R = E.ROUNDS[r];
   var dealer = (st.dealer0 + r) % st.n;
-  $('scRound').textContent = (isEdit ? 'Fixing R' : 'R') + (r + 1) + '/16 \u00B7 ' + R.cards + (R.cards === 1 ? ' card' : ' cards');
-  $('scDealer').textContent = 'Dealer ' + st.names[dealer];
+  $('scRound').textContent = (isEdit ? 'Fixing R' : 'R') + (r + 1);
+  $('scCards').textContent = R.cards + (R.cards === 1 ? ' card' : ' cards') + ' \u00B7 of 16';
+  $('scDealer').innerHTML = 'Dealing: <b>' + esc(st.names[dealer]) + '</b> <span class="dbadge">D</span>' +
+    ' \u00B7 noms start with <b>' + esc(st.names[(dealer + 1) % st.n]) + '</b>';
   var sp = $('scSpecial');
   if (R.nt) { sp.style.display = ''; sp.textContent = 'No trumps'; }
   else if (R.blind) { sp.style.display = ''; sp.textContent = 'Blind noms!'; }
@@ -1686,7 +1766,11 @@ $('btnRulesClose').onclick = function () { modal('rulesModal', false); };
 $('btnBackTitle').onclick = resetToTitle;
 $('btnBackTitle2').onclick = resetToTitle;
 $('sizeMinus').onclick = function () { if (setup.size > 2) { setup.size--; buildSetup(); } };
-$('sizePlus').onclick = function () { if (setup.size < 7) { setup.size++; buildSetup(); } };
+$('sizePlus').onclick = function () {
+  var max = Math.min(7, ROSTER.length);
+  if (setup.size < max) { setup.size++; buildSetup(); }
+  else toast(ROSTER.length < 7 ? 'Add more names to the crew first' : 'Seven seats at most');
+};
 $('diffSeg').onclick = function (ev) {
   var b = ev.target.closest('button');
   if (b) { setup.diff = +b.dataset.d; buildSetup(); }
@@ -1698,6 +1782,23 @@ $('btnSaveRound').onclick = saveRound;
 $('btnUndoRound').onclick = undoRound;
 $('btnAceHunt').onclick = scorerAceHunt;
 $('btnScorerStart').onclick = startScorer;
+function addName(inputId, after) {
+  var inp = $(inputId);
+  var v = inp.value.trim().replace(/\s+/g, ' ');
+  if (!v) { toast('Type a name first'); return; }
+  if (v.length > 12) v = v.slice(0, 12);
+  var clash = ROSTER.some(function (n) { return n.toLowerCase() === v.toLowerCase(); });
+  if (clash) { toast(v + ' is already in the crew'); return; }
+  ROSTER.push(v);
+  inp.value = '';
+  inp.blur();
+  toast(v + ' added to the crew');
+  after();
+}
+$('btnAddName1').onclick = function () { addName('newName1', buildSetup); };
+$('btnAddName2').onclick = function () { addName('newName2', buildPickRows); };
+$('newName1').onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); addName('newName1', buildSetup); } };
+$('newName2').onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); addName('newName2', buildPickRows); } };
 $('btnNewGame').onclick = resetToTitle;
 $('btnCancelEdit').onclick = endEdit;
 $('btnResSheet').onclick = function () { modal('resultsModal', false); openSheet('peek'); };
