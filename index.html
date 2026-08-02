@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOMS · v1.3.1 · S77FFY</title>
+<title>NOMS · v1.4.0 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v1.3.1 — S77FFY
+   NOMS v1.4.0 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 :root{
@@ -218,6 +218,8 @@ input{font:inherit}
   white-space:nowrap;font-weight:700}
 .sheetT td{padding:4px 5px;border-bottom:1px solid #e0d4b4;text-align:center;min-width:44px}
 .sheetT .rlab{font-family:Georgia,serif;font-weight:700;color:var(--ink);border-right:2px solid #b9ab8a;min-width:30px}
+.sheetT .dcol{font-size:10px;color:var(--ink-soft);white-space:nowrap;max-width:58px;overflow:hidden;text-overflow:ellipsis;min-width:36px;border-right:1px solid #d5c8a6;text-align:left;padding-left:6px}
+.sheetT th.dcol{font-size:10px;letter-spacing:.05em}
 .sheetT tr.cur td{background:rgba(217,169,76,.22)}
 .sheetT .nw{display:block;font-size:10px;color:var(--ink-soft);line-height:1.1}
 .sheetT .tt{display:block;font-weight:800;font-size:13px;line-height:1.15}
@@ -279,7 +281,7 @@ input{font:inherit}
     <button class="btn ghost wide" id="btnScorer">Score a table game</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v1.3.1 &middot; S77FFY</div>
+  <div class="foot">NOMS v1.4.0 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -952,7 +954,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v1.3.1 — UI layer — S77FFY
+   NOMS v1.4.0 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -960,7 +962,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '1.3.1';
+var VERSION = '1.4.0';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -1370,14 +1372,22 @@ function pump() {
 /* ============================================================
    SCORESHEET (shared by both modes)
    ============================================================ */
+function sheetOrder() {
+  // names in round-one nom order: left of the first dealer first, first dealer last
+  var o = [], k;
+  for (k = 1; k <= st.n; k++) o.push((st.dealer0 + k) % st.n);
+  return o;
+}
 function buildSheetHTML() {
-  var h = '<table class="sheetT" id="sheetTbl"><thead><tr><th class="rlab">Rd</th>';
-  st.names.forEach(function (n) { h += '<th>' + esc(n) + '</th>'; });
+  var ord = sheetOrder();
+  var h = '<table class="sheetT" id="sheetTbl"><thead><tr><th class="rlab">Rd</th><th class="dcol">Deal</th>';
+  ord.forEach(function (p) { h += '<th>' + esc(st.names[p]) + '</th>'; });
   h += '</tr></thead><tbody>';
   for (var r = 0; r < 16; r++) {
     var cur = st.phase !== 'gameover' && r === st.round ? ' class="cur"' : '';
-    h += '<tr' + cur + '><td class="rlab">' + E.ROUNDS[r].label + '</td>';
-    for (var p = 0; p < st.n; p++) {
+    h += '<tr' + cur + '><td class="rlab">' + E.ROUNDS[r].label + '</td>' +
+      '<td class="dcol">' + esc(st.names[(st.dealer0 + r) % st.n]) + '</td>';
+    ord.forEach(function (p) {
       if (r < st.sheet.length) {
         var c = st.sheet[r][p];
         var cls = c.won === c.nom ? 'hit' : 'miss';
@@ -1385,11 +1395,11 @@ function buildSheetHTML() {
       } else {
         h += '<td class="pend">\u00B7</td>';
       }
-    }
+    });
     h += '</tr>';
   }
-  h += '</tbody><tfoot><tr><td class="rlab">Tot</td>';
-  st.totals.forEach(function (t) { h += '<td>' + t + '</td>'; });
+  h += '</tbody><tfoot><tr><td class="rlab">Tot</td><td class="dcol"></td>';
+  ord.forEach(function (p) { h += '<td>' + st.totals[p] + '</td>'; });
   h += '</tr></tfoot></table>';
   return h;
 }
