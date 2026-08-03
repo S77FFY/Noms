@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOMS · v2.1.0 · S77FFY</title>
+<title>NOMS · v2.3.2 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v2.1.0 — S77FFY
+   NOMS v2.3.2 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 :root{
@@ -239,14 +239,14 @@ input{font:inherit}
 .sheetT tr.cur td{background:#fff8e2}
 .sheetT tr.sel td{background:#dbe7ff;box-shadow:inset 0 1px 0 #1b3fa8,inset 0 -1px 0 #1b3fa8}
 .sheetT tr.sel .rlab{background:#c6daff}
-.sheetT .nw{display:block;font-family:var(--hand);font-size:12px;color:#6a6a76;line-height:1.15}
-.sheetT .tt{display:block;font-family:var(--hand);font-weight:700;font-size:17px;line-height:1.2;color:var(--biro)}
+.sheetT .tt{display:block;font-family:var(--hand);font-weight:700;font-size:21px;line-height:1.15;color:var(--biro)}
+.sheetT .tt sup{font-size:.5em;font-weight:400;line-height:0;position:relative;top:-.62em;margin-left:1px;opacity:.7}
 .sheetT .hit .tt{color:#0b6b3a}
-.sheetT .miss .tt{color:var(--biro)}
+.sheetT .miss .tt{color:#c0211b}
 .sheetT .pend{color:#c9c9d2}
 .sheetT tfoot td{border-top:2px solid #9a9aa6;font-family:var(--hand);font-weight:700;font-size:19px;padding:7px 5px;color:var(--biro)}
 .sheetT tfoot .rlab{font-family:Georgia,serif;font-size:11px}
-.cry{display:inline-block;vertical-align:-2px;color:#1b3fa8}
+.cry{display:inline-block;vertical-align:-.2em;color:#c0211b}
 
 /* the sheet takes the whole screen, like a real piece of paper */
 #sheetModal{align-items:stretch;justify-content:center;padding:0;background:rgba(15,7,26,.9)}
@@ -359,13 +359,28 @@ body.cast .iconbtn{font-size:18px;padding:9px 16px}
 body.cast .chip{font-size:16px;padding:8px 15px}
 /* the sheet on a big screen */
 body.cast .sheetT th.pname{font-size:clamp(18px,2.6vw,34px)}
-body.cast .sheetT .tt{font-size:clamp(18px,2.4vw,30px)}
-body.cast .sheetT .nw{font-size:clamp(12px,1.5vw,18px)}
+body.cast .sheetT .tt{font-size:clamp(20px,3vw,38px)}
 body.cast .sheetT .dcol,body.cast .sheetT .rlab{font-size:clamp(13px,1.7vw,21px)}
 body.cast .sheetT tfoot td{font-size:clamp(20px,2.8vw,34px)}
 body.cast #sheetModal .sheetT td{padding-top:11px;padding-bottom:11px}
 body.cast .sheettop .ptitle{font-size:clamp(24px,3vw,34px)}
 body.cast .sheettop .psub{font-size:clamp(14px,1.7vw,19px)}
+/* cast: the sheet takes the whole widescreen, sized to fit the height */
+body.cast #sheetModal .panel{max-width:none}
+@media (min-aspect-ratio:7/5){
+  body.cast .sheettop{padding:calc(6px + env(safe-area-inset-top)) 20px 5px}
+  body.cast .sheettop .ptitle{font-size:clamp(18px,3vh,32px)}
+  body.cast .sheettop .psub{font-size:clamp(11px,1.7vh,18px)}
+  body.cast .sheetbar{flex-direction:row;gap:12px;padding:8px 20px calc(9px + env(safe-area-inset-bottom))}
+  body.cast .sheetbar .btn{flex:1;padding:12px 18px;font-size:clamp(14px,2.2vh,22px)}
+  body.cast #sheetModal .sheetT th{padding-top:4px;padding-bottom:4px}
+  body.cast #sheetModal .sheetT td{padding-top:1px;padding-bottom:1px}
+  body.cast #sheetModal .sheetT th.pname{font-size:clamp(15px,2.9vh,36px)}
+  body.cast #sheetModal .sheetT .tt{font-size:clamp(18px,3.7vh,48px)}
+  body.cast #sheetModal .sheetT .dcol,body.cast #sheetModal .sheetT .rlab{font-size:clamp(11px,1.9vh,23px)}
+  body.cast #sheetModal .sheetT tfoot td{font-size:clamp(16px,2.7vh,34px)}
+}
+
 /* widescreen: two columns of players so a full table fits without scrolling */
 @media (min-width:900px) and (min-aspect-ratio:7/5){
   body.cast #nomsRows,body.cast #tricksRows{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
@@ -400,7 +415,7 @@ body.cast .sheettop .psub{font-size:clamp(14px,1.7vw,19px)}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v2.1.0 &middot; S77FFY</div>
+  <div class="foot">NOMS v2.3.2 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -1168,7 +1183,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v2.1.0 — UI layer — S77FFY
+   NOMS v2.3.2 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1176,7 +1191,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '2.1.0';
+var VERSION = '2.3.2';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -1709,7 +1724,8 @@ function pump() {
    SCORESHEET (shared by both modes)
    ============================================================ */
 /* hand-drawn crying face, for anyone sat on nothing */
-function cryFace(size) {
+function cryFace(em) {
+  var size = (em || 1.1) + 'em';
   return '<svg class="cry" width="' + size + '" height="' + size + '" viewBox="0 0 40 40" ' +
     'fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ' +
     'role="img" aria-label="nothing yet">' +
@@ -1720,9 +1736,6 @@ function cryFace(size) {
     '<path d="M23.2 17.2c1.6-2.5 4.5-2.5 6 .1"/>' +
     // open wail of a mouth
     '<path d="M14.2 29.8c1.3-4.2 9.6-4.4 11.4-.2"/>' +
-    // tears
-    '<path d="M13.4 21.1c-1.7 3.3-2.4 5.2-.9 6.3 1.4 1 3-.4 2.5-2.1-.4-1.4-1-2.8-1.6-4.2z" fill="currentColor" stroke-width="1.1"/>' +
-    '<path d="M26.6 20.8c-1.5 2.9-2.1 4.6-.8 5.6 1.2.9 2.7-.4 2.2-1.9-.3-1.2-.9-2.5-1.4-3.7z" fill="currentColor" stroke-width="1.1"/>' +
     '</svg>';
 }
 function sheetOrder(g) {
@@ -1743,13 +1756,13 @@ function buildSheetHTML(g) {
   for (var r = 0; r < 16; r++) {
     var cur = g.phase !== 'gameover' && r === g.round ? ' class="cur"' : '';
     h += '<tr' + cur + '><td class="rlab">' + E.ROUNDS[r].label + '</td>' +
-      '<td class="dcol">' + esc(st.names[(g.dealer0 + r) % g.n]) + '</td>';
+      '<td class="dcol">' + esc(g.names[(g.dealer0 + r) % g.n]) + '</td>';
     ord.forEach(function (p) {
       if (r < g.sheet.length) {
         var c = g.sheet[r][p];
         var cls = c.won === c.nom ? 'hit' : 'miss';
-        var shown = c.total === 0 ? cryFace(20) : c.total;
-        h += '<td class="' + cls + '"><span class="nw">' + c.nom + '\u00B7' + c.won + '</span><span class="tt">' + shown + '</span></td>';
+        var shown = c.total === 0 ? cryFace(1.35) : c.total;
+        h += '<td class="' + cls + '"><span class="tt">' + shown + '<sup>' + c.nom + '</sup></span></td>';
       } else {
         h += '<td class="pend">\u00B7</td>';
       }
@@ -1759,7 +1772,7 @@ function buildSheetHTML(g) {
   h += '</tbody>';
   if (g.sheet.length === 16) { // final tally only once the last round is in
     h += '<tfoot><tr><td class="rlab">Tot</td><td class="dcol"></td>';
-    ord.forEach(function (p) { h += '<td>' + (g.totals[p] === 0 ? cryFace(23) : g.totals[p]) + '</td>'; });
+    ord.forEach(function (p) { h += '<td>' + (g.totals[p] === 0 ? cryFace(1.45) : g.totals[p]) + '</td>'; });
     h += '</tr></tfoot>';
   }
   h += '</table>';
@@ -1779,6 +1792,9 @@ function applySheetSelection() {
   ub.innerHTML = '\u21BA Undo round ' + (selRound + 1);
   ub.onclick = function () { beginEdit(selRound); };
 }
+function sheetLegend() {
+  return castOn ? ' \u00B7 big number is the running score, small is the nom \u00B7 red = went down' : '';
+}
 function openSheet(modeStr) {
   $('sheetHost').innerHTML = buildSheetHTML();
   var go = $('btnSheetGo');
@@ -1786,7 +1802,7 @@ function openSheet(modeStr) {
     var last = st.round === 15;
     $('sheetSub').textContent = 'After round ' + (st.round + 1) + ' \u2014 ' +
       (E.ROUNDS[st.round].nt ? 'No Trumps' : E.ROUNDS[st.round].blind ? 'Blind' : E.ROUNDS[st.round].cards + ' cards') +
-      (st.mode === 'scorer' ? ' \u00B7 tap any round to fix it' : '');
+      (st.mode === 'scorer' ? ' \u00B7 tap any round to fix it' : '') + sheetLegend();
     go.textContent = last ? 'Final reckoning \u2192' : (st.mode === 'scorer' ? 'Round ' + (st.round + 2) + ' \u2192' : 'Deal round ' + (st.round + 2) + ' \u2192');
     go.onclick = function () {
       modal('sheetModal', false);
@@ -1800,8 +1816,8 @@ function openSheet(modeStr) {
       }
     };
   } else {
-    $('sheetSub').textContent = st.mode === 'scorer' ?
-      (st.sheet.length ? 'Tap any round to fix it' : 'Round ' + (st.round + 1) + ' in progress') : roundText();
+    $('sheetSub').textContent = (st.mode === 'scorer' ?
+      (st.sheet.length ? 'Tap any round to fix it' : 'Round ' + (st.round + 1) + ' in progress') : roundText()) + sheetLegend();
     go.textContent = 'Close';
     go.onclick = function () {
       modal('sheetModal', false);
@@ -1986,6 +2002,21 @@ function stepRow(name, isDealer, arr, seat, max, after) {
   return row;
 }
 var castOn = !!league.cast, castStep = 0;
+/* Ask the browser for true fullscreen while casting. Guarded: iOS Safari
+   won't do element fullscreen, in which case the layout is edge-to-edge anyway. */
+function goFullscreen(on) {
+  try {
+    var d = document, el = d.documentElement;
+    var isFull = d.fullscreenElement || d.webkitFullscreenElement;
+    if (on && !isFull) {
+      var req = el.requestFullscreen || el.webkitRequestFullscreen;
+      if (req) { var p = req.call(el); if (p && p.catch) p.catch(function () {}); }
+    } else if (!on && isFull) {
+      var ex = d.exitFullscreen || d.webkitExitFullscreen;
+      if (ex) { var q = ex.call(d); if (q && q.catch) q.catch(function () {}); }
+    }
+  } catch (e) {}
+}
 function applyCast() {
   document.body.classList.toggle('cast', castOn);
   $('btnCast').classList.toggle('on', castOn);
@@ -2223,7 +2254,7 @@ function openArchive(g) {
     var h = '<table class="sheetT"><thead><tr><th class="rlab">#</th><th class="pname">Player</th><th>Score</th><th>Pts</th></tr></thead><tbody>';
     ord.forEach(function (p, i) {
       h += '<tr><td class="rlab">' + (i + 1) + '</td><td class="dcol">' + esc(g.names[p]) + '</td>' +
-        '<td><span class="tt">' + (g.totals[p] === 0 ? cryFace(20) : g.totals[p]) + '</span></td>' +
+        '<td><span class="tt">' + (g.totals[p] === 0 ? cryFace(1.35) : g.totals[p]) + '</span></td>' +
         '<td><span class="tt">' + pts[p] + '</span></td></tr>';
     });
     $('sheetHost').innerHTML = h + '</tbody></table>';
@@ -2342,9 +2373,10 @@ $('btnCast').onclick = function () {
   league.cast = castOn;
   saveLeague();
   applyCast();
+  goFullscreen(castOn);
   castStep = 0;
   applyStep();
-  toast(castOn ? 'Cast mode on \u2014 big and split in two' : 'Cast mode off');
+  toast(castOn ? 'Cast mode on \u2014 big, split in two, sheet fills the screen' : 'Cast mode off');
 };
 $('btnUndoRound').onclick = undoRound;
 $('btnAceHunt').onclick = scorerAceHunt;
