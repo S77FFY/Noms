@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOMS · v2.3.2 · S77FFY</title>
+<title>NOMS · v2.4.0 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v2.3.2 — S77FFY
+   NOMS v2.4.0 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 :root{
@@ -341,6 +341,18 @@ input{font:inherit}
   padding:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;resize:none}
 .warnbox{border:1px solid rgba(217,169,76,.4);background:rgba(217,169,76,.1);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--gold-hi);margin-top:14px}
 
+/* ---------- nom tags + last round on its own scrap of paper ---------- */
+.nomtag{font-size:12px;font-weight:600;color:var(--gold-hi);border:1px solid rgba(217,169,76,.45);
+  border-radius:999px;padding:2px 9px;margin-left:8px;white-space:nowrap}
+.lastcard{background:#fff;border-radius:10px;border:1px solid #cfcfd6;box-shadow:0 2px 12px rgba(0,0,0,.32);
+  padding:9px 11px 11px;margin-top:22px;overflow-x:auto}
+.lasthead{font-family:Georgia,serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:#5c5c68;margin-bottom:5px;text-align:center}
+.lastT{width:100%;border-collapse:collapse}
+.lastT th,.lastT td{position:static;border-bottom:none;min-width:40px}
+.lastT th.pname{padding:0 4px 2px}
+.lastT td{padding:0 4px}
+
 /* ---------- cast mode: sized for a telly across the room ---------- */
 .iconbtn.on{border-color:var(--gold);background:rgba(217,169,76,.22);color:var(--gold-hi);font-weight:700}
 body.cast #scorerBody,body.cast .schead{max-width:1100px}
@@ -353,6 +365,9 @@ body.cast .srow .snm2{font-size:clamp(20px,3vw,36px)}
 body.cast .mini-step button{width:62px;height:62px;font-size:28px;border-radius:15px}
 body.cast .mini-step b{font-size:clamp(28px,3.6vw,48px);min-width:52px}
 body.cast .tallyline{font-size:clamp(15px,2vw,24px);margin-top:14px}
+body.cast .nomtag{font-size:clamp(14px,1.9vw,22px);padding:3px 13px;margin-left:12px}
+body.cast .lastcard{padding:12px 15px 15px;margin-top:26px}
+body.cast .lasthead{font-size:clamp(12px,1.6vw,19px)}
 body.cast .dbadge{width:22px;height:22px;font-size:13px}
 body.cast .btn{font-size:clamp(17px,2.2vw,24px);padding:17px 26px}
 body.cast .iconbtn{font-size:18px;padding:9px 16px}
@@ -415,7 +430,7 @@ body.cast #sheetModal .panel{max-width:none}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v2.3.2 &middot; S77FFY</div>
+  <div class="foot">NOMS v2.4.0 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -536,6 +551,7 @@ body.cast #sheetModal .panel{max-width:none}
       <div class="lbl">Tricks won</div>
       <div id="tricksRows"></div>
       <div class="tallyline" id="trickTally"></div>
+      <div id="lastRound"></div>
     </div>
 
     <div class="setupfoot">
@@ -579,8 +595,9 @@ body.cast #sheetModal .panel{max-width:none}
 <!-- ================= BACKFILL ================= -->
 <div id="scr-backfill" class="screen">
   <div class="pad">
-    <div class="h2">Add a night we missed</div>
-    <div class="sub">Tick who played and put in their final scores. League points work themselves out.</div>
+    <div class="h2" id="bfTitle">Add a night we missed</div>
+    <div class="sub" id="bfSub">Tick who played and put in their final scores. League points work themselves out.</div>
+    <div class="warnbox" id="bfWarn" style="display:none"></div>
 
     <div class="lbl">Date</div>
     <input type="date" class="dateinput" id="bfDate">
@@ -592,6 +609,7 @@ body.cast #sheetModal .panel{max-width:none}
     <div class="setupfoot">
       <button class="btn wide" id="btnBfSave">Save that night</button>
       <button class="btn ghost wide" id="btnBfCancel">Cancel</button>
+      <button class="btn danger wide" id="btnBfDelete" style="display:none">Delete this night</button>
     </div>
   </div>
 </div>
@@ -1183,7 +1201,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v2.3.2 — UI layer — S77FFY
+   NOMS v2.4.0 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1191,7 +1209,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '2.3.2';
+var VERSION = '2.4.0';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -1984,10 +2002,11 @@ function startScorer() {
   show('scr-scorer');
   roundFlash(0, function () { renderScorer(); });
 }
-function stepRow(name, isDealer, arr, seat, max, after) {
+function stepRow(name, isDealer, arr, seat, max, after, showNom) {
   var row = document.createElement('div');
   row.className = 'srow';
-  row.innerHTML = '<span class="snm2">' + esc(name) + (isDealer ? '<span class="dbadge">D</span>' : '') + '</span>';
+  row.innerHTML = '<span class="snm2">' + esc(name) + (isDealer ? '<span class="dbadge">D</span>' : '') +
+    (showNom ? '<span class="nomtag" data-seat="' + seat + '">nom ' + scNoms[seat] + '</span>' : '') + '</span>';
   var step = document.createElement('div');
   step.className = 'mini-step';
   var minus = document.createElement('button'); minus.textContent = '\u2212';
@@ -2081,10 +2100,11 @@ function renderScorer(editRound, prefill) {
   var tr = $('tricksRows');
   tr.innerHTML = '';
   order.forEach(function (seat) {
-    tr.appendChild(stepRow(st.names[seat], seat === dealer, scTricks, seat, R.cards, updateScorerLive));
+    tr.appendChild(stepRow(st.names[seat], seat === dealer, scTricks, seat, R.cards, updateScorerLive, true));
   });
   castStep = 0;
   applyStep();
+  renderLastRound();
   updateScorerLive();
 }
 var editReturn = 'entry';
@@ -2104,6 +2124,26 @@ function endEdit() {
   renderScorer(null, stash);
   stash = null;
 }
+function renderLastRound() {
+  var host = $('lastRound');
+  var prev = (editing >= 0 ? editing : entryRound) - 1;
+  if (prev < 0 || prev >= st.sheet.length) { host.innerHTML = ''; return; }
+  var ord = sheetOrder(st), row = st.sheet[prev], R = E.ROUNDS[prev];
+  var label = R.nt ? 'No Trumps' : R.blind ? 'Blind' : R.cards + (R.cards === 1 ? ' card' : ' cards');
+  var h = '<div class="lastcard"><div class="lasthead">After round ' + (prev + 1) + ' \u00B7 ' + label + '</div>' +
+    '<table class="sheetT lastT"><thead><tr>';
+  ord.forEach(function (p, i) {
+    var tilt = [-2.4, 1.6, -1.1, 2.2, -1.8, 1.2, -2.0][i % 7];
+    h += '<th class="pname"><span style="transform:rotate(' + tilt + 'deg)">' + esc(st.names[p]) + '</span></th>';
+  });
+  h += '</tr></thead><tbody><tr>';
+  ord.forEach(function (p) {
+    var c = row[p], cls = c.won === c.nom ? 'hit' : 'miss';
+    h += '<td class="' + cls + '"><span class="tt">' + (c.total === 0 ? cryFace(1.35) : c.total) +
+      '<sup>' + c.nom + '</sup></span></td>';
+  });
+  host.innerHTML = h + '</tr></tbody></table></div>';
+}
 function updateScorerLive() {
   var R = E.ROUNDS[entryRound];
   var ns = scNoms.reduce(function (a, b) { return a + b; }, 0);
@@ -2118,6 +2158,10 @@ function updateScorerLive() {
   $('trickTally').textContent = left === 0 ? 'All ' + R.cards + ' tricks placed \u2713' :
     left > 0 ? ts + ' placed \u00B7 ' + left + ' still to place' :
     ts + ' placed \u00B7 ' + (-left) + ' too many';
+  var tags = document.querySelectorAll('#tricksRows .nomtag'), ti;
+  for (ti = 0; ti < tags.length; ti++) {
+    tags[ti].textContent = 'nom ' + scNoms[+tags[ti].getAttribute('data-seat')];
+  }
   var dealerRows = document.querySelectorAll('#nomsRows .srow');
   if (dealerRows.length) {
     var lastRow = dealerRows[dealerRows.length - 1];
@@ -2264,16 +2308,43 @@ function openArchive(g) {
   var go = $('btnSheetGo');
   go.textContent = 'Close';
   go.onclick = function () { modal('sheetModal', false); };
-  $('btnSheetUndo').style.display = 'none';
+  var ub = $('btnSheetUndo');
+  ub.style.display = '';
+  ub.innerHTML = '\u270E Correct this night';
+  ub.onclick = function () { modal('sheetModal', false); openBackfill(g); };
   modal('sheetModal', true);
 }
 
-/* ---------- backfill a missed night ---------- */
-var bfPicked = {}, bfScores = {};
+/* ---------- add or correct a night ---------- */
+var bfPicked = {}, bfScores = {}, bfEditId = null, bfNames = [];
+function openBackfill(g) {
+  bfEditId = g ? g.id : null;
+  bfPicked = {}; bfScores = {};
+  // anyone who played that night, even if they've since left the roster
+  bfNames = ROSTER.slice();
+  if (g) g.names.forEach(function (nm) { if (bfNames.indexOf(nm) === -1) bfNames.push(nm); });
+  $('bfDate').value = g ? g.date : todayKey();
+  $('bfTitle').textContent = g ? 'Correct a night' : 'Add a night we missed';
+  $('bfSub').textContent = g ? 'Change who played, the date or the scores. The season table redoes itself.'
+    : 'Tick who played and put in their final scores. League points work themselves out.';
+  $('btnBfSave').textContent = g ? 'Save the correction' : 'Save that night';
+  $('btnBfDelete').style.display = g ? '' : 'none';
+  var warn = $('bfWarn');
+  if (g && g.sheet) {
+    warn.style.display = '';
+    warn.textContent = 'This night has a full round-by-round sheet. Change the players or the final scores ' +
+      'and the sheet no longer matches, so it gets kept as a plain result instead.';
+  } else {
+    warn.style.display = 'none';
+  }
+  if (g) g.names.forEach(function (nm, i) { bfPicked[nm] = true; bfScores[nm] = g.totals[i]; });
+  renderBackfill();
+  show('scr-backfill');
+}
 function renderBackfill() {
   var host = $('bfRows');
   host.innerHTML = '';
-  ROSTER.forEach(function (nm) {
+  bfNames.forEach(function (nm) {
     var row = document.createElement('div');
     var on = !!bfPicked[nm];
     row.className = 'bfrow' + (on ? '' : ' off');
@@ -2294,7 +2365,7 @@ function renderBackfill() {
   updateBfHint();
 }
 function updateBfHint() {
-  var picked = ROSTER.filter(function (nm) { return bfPicked[nm]; });
+  var picked = bfNames.filter(function (nm) { return bfPicked[nm]; });
   if (picked.length < 2) { $('bfHint').textContent = 'Tick at least two players.'; return; }
   var totals = picked.map(function (nm) { return bfScores[nm] != null ? bfScores[nm] : 0; });
   var pts = gamePoints(totals);
@@ -2302,22 +2373,50 @@ function updateBfHint() {
     ' down to 1: ' + picked.map(function (nm, i) { return nm + ' ' + pts[i]; }).join(', ');
 }
 function saveBackfill() {
-  var picked = ROSTER.filter(function (nm) { return bfPicked[nm]; });
+  var picked = bfNames.filter(function (nm) { return bfPicked[nm]; });
   if (picked.length < 2) { toast('Tick at least two players'); return; }
   var missing = picked.filter(function (nm) { return bfScores[nm] == null; });
   if (missing.length) { toast('Put a score in for ' + missing[0]); return; }
   var date = $('bfDate').value || todayKey();
-  league.games.push({
-    id: 'm' + Date.now().toString(36),
-    date: date,
-    names: picked.slice(),
-    totals: picked.map(function (nm) { return bfScores[nm]; }),
-    dealer0: 0,
-    sheet: null
-  });
+  var totals = picked.map(function (nm) { return bfScores[nm]; });
+  if (bfEditId) {
+    var at = -1, i;
+    for (i = 0; i < league.games.length; i++) if (league.games[i].id === bfEditId) at = i;
+    if (at < 0) { toast('That night has gone missing'); bfEditId = null; return; }
+    var old = league.games[at];
+    // the sheet only still fits if the same players finished on the same scores
+    var same = old.sheet && old.names.length === picked.length &&
+      old.names.every(function (nm, j) { return nm === picked[j]; }) &&
+      old.totals.every(function (t, j) { return t === totals[j]; });
+    league.games[at] = {
+      id: old.id, date: date, names: picked.slice(), totals: totals,
+      dealer0: same ? old.dealer0 : 0, sheet: same ? old.sheet : null
+    };
+    toast(same ? 'Night updated' : 'Night updated \u2014 kept as a plain result');
+  } else {
+    league.games.push({
+      id: 'm' + Date.now().toString(36), date: date,
+      names: picked.slice(), totals: totals, dealer0: 0, sheet: null
+    });
+    toast('Night of ' + niceDate(date) + ' added');
+  }
+  bfEditId = null;
   saveLeague();
   curMonth = monthKeyOf(date);
-  toast('Night of ' + niceDate(date) + ' added');
+  renderLeague();
+  show('scr-league');
+}
+
+var delArmed = 0;
+function deleteNight() {
+  if (!bfEditId) return;
+  var now = Date.now();
+  if (now - delArmed > 3000) { delArmed = now; toast('Tap delete again to remove this night for good'); return; }
+  delArmed = 0;
+  league.games = league.games.filter(function (g) { return g.id !== bfEditId; });
+  bfEditId = null;
+  saveLeague();
+  toast('Night deleted');
   renderLeague();
   show('scr-league');
 }
@@ -2403,14 +2502,10 @@ $('btnLeague').onclick = function () { curMonth = todayKey().slice(0, 7); render
 $('btnLeagueBack').onclick = resetToTitle;
 $('monthPrev').onclick = function () { curMonth = shiftMonth(curMonth, -1); renderLeague(); };
 $('monthNext').onclick = function () { curMonth = shiftMonth(curMonth, 1); renderLeague(); };
-$('btnBackfill').onclick = function () {
-  bfPicked = {}; bfScores = {};
-  $('bfDate').value = todayKey();
-  renderBackfill();
-  show('scr-backfill');
-};
+$('btnBackfill').onclick = function () { openBackfill(null); };
+$('btnBfDelete').onclick = deleteNight;
 $('btnBfSave').onclick = saveBackfill;
-$('btnBfCancel').onclick = function () { renderLeague(); show('scr-league'); };
+$('btnBfCancel').onclick = function () { bfEditId = null; renderLeague(); show('scr-league'); };
 $('btnData').onclick = openData;
 $('btnDataLoad').onclick = loadData;
 $('btnDataClose').onclick = function () { modal('dataModal', false); };
