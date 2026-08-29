@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOMS · v2.4.1 · S77FFY</title>
+<title>NOMS · v3.2.0 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v2.4.1 — S77FFY
+   NOMS v3.2.0 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 :root{
@@ -86,6 +86,12 @@ input{font:inherit}
 .stepper button{width:46px;height:46px;border-radius:12px;border:1px solid var(--line);background:rgba(244,236,217,.06);font-size:22px;font-weight:700}
 .stepper b{font-family:Georgia,serif;font-size:30px;min-width:44px;text-align:center}
 .seg{display:flex;gap:6px}
+.seg.wrap{flex-wrap:wrap}
+.seg.wrap button{flex:1 0 16%}
+.seg button.pro{border-color:rgba(242,201,110,.35)}
+.seg button.pro.sel{background:rgba(242,201,110,.28)}
+.protag{font-size:8px;letter-spacing:.1em;font-weight:800;color:#241338;background:var(--gold);
+  border-radius:4px;padding:1px 4px;margin-left:5px;vertical-align:1px}
 .seg button{flex:1;padding:11px 0;border:1px solid var(--line);border-radius:10px;background:rgba(244,236,217,.05);font-weight:700;font-size:16px}
 .seg button.sel{border-color:var(--gold);background:rgba(217,169,76,.18);color:var(--gold-hi)}
 .hint{font-size:13px;color:var(--bone-dim);margin-top:8px;font-style:italic}
@@ -289,6 +295,45 @@ input{font:inherit}
 .srow.forbid .mini-step b{color:var(--red-hi)}
 .tallyline{display:flex;gap:8px;align-items:center;margin:8px 0 4px;font-size:13px;color:var(--bone-dim);flex-wrap:wrap}
 
+/* ---------- the coach ---------- */
+#coach{margin:2px 0 16px}
+.coachbox{border:1px solid rgba(217,169,76,.4);background:rgba(217,169,76,.09);border-radius:12px;padding:11px 13px}
+.coachline{font-size:14px;line-height:1.5;color:var(--bone-dim)}
+.coachline b{color:var(--gold-hi)}
+.coachline+.coachline{margin-top:6px}
+.odds{display:flex;gap:4px;margin-top:10px;align-items:flex-end;height:46px}
+.odds div{flex:1;background:rgba(244,236,217,.14);border-radius:4px 4px 0 0;position:relative;min-height:2px}
+.odds div.pick{background:var(--gold)}
+.odds span{position:absolute;bottom:-16px;left:0;right:0;text-align:center;font-size:10px;color:var(--bone-dim)}
+.odds div.pick span{color:var(--gold-hi);font-weight:700}
+.oddswrap{padding-bottom:18px}
+.verdict{margin-top:9px;font-size:13px;font-style:italic;color:var(--bone-dim)}
+.verdict.good{color:var(--green-hi);font-style:normal}
+.verdict.bad{color:var(--red-hi);font-style:normal}
+.trainchip{border-color:rgba(217,169,76,.5);color:var(--gold-hi)}
+
+/* ---------- comic punch ---------- */
+#punch{position:fixed;inset:0;z-index:58;display:none;align-items:center;justify-content:center;overflow:hidden;
+  background:radial-gradient(70% 60% at 50% 45%, #4b2477 0%, #240f3d 60%, #140a22 100%)}
+#punch.on{display:flex}
+.burst{position:absolute;width:150vmax;height:150vmax;left:50%;top:44%;transform:translate(-50%,-50%);
+  background:repeating-conic-gradient(from 0deg at 50% 50%, rgba(242,201,110,.20) 0deg 7deg, rgba(242,201,110,0) 7deg 14deg);
+  animation:spin 22s linear infinite}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.punchwrap{position:relative;text-align:center;padding:0 16px}
+.punchname{font-family:Georgia,serif;font-weight:700;font-size:clamp(46px,15vw,150px);line-height:.92;
+  letter-spacing:.02em;color:#f7e6b8;text-transform:uppercase;
+  text-shadow:4px 4px 0 #b3231a, 8px 8px 0 #2a1030, 0 0 60px rgba(242,201,110,.5);
+  transform:rotate(-4deg);animation:slam .5s cubic-bezier(.2,1.6,.35,1) both}
+@keyframes slam{0%{transform:rotate(-4deg) scale(2.6);opacity:0}60%{transform:rotate(-4deg) scale(.93);opacity:1}100%{transform:rotate(-4deg) scale(1)}}
+.punchsub{margin-top:14px;font-family:Georgia,serif;font-size:clamp(15px,4vw,26px);letter-spacing:.22em;
+  text-transform:uppercase;color:var(--gold-hi);animation:slam .5s .16s cubic-bezier(.2,1.6,.35,1) both}
+.punchcard{margin-top:20px;display:flex;justify-content:center;animation:slideup .55s .3s cubic-bezier(.2,1.15,.35,1) both}
+@keyframes slideup{from{transform:translateY(90vh) rotate(-14deg);opacity:0}to{transform:translateY(0) rotate(0);opacity:1}}
+.punchcard .card{--cw:clamp(78px,25vw,150px)}
+.punchtap{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
+  font-size:13px;color:var(--bone-dim);letter-spacing:.14em;text-transform:uppercase}
+
 /* ---------- round flash ---------- */
 #flash{position:fixed;inset:0;z-index:55;display:none;align-items:center;justify-content:center;
   background:radial-gradient(80% 60% at 50% 50%, rgba(52,26,79,.97), rgba(20,10,34,.99));text-align:center}
@@ -432,7 +477,7 @@ body.cast #sheetModal .panel{max-width:none}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v2.4.1 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.2.0 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -457,10 +502,17 @@ body.cast #sheetModal .panel{max-width:none}
     <div class="hint">You plus CPUs from the crew. 2&ndash;7 at the table.</div>
 
     <div class="lbl">CPU difficulty</div>
-    <div class="seg" id="diffSeg">
+    <div class="seg wrap" id="diffSeg">
       <button data-d="1">1</button><button data-d="2">2</button><button data-d="3" class="sel">3</button><button data-d="4">4</button><button data-d="5">5</button>
+      <button data-d="6">6</button><button data-d="7">7</button><button data-d="8">8</button><button data-d="9">9</button><button data-d="10">10</button>
     </div>
     <div class="hint" id="diffHint">3 &mdash; Regular: counts their hand, plays sensibly.</div>
+
+    <div class="lbl">Training mode</div>
+    <div class="seg" id="trainSeg">
+      <button data-t="0" class="sel">Off</button><button data-t="1">On</button>
+    </div>
+    <div class="hint">Get a read on your hand before you nom, and rewind any round to try a different call.</div>
 
     <div class="setupfoot">
       <button class="btn wide" id="btnHunt">Hunt the jack &rarr;</button>
@@ -513,6 +565,12 @@ body.cast #sheetModal .panel{max-width:none}
       <input id="newName2" placeholder="Add someone to the crew" maxlength="12">
       <button id="btnAddName2">Add</button>
     </div>
+
+    <div class="lbl">Stakes</div>
+    <div class="seg" id="stakeSeg">
+      <button data-s="5" class="sel">Normal</button><button data-s="10">Double money</button>
+    </div>
+    <div class="hint" id="stakeHint"></div>
 
     <div class="lbl">First dealer</div>
     <div class="chips" id="dealerChips"></div>
@@ -622,6 +680,7 @@ body.cast #sheetModal .panel{max-width:none}
     <div class="ptitle" id="nomTitle">Your nom</div>
     <div class="psub" id="nomSub"></div>
     <div class="nomhand" id="nomHand"></div>
+    <div id="coach"></div>
     <div class="nomgrid" id="nomGrid"></div>
     <div class="warn" id="nomWarn"></div>
   </div>
@@ -637,6 +696,7 @@ body.cast #sheetModal .panel{max-width:none}
     <div class="sheetbar">
       <button class="btn wide" id="btnSheetGo">Close</button>
       <button class="btn ghost wide" id="btnSheetUndo" style="display:none">&#8630; Undo this round</button>
+      <button class="btn ghost wide" id="btnRewind" style="display:none">&#8630; Rewind &amp; try another nom</button>
     </div>
   </div>
 </div>
@@ -685,6 +745,16 @@ body.cast #sheetModal .panel{max-width:none}
   </div>
 </div>
 
+<div id="punch">
+  <div class="burst"></div>
+  <div class="punchwrap">
+    <div class="punchname" id="punchName"></div>
+    <div class="punchsub" id="punchSub">deals first</div>
+    <div class="punchcard" id="punchCard"></div>
+  </div>
+  <div class="punchtap">tap to carry on</div>
+</div>
+
 <div id="flash"><div class="fin">
   <div class="fsuits">&#9824;<span class="r">&#9829;</span><span class="r">&#9830;</span>&#9827;</div>
   <div class="frd" id="flashRd"></div>
@@ -717,12 +787,15 @@ function rankLabel(r) {
 
 function mulberry32(seed) {
   var a = seed >>> 0;
-  return function () {
+  function f() {
     a |= 0; a = a + 0x6D2B79F5 | 0;
     var t = Math.imul(a ^ a >>> 15, 1 | a);
     t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
     return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
+  }
+  f.getState = function () { return a >>> 0; };
+  f.setState = function (v) { a = v >>> 0; };
+  return f;
 }
 
 function makeDeck() {
@@ -759,6 +832,7 @@ function newGame(opts) {
   var names = opts.names, n = names.length;
   return {
     mode: opts.mode || 'game',
+    rate: opts.rate || 5,          // pence per point on the side bets
     names: names.slice(), n: n,
     humanSeat: (typeof opts.humanSeat === 'number') ? opts.humanSeat : -1,
     difficulty: opts.difficulty || 3,
@@ -920,7 +994,7 @@ function advanceRound(st) {
   if (st.phase !== 'scored') throw new Error('round not finished');
   if (st.round === ROUNDS.length - 1) {
     st.phase = 'gameover';
-    st.payouts = computePayouts(st.names, st.totals);
+    st.payouts = computePayouts(st.names, st.totals, st.rate);
     return false;
   }
   st.dealer = (st.dealer + 1) % st.n;
@@ -975,7 +1049,7 @@ function scorerEdit(st, roundIdx, noms, won) {
   }
   st.sheet[roundIdx] = row;
   recomputeSheet(st);
-  if (st.phase === 'gameover') st.payouts = computePayouts(st.names, st.totals);
+  if (st.phase === 'gameover') st.payouts = computePayouts(st.names, st.totals, st.rate);
   return true;
 }
 
@@ -983,7 +1057,7 @@ function scorerNext(st) {
   if (st.phase !== 'scored') throw new Error('round not saved');
   if (st.round === ROUNDS.length - 1) {
     st.phase = 'gameover';
-    st.payouts = computePayouts(st.names, st.totals);
+    st.payouts = computePayouts(st.names, st.totals, st.rate);
     return false;
   }
   st.round++;
@@ -1005,9 +1079,11 @@ function scorerUndo(st) {
 
 /* ---------------- money ----------------
    £2 each in the pot. 1st and 2nd take half each.
-   Winner also collects 5p per point off every other player,
-   rounded UP to the nearest 50p per player.               */
-function computePayouts(names, totals) {
+   Winner also collects a few pence per point off every other player,
+   rounded UP to the nearest 50p per player.
+   ratePence: 5 normally, 10 for a double-money night.      */
+function computePayouts(names, totals, ratePence) {
+  var rate = ratePence || 5;
   var n = names.length, pot = 2 * n, i;
   var order = [];
   for (i = 0; i < n; i++) order.push(i);
@@ -1034,7 +1110,8 @@ function computePayouts(names, totals) {
       var p = order[i];
       if (p === W) continue;
       var diff = top - totals[p];
-      var pay = Math.ceil(diff / 10) * 0.5; // 5p a point, rounded up to 50p
+      // worked in whole pence so the rounding never drifts
+      var pay = Math.ceil((diff * rate) / 50) * 50 / 100;
       rows[p].side -= pay; rows[p].sidePaid = pay;
       rows[W].side += pay;
       sideList.push({ from: p, to: W, diff: diff, amount: pay });
@@ -1043,7 +1120,202 @@ function computePayouts(names, totals) {
   // settle-up view: the £2 a head is already in the pot, so net is what
   // each player collects or pays at the end — not profit vs their stake.
   rows.forEach(function (r) { r.net = r.potShare + r.side; });
-  return { pot: pot, rows: rows, rank: order, note: note, sideList: sideList };
+  return { pot: pot, rows: rows, rank: order, note: note, sideList: sideList, rate: rate };
+}
+
+/* ================= the Pro player (difficulty 6) =================
+   Everything below is used ONLY by difficulty 6. Levels 1-5 never reach it,
+   so the ladder the crew already knows plays exactly as it always has.
+
+   The Pro reads a round by simulation: deal the unseen cards out at random,
+   play the round through, repeat. It uses only what a player at the table
+   could legitimately know — its own hand, the turn-up, the cards played and
+   the noms already spoken. It never looks at anybody's actual hand. */
+
+function unseenCards(st, seat) {
+  var seen = {}, i;
+  function mark(c) { seen[c.s + c.r] = 1; }
+  for (i = 0; i < st.hands[seat].length; i++) mark(st.hands[seat][i]);
+  for (i = 0; i < st.played.length; i++) mark(st.played[i]);
+  for (i = 0; i < st.trick.length; i++) mark(st.trick[i].card);
+  if (st.trumpCard) mark(st.trumpCard);
+  return makeDeck().filter(function (c) { return !seen[c.s + c.r]; });
+}
+
+/* Can the unseen cards cover everyone else's hands? Guards the simulation
+   against being run on a half-built state. */
+function dealAddsUp(st, seat) {
+  var need = 0, p;
+  for (p = 0; p < st.n; p++) if (p !== seat) need += st.hands[p].length;
+  return need > 0 && need <= unseenCards(st, seat).length;
+}
+
+function simBase(st, seat, rng) {
+  var n = st.n, p, j;
+  var sim = newGame({ names: st.names, difficulty: 4, seed: 1 });
+  sim.mc = 1;                       // a simulation never simulates inside itself
+  sim.rng = rng;
+  sim.round = st.round;
+  sim.trump = st.trump; sim.trumpCard = st.trumpCard;
+  sim.dealer = st.dealer;
+  sim.won = st.won.slice();
+  sim.played = st.played.slice();
+  sim.trick = st.trick.slice();
+  sim.trickNo = st.trickNo;
+  sim.leader = st.leader;
+  sim.hands = [];
+  var pool = shuffle(unseenCards(st, seat), rng), idx = 0;
+  for (p = 0; p < n; p++) {
+    if (p === seat) { sim.hands[p] = st.hands[seat].slice(); continue; }
+    var k = st.hands[p].length, h = [];
+    for (j = 0; j < k; j++) h.push(pool[idx++]);
+    sortHand(h);
+    sim.hands[p] = h;
+  }
+  return sim;
+}
+function playOut(sim) {
+  var guard = 0;
+  while (sim.phase === 'play' || sim.phase === 'trickdone') {
+    if (++guard > 400) break;
+    if (sim.phase === 'trickdone') collectTrick(sim);
+    else playCard(sim, sim.turn, aiPlay(sim, sim.turn));
+  }
+}
+
+/* One playout of the whole round, with this seat nomming myNom. */
+function simulateRound(st, seat, myNom, rng) {
+  var sim = simBase(st, seat, rng), j, p;
+  sim.noms = st.noms.slice();
+  sim.noms[seat] = myNom;
+  for (j = 1; j <= st.n; j++) {          // seats yet to call guess from their fake hands
+    p = (st.dealer + j) % st.n;
+    if (sim.noms[p] == null) sim.noms[p] = aiNom(sim, p);
+  }
+  sim.turn = st.phase === 'play' ? st.turn : st.leader;
+  sim.phase = 'play';
+  playOut(sim);
+  return sim.won[seat];
+}
+
+/* One playout from here, with a given card played first. */
+function simulateFromPlay(st, seat, handIdx, rng) {
+  var sim = simBase(st, seat, rng);
+  sim.noms = st.noms.slice();
+  sim.turn = st.turn;
+  sim.phase = 'play';
+  playCard(sim, seat, handIdx);
+  playOut(sim);
+  return sim.won[seat];
+}
+
+/* Expected score for every nom this seat could make. */
+function nomAnalysis(st, seat, samples) {
+  var R = ROUNDS[st.round];
+  var legal = legalNoms(st, seat);
+  var rng = mulberry32(Math.floor(st.rng() * 4294967296));
+  var hits = {}, tricks = {}, dist = new Array(R.cards + 1).fill(0), k, s, i;
+  for (i = 0; i < legal.length; i++) { hits[legal[i]] = 0; tricks[legal[i]] = 0; }
+  samples = samples || 24;
+  for (s = 0; s < samples; s++) {
+    var deal = rng.getState();        // every candidate is judged on the same deal
+    for (i = 0; i < legal.length; i++) {
+      rng.setState(deal);
+      k = legal[i];
+      var got = simulateRound(st, seat, k, rng);
+      tricks[k] += got;
+      if (got === k) hits[k]++;
+      if (i === 0) dist[got]++;
+    }
+  }
+  var rows = legal.map(function (v) {
+    return { nom: v, hit: hits[v] / samples, tricks: tricks[v] / samples,
+             expected: tricks[v] / samples + 10 * (hits[v] / samples) };
+  });
+  var best = rows[0];
+  for (i = 1; i < rows.length; i++) if (rows[i].expected > best.expected) best = rows[i];
+  return { rows: rows, best: best, dist: dist.map(function (c) { return c / samples; }), samples: samples };
+}
+
+/* Which card leaves this seat best placed to land its nom? */
+function playAnalysis(st, seat, samples) {
+  var legal = legalPlayIdxs(st, seat);
+  var nom = st.noms[seat];
+  var rng = mulberry32(Math.floor(st.rng() * 4294967296));
+  samples = samples || 14;
+  var rows = [], i, s;
+  for (i = 0; i < legal.length; i++) rows.push({ idx: legal[i], hit: 0, tricks: 0 });
+  for (s = 0; s < samples; s++) {
+    var deal = rng.getState();
+    for (i = 0; i < rows.length; i++) {
+      rng.setState(deal);
+      var got = simulateFromPlay(st, seat, rows[i].idx, rng);
+      rows[i].tricks += got;
+      if (got === nom) rows[i].hit++;
+    }
+  }
+  for (i = 0; i < rows.length; i++) {
+    rows[i].hit /= samples;
+    rows[i].tricks /= samples;
+    rows[i].expected = rows[i].tricks + 10 * rows[i].hit;   // the nom is worth ten, a trick one
+  }
+  var best = rows[0];
+  for (i = 1; i < rows.length; i++) if (rows[i].expected > best.expected) best = rows[i];
+  return { rows: rows, best: best };
+}
+
+/* What the noms already spoken say about the tricks going spare. */
+function tableRead(st, seat) {
+  var R = ROUNDS[st.round], made = nomsCount(st), claimed = nomsSum(st);
+  return { made: made, claimed: claimed, toCome: st.n - made - 1,
+           loose: R.cards - claimed, cards: R.cards };
+}
+
+/* ---------------- training: rewind and replay a round ---------------- */
+function snapshotRound(st) {
+  return {
+    round: st.round, dealer: st.dealer,
+    hands: st.hands.map(function (h) { return h.map(function (c) { return { r: c.r, s: c.s }; }); }),
+    trump: st.trump,
+    trumpCard: st.trumpCard ? { r: st.trumpCard.r, s: st.trumpCard.s } : null,
+    noms: st.noms.slice(), won: st.won.slice(),
+    totals: st.totals.slice(), sheetLen: st.sheet.length,
+    leader: st.leader, nomTurn: st.nomTurn, turn: st.turn,
+    rngState: st.rng.getState ? st.rng.getState() : null
+  };
+}
+function restoreRound(st, snap) {
+  st.round = snap.round; st.dealer = snap.dealer;
+  st.hands = snap.hands.map(function (h) { return h.map(function (c) { return { r: c.r, s: c.s }; }); });
+  st.trump = snap.trump;
+  st.trumpCard = snap.trumpCard ? { r: snap.trumpCard.r, s: snap.trumpCard.s } : null;
+  st.noms = snap.noms.slice(); st.won = snap.won.slice();
+  st.totals = snap.totals.slice();
+  st.sheet = st.sheet.slice(0, snap.sheetLen);
+  st.leader = snap.leader; st.nomTurn = snap.nomTurn; st.turn = snap.turn;
+  st.trick = []; st.trickNo = 0; st.played = []; st.lastTrick = null;
+  st.payouts = null;
+  if (snap.rngState != null && st.rng.setState) st.rng.setState(snap.rngState);
+  st.phase = 'nom';
+  return st;
+}
+
+/* Advice for a human seat, using only what that seat could legitimately know. */
+function coachNom(st, seat, samples) {
+  var a = nomAnalysis(st, seat, samples || 60);
+  var R = ROUNDS[st.round], t = tableRead(st, seat);
+  var rows = a.rows.slice().sort(function (x, y) { return y.expected - x.expected; });
+  var best = rows[0], runnerUp = rows[1] || null, zero = null, i, mean = 0;
+  for (i = 0; i < a.rows.length; i++) if (a.rows[i].nom === 0) zero = a.rows[i];
+  for (i = 0; i < a.dist.length; i++) mean += i * a.dist[i];
+  return {
+    rows: a.rows, best: best, runnerUp: runnerUp, meanTricks: mean, dist: a.dist,
+    safeZero: !!(zero && zero.hit >= 0.75),
+    clear: !!(runnerUp && best.expected - runnerUp.expected >= 2.5),
+    forced: a.rows.length === 1,
+    heard: t.made, claimed: t.claimed, loose: t.loose, toCome: t.toCome,
+    cards: R.cards, blind: R.blind, nt: R.nt
+  };
 }
 
 /* ---------------- AI: nominations ---------------- */
@@ -1079,6 +1351,10 @@ function estimateTricks(hand, trump, cards, nPlayers) {
 
 function aiNom(st, seat) {
   var R = ROUNDS[st.round], d = seatDiff(st, seat), rng = st.rng, cards = R.cards;
+  if (d >= 6 && !R.blind && cards >= 2 && !st.mc && dealAddsUp(st, seat)) {
+    try { return nomAnalysis(st, seat, cards <= 3 ? 34 : cards <= 5 ? 26 : 20).best.nom; }
+    catch (e) {}                     // anything odd: fall back to the level-5 estimate
+  }
   var base = R.blind ? cards / st.n : estimateTricks(st.hands[seat], st.trump, cards, st.n);
   var x;
   if (d <= 1) {
@@ -1132,6 +1408,11 @@ function aiPlay(st, seat) {
   var legal = legalPlayIdxs(st, seat), h = st.hands[seat];
   var d = seatDiff(st, seat), rng = st.rng, trump = st.trump;
   if (legal.length === 1) return legal[0];
+  if (d >= 6 && !st.mc && h.length <= 6 && legal.length > 1 && dealAddsUp(st, seat)) {
+    st.mc = 1;
+    try { var pa = playAnalysis(st, seat, h.length <= 2 ? 22 : 14); st.mc = 0; return pa.best.idx; }
+    catch (e) { st.mc = 0; }         // fall back to the level-5 rule of thumb
+  }
   if (d <= 1) return legal[Math.floor(rng() * legal.length)];
   if (d === 2 && rng() < 0.45) return legal[Math.floor(rng() * legal.length)];
 
@@ -1144,7 +1425,11 @@ function aiPlay(st, seat) {
   function lowest(list) { return list.slice().sort(power)[0]; }
   function highest(list) { var s = list.slice().sort(power); return s[s.length - 1]; }
 
-  var want = (st.noms[seat] - st.won[seat]) > 0;
+  var need = st.noms[seat] - st.won[seat];
+  // Past its nom the bonus has gone, so every extra trick is a free point.
+  // Pro chases them; levels 1-5 behave exactly as they always did.
+  var want = d >= 6 ? (need > 0 || need < 0) : (need > 0);
+  var mustWinAll = d >= 6 && need > 0 && need >= h.length;
 
   if (st.trick.length === 0) { // leading
     if (want) {
@@ -1154,7 +1439,19 @@ function aiPlay(st, seat) {
           if (!trump) return true;
           return x.c.s === trump || highestOutstanding(st, seat, trump) === 0;
         });
+        // The top trump wins whenever it is played, so Pro keeps it back — late
+        // on it takes a trick AND wrecks somebody else's nom.
+        if (d >= 6 && bosses.length && !mustWinAll) {
+          var keep = bosses.filter(function (x) { return !(trump && x.c.s === trump && x.c.r === 14); });
+          if (keep.length) return highest(keep).i;
+          var side = cards.filter(function (x) { return !(trump && x.c.s === trump); });
+          if (side.length && need < h.length) return highest(side).i;
+        }
         if (bosses.length) return highest(bosses).i;
+      }
+      if (d >= 6 && trump && !mustWinAll) {
+        var notTop = cards.filter(function (x) { return !(x.c.s === trump && x.c.r === 14); });
+        if (notTop.length) return highest(notTop).i;
       }
       return highest(cards).i;
     }
@@ -1168,15 +1465,24 @@ function aiPlay(st, seat) {
 
   if (want) {
     if (winners.length) {
+      var pool = winners;
+      if (d >= 6 && trump && !mustWinAll && winners.length > 1) {
+        var cheaper = winners.filter(function (x) { return !(x.c.s === trump && x.c.r === 14); });
+        if (cheaper.length) pool = cheaper;      // don't spend the ace on a trick a six wins
+      }
       if (d >= 4 && !last) {
-        var safe = winners.filter(function (x) { return isSafeWinner(st, seat, x.c); });
+        var safe = pool.filter(function (x) { return isSafeWinner(st, seat, x.c); });
         if (safe.length) return lowest(safe).i;
       }
-      return lowest(winners).i;
+      return lowest(pool).i;
     }
     return lowest(losers.length ? losers : cards).i;
   }
   if (losers.length) return highest(losers).i; // duck as high as possible
+  if (d >= 6 && winners.length > 1) {          // forced to win: give up the least useful card
+    var notBoss = winners.filter(function (x) { return !(trump && x.c.s === trump && x.c.r === 14); });
+    if (notBoss.length) return highest(notBoss).i;
+  }
   return highest(winners).i;                   // forced to win: dump the biggest
 }
 
@@ -1193,7 +1499,11 @@ var api = {
   playCard: playCard, collectTrick: collectTrick, advanceRound: advanceRound,
   scorerStart: scorerStart, scorerApply: scorerApply, scorerNext: scorerNext, scorerUndo: scorerUndo, scorerEdit: scorerEdit,
   computePayouts: computePayouts,
-  estimateTricks: estimateTricks, aiNom: aiNom, aiPlay: aiPlay
+  estimateTricks: estimateTricks, aiNom: aiNom, aiPlay: aiPlay,
+  unseenCards: unseenCards, dealAddsUp: dealAddsUp, tableRead: tableRead,
+  simulateRound: simulateRound, simulateFromPlay: simulateFromPlay,
+  nomAnalysis: nomAnalysis, playAnalysis: playAnalysis,
+  snapshotRound: snapshotRound, restoreRound: restoreRound, coachNom: coachNom
 };
 
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
@@ -1203,7 +1513,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v2.4.1 — UI layer — S77FFY
+   NOMS v3.2.0 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1211,7 +1521,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '2.4.1';
+var VERSION = '3.2.0';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -1409,9 +1719,22 @@ var pumpT = null;       // CPU driver timer
 var justDealt = false;  // stagger the next hand render
 var blindReveal = false;
 var uiNote = '';        // transient table-talk line
-var setup = { who: 2, size: 7, diff: 3 }; // default 'you' = Kev? no — first crew member; who: index into CREW
-setup.who = 0;
+var training = false, roundSnap = null, rewound = 0, lastAdvice = null;
+var setup = { who: 0, size: 7, diff: 3, train: 0 };
 
+/* Levels 6-10 seat Pro players alongside level-5 ones. 10 is a full table of Pros. */
+function proCount(level, cpus) {
+  if (level < 6) return 0;
+  if (level >= 10) return cpus;
+  return Math.min(cpus, level - 5);
+}
+function diffHintText(level) {
+  var cpus = Math.max(1, setup.size - 1);
+  if (level <= 5) return DIFF_HINTS[level];
+  var pc = proCount(level, cpus);
+  return level + ' \u2014 ' + pc + ' Pro ' + (pc === 1 ? 'player' : 'players') +
+    (cpus - pc > 0 ? ' and ' + (cpus - pc) + ' at level 5.' : ' \u2014 everyone but you.');
+}
 var DIFF_HINTS = {
   1: '1 \u2014 Pub novice: noms are a guess, plays are a punt.',
   2: '2 \u2014 Casual: half thinks, half vibes.',
@@ -1445,15 +1768,29 @@ function buildSetup() {
   var segs = $('diffSeg').querySelectorAll('button');
   for (var i = 0; i < segs.length; i++) {
     segs[i].classList.toggle('sel', +segs[i].dataset.d === setup.diff);
+    segs[i].classList.toggle('pro', +segs[i].dataset.d >= 6);
   }
-  $('diffHint').textContent = DIFF_HINTS[setup.diff];
+  $('diffHint').textContent = diffHintText(setup.diff);
+  var tsegs = $('trainSeg').querySelectorAll('button');
+  for (var ti = 0; ti < tsegs.length; ti++) tsegs[ti].classList.toggle('sel', +tsegs[ti].dataset.t === setup.train);
 }
 
 function startGame() {
   var me = E.CREW[setup.who];
   var others = ROSTER.filter(function (n) { return n !== me; }).slice(0, setup.size - 1);
   var names = [me].concat(others);
-  st = E.newGame({ names: names, humanSeat: 0, difficulty: setup.diff });
+  var diffs = null;
+  if (setup.diff >= 6) {
+    var cpus = names.length - 1, pc = proCount(setup.diff, cpus), k;
+    diffs = [5];                               // seat 0 is you; the value is never used
+    for (k = 1; k < names.length; k++) diffs.push(k <= pc ? 6 : 5);
+  }
+  st = E.newGame({
+    names: names, humanSeat: 0,
+    difficulty: setup.diff >= 6 ? 5 : setup.diff,
+    diffs: diffs
+  });
+  training = !!setup.train;
   runHunt();
 }
 
@@ -1526,6 +1863,9 @@ function trumpText() {
 function renderTop() {
   $('roundChip').textContent = roundText();
   $('trumpChip').innerHTML = trumpText();
+  var rc = $('roundChip');
+  if (training) { rc.classList.add('trainchip'); rc.textContent += rewound ? ' \u00B7 take ' + (rewound + 1) : ' \u00B7 training'; }
+  else rc.classList.remove('trainchip');
   var R = E.ROUNDS[st.round];
   var sum = E.nomsSum(st), cnt = E.nomsCount(st);
   var tc = $('tallyChip');
@@ -1552,8 +1892,11 @@ function renderSeats() {
     d.className = 'seat' + (active ? ' active' : '');
     var backs = '';
     for (var k = 0; k < st.hands[p].length; k++) backs += '<div class="card back"></div>';
+    var isPro = st.diffs && st.diffs[p] >= 6;
     d.innerHTML =
-      '<div class="snm">' + esc(st.names[p]) + (st.dealer === p ? '<span class="dbadge">D</span>' : '') + '</div>' +
+      '<div class="snm">' + esc(st.names[p]) +
+        (isPro ? '<span class="protag">PRO</span>' : '') +
+        (st.dealer === p ? '<span class="dbadge">D</span>' : '') + '</div>' +
       '<div class="sback">' + backs + '</div>' +
       '<div class="snw">' + seatStatus(p) + '</div>';
     host.appendChild(d);
@@ -1639,6 +1982,59 @@ function renderAll() {
 }
 
 /* ---------- human actions ---------- */
+function renderCoach() {
+  var host = $('coach');
+  if (!training) { host.innerHTML = ''; lastAdvice = null; return; }
+  var R = E.ROUNDS[st.round];
+  if (R.blind) {
+    host.innerHTML = '<div class="coachbox"><div class="coachline">Blind round \u2014 nobody can read this one. ' +
+      'With ' + st.n + ' at the table, <b>' + Math.round(R.cards / st.n) + '</b> is the neutral call.</div></div>';
+    lastAdvice = null;
+    return;
+  }
+  var a = E.coachNom(st, 0, 70);
+  lastAdvice = a;
+  var lines = [];
+  if (a.forced) {
+    host.innerHTML = '<div class="coachbox"><div class="coachline">You deal, and the noms in front of you ' +
+      'leave <b>' + a.best.nom + '</b> as your only legal call \u2014 anything else would make the table total ' +
+      a.cards + '.</div></div>';
+    return;
+  }
+  lines.push('Your hand plays for about <b>' + a.meanTricks.toFixed(1) + '</b> ' +
+    (a.meanTricks < 1.5 ? 'trick' : 'tricks') + '. Best call is <b>' + a.best.nom +
+    '</b> \u2014 lands it <b>' + Math.round(a.best.hit * 100) + '%</b> of the time.');
+  if (a.heard > 0) {
+    lines.push(a.heard + (a.heard === 1 ? ' player has' : ' players have') + ' nommed for <b>' + a.claimed +
+      '</b> of ' + a.cards + '. ' +
+      (a.loose <= 0 ? 'The round is already overbid \u2014 somebody has to go down.'
+        : a.loose + (a.loose === 1 ? ' trick is' : ' tricks are') + ' still going spare.') +
+      (a.toCome > 0 ? ' ' + a.toCome + ' still to call after you \u2014 you cannot know what they are sitting on.'
+        : ' You call last, so this is everything you get to know.'));
+  } else {
+    lines.push('You call first, so nobody has shown you anything yet.');
+  }
+  if (a.safeZero && a.best.nom === 0) {
+    lines.push('This is about as safe a <b>0</b> as you get \u2014 nothing here wants to win a trick.');
+  } else if (a.clear) {
+    lines.push('<b>' + a.best.nom + '</b> is clearly ahead of the alternatives here.');
+  } else if (a.runnerUp) {
+    lines.push('It is close between <b>' + a.best.nom + '</b> and <b>' + a.runnerUp.nom + '</b>.');
+  }
+  var h = '<div class="coachbox">';
+  lines.forEach(function (l) { h += '<div class="coachline">' + l + '</div>'; });
+  h += '<div class="oddswrap"><div class="odds">';
+  var top = 0, i;
+  for (i = 0; i < a.rows.length; i++) if (a.rows[i].hit > top) top = a.rows[i].hit;
+  for (i = 0; i < a.rows.length; i++) {
+    var r = a.rows[i];
+    var pct = top > 0 ? Math.round((r.hit / top) * 100) : 0;
+    h += '<div class="' + (r.nom === a.best.nom ? 'pick' : '') + '" style="height:' + Math.max(2, pct) + '%">' +
+      '<span>' + r.nom + '</span></div>';
+  }
+  h += '</div></div></div>';
+  host.innerHTML = h;
+}
 function openNomModal() {
   var R = E.ROUNDS[st.round];
   $('nomTitle').textContent = R.blind ? 'Blind nom' : 'Your nom';
@@ -1672,6 +2068,7 @@ function openNomModal() {
     grid.appendChild(b);
   }
   $('nomWarn').textContent = f >= 0 ? 'Dealer can\u2019t make it ' + f + ' \u2014 the noms can\u2019t total ' + R.cards + '.' : '';
+  renderCoach();
   modal('nomModal', true);
 }
 function humanPlay(idx) {
@@ -1685,6 +2082,7 @@ function humanPlay(idx) {
 
 /* ---------- CPU driver ---------- */
 function dealSequence() {
+  if (training) { roundSnap = E.snapshotRound(st); rewound = 0; }
   renderTop();
   renderSeats();
   $('meInfo').innerHTML = '';
@@ -1820,10 +2218,16 @@ function openSheet(modeStr) {
   var go = $('btnSheetGo');
   if (modeStr === 'continue') {
     var last = st.round === 15;
+    if (training && st.mode === 'game') {
+      var rb = $('btnRewind');
+      rb.style.display = roundSnap ? '' : 'none';
+      rb.onclick = rewindRound;
+    }
     $('sheetSub').textContent = 'After round ' + (st.round + 1) + ' \u2014 ' +
       (E.ROUNDS[st.round].nt ? 'No Trumps' : E.ROUNDS[st.round].blind ? 'Blind' : E.ROUNDS[st.round].cards + ' cards') +
       (st.mode === 'scorer' ? ' \u00B7 tap any round to fix it' : '') + sheetLegend();
     go.textContent = last ? 'Final reckoning \u2192' : (st.mode === 'scorer' ? 'Round ' + (st.round + 2) + ' \u2192' : 'Deal round ' + (st.round + 2) + ' \u2192');
+    if (training && st.mode === 'game') $('sheetSub').textContent += trainingVerdict();
     go.onclick = function () {
       modal('sheetModal', false);
       if (st.mode === 'scorer') {
@@ -1839,6 +2243,7 @@ function openSheet(modeStr) {
     $('sheetSub').textContent = (st.mode === 'scorer' ?
       (st.sheet.length ? 'Tap any round to fix it' : 'Round ' + (st.round + 1) + ' in progress') : roundText()) + sheetLegend();
     go.textContent = 'Close';
+    $('btnRewind').style.display = 'none';
     go.onclick = function () {
       modal('sheetModal', false);
       if (st.phase === 'gameover') openResults();
@@ -1874,6 +2279,29 @@ function scrollSheetToCurrent() {
     var mid = row.offsetTop - hh - (wrap.clientHeight - hh) / 2 + row.offsetHeight / 2;
     wrap.scrollTop = Math.max(0, mid);
   }, 40);
+}
+
+function trainingVerdict() {
+  var row = st.sheet[st.sheet.length - 1];
+  if (!row) return '';
+  var me = row[0];
+  var s = ' \u00B7 you nommed ' + me.nom + ', won ' + me.won;
+  if (me.won === me.nom) return s + ' \u2014 landed it.';
+  if (me.won > me.nom) return s + ' \u2014 they pushed ' + (me.won - me.nom) + ' extra on you.';
+  return s + ' \u2014 ' + (me.nom - me.won) + ' short.';
+}
+function rewindRound() {
+  if (!roundSnap) return;
+  stopPump();
+  modal('sheetModal', false);
+  E.restoreRound(st, roundSnap);
+  rewound++;
+  uiNote = 'Same cards again \u2014 try a different call';
+  justDealt = true;
+  blindReveal = false;
+  renderAll();
+  toast('Round ' + (st.round + 1) + ' again, same deal');
+  pump();
 }
 
 /* ============================================================
@@ -1918,7 +2346,8 @@ function openResults() {
   });
   $('resStand').innerHTML = standHTML;
 
-  var mh = '<div class="mhead">Settle up \u2014 \u00A3' + pay.pot.toFixed(2).replace(/\.00$/, '') + ' pot, \u00A32 a head already in</div>';
+  var mh = '<div class="mhead">Settle up \u2014 \u00A3' + pay.pot.toFixed(2).replace(/\.00$/, '') + ' pot, \u00A32 a head already in' +
+    (pay.rate === 10 ? ' \u00B7 double money' : '') + '</div>';
   pay.rows.forEach(function (r) {
     if (r.potShare > 0) {
       mh += '<div class="mline"><b>' + esc(r.name) + '</b> takes ' + money(r.potShare) + ' from the pot</div>';
@@ -1937,7 +2366,7 @@ function openResults() {
 /* ============================================================
    SCORER MODE
    ============================================================ */
-var pick = { sel: [], dealer: null }; // sel: row indices in tap order
+var pick = { sel: [], dealer: null, rate: 5 }; // sel: row indices in tap order
 var scNoms = [], scTricks = [], undoArmed = 0;
 
 function buildPickRows() {
@@ -1972,6 +2401,13 @@ function pickName(i) {
   var v = $('pn' + i) ? $('pn' + i).value.trim() : '';
   return v || ROSTER[i];
 }
+function renderStakes() {
+  var segs = $('stakeSeg').querySelectorAll('button'), i;
+  for (i = 0; i < segs.length; i++) segs[i].classList.toggle('sel', +segs[i].dataset.s === pick.rate);
+  $('stakeHint').textContent = pick.rate === 10
+    ? '\u00A32 a head in the pot as usual \u2014 but 10p a point to the winner, still rounded up to 50p each.'
+    : '\u00A32 a head in the pot, 5p a point to the winner, rounded up to 50p each.';
+}
 function buildDealerChips() {
   var host = $('dealerChips');
   host.innerHTML = '';
@@ -1990,19 +2426,92 @@ function scorerAceHunt() {
   var tmp = E.newGame({ names: names });
   var hunt = E.aceHunt(tmp);
   pick.dealer = pick.sel[hunt.dealer];
-  var aceCard = hunt.sequence[hunt.sequence.length - 1].card;
-  $('huntNote').textContent = 'Jack of ' + SUIT_NAME[aceCard.s] + ' turned on card ' + hunt.sequence.length +
+  var jack = hunt.sequence[hunt.sequence.length - 1].card;
+  $('huntNote').textContent = 'Jack of ' + SUIT_NAME[jack.s] + ' turned on card ' + hunt.sequence.length +
     ' \u2014 ' + pickName(pick.dealer) + ' deals first.';
   buildDealerChips();
+  dealForJack(names, hunt, function () { buildDealerChips(); show('scr-scorer-setup'); });
+}
+
+/* Cards go round the table face up until a jack lands, then the dealer's
+   name lands on the screen like a comic book and the jack slides up. */
+function dealForJack(names, hunt, done) {
+  show('scr-hunt');
+  var seatsEl = $('huntSeats');
+  seatsEl.innerHTML = '';
+  names.forEach(function (nm, i) {
+    var d = document.createElement('div');
+    d.className = 'hseat'; d.id = 'hs' + i;
+    d.textContent = nm;
+    seatsEl.appendChild(d);
+  });
+  $('huntSlot').innerHTML = '';
+  var msg = $('huntMsg');
+  msg.className = ''; msg.innerHTML = '&nbsp;';
+  $('btnHuntGo').style.visibility = 'hidden';
+  var i = 0;
+  function step() {
+    var s = hunt.sequence[i];
+    var slot = $('huntSlot');
+    slot.innerHTML = '';
+    var c = cardEl(s.card);
+    c.classList.add('flipin');
+    slot.appendChild(c);
+    var chips = seatsEl.querySelectorAll('.hseat'), k;
+    for (k = 0; k < chips.length; k++) chips[k].classList.remove('hot');
+    var chip = $('hs' + s.seat);
+    if (i === hunt.sequence.length - 1) {
+      chip.classList.add('ace');
+      c.classList.add('pop');
+      msg.className = 'done';
+      msg.textContent = 'Jack!';
+      pumpT = setTimeout(function () { punch(names[hunt.dealer], s.card, done); }, 620);
+    } else {
+      chip.classList.add('hot');
+      msg.textContent = names[s.seat] + '\u2026';
+      i++;
+      pumpT = setTimeout(step, 340);
+    }
+  }
+  step();
+}
+function punch(name, card, done) {
+  $('punchName').textContent = name;
+  $('punchCard').innerHTML = '';
+  $('punchCard').appendChild(cardEl(card));
+  var el = $('punch');
+  el.classList.add('on');
+  var closed = false;
+  function close() {
+    if (closed) return;
+    closed = true;
+    clearTimeout(t);
+    el.classList.remove('on');
+    el.onclick = null;
+    if (done) done();
+  }
+  el.onclick = close;
+  var t = setTimeout(close, 3400);
 }
 function startScorer() {
   var names = pick.sel.map(pickName);
+  if (pick.dealer == null) { toast('Pick who deals first'); return; }
   var dealerIdx = pick.sel.indexOf(pick.dealer);
-  st = E.newGame({ names: names, mode: 'scorer' });
+  st = E.newGame({ names: names, mode: 'scorer', rate: pick.rate });
   st.date = todayKey();
   E.scorerStart(st, dealerIdx);
   show('scr-scorer');
-  roundFlash(0, function () { renderScorer(); });
+  scorerShuffle(function () { roundFlash(0, function () { renderScorer(); }); });
+}
+/* a shuffle before the first card is dealt */
+function scorerShuffle(done) {
+  var el = $('flash');
+  $('flashRd').textContent = '';
+  $('flashBig').textContent = 'SHUFFLE';
+  $('flashSub').textContent = 'one card each, coming up';
+  $('flashDeal').innerHTML = '';
+  el.classList.add('on');
+  pumpT = setTimeout(function () { el.classList.remove('on'); if (done) done(); }, 1100);
 }
 function stepRow(name, isDealer, arr, seat, max, after, showNom) {
   var row = document.createElement('div');
@@ -2072,6 +2581,11 @@ function renderScorer(editRound, prefill) {
   var dealer = (st.dealer0 + r) % st.n;
   $('scRound').textContent = (isEdit ? 'Fixing R' : 'R') + (r + 1);
   $('scCards').textContent = R.cards + (R.cards === 1 ? ' card' : ' cards') + ' \u00B7 of 16';
+  if (st.rate === 10) {
+    var sp2 = $('scSpecial');
+    sp2.style.display = '';
+    sp2.textContent = (R.nt ? 'No trumps \u00B7 ' : R.blind ? 'Blind noms! \u00B7 ' : '') + 'Double money';
+  }
   $('scDealer').innerHTML = 'Dealing: <b>' + esc(st.names[dealer]) + '</b> <span class="dbadge">D</span>' +
     ' \u00B7 noms start with <b>' + esc(st.names[(dealer + 1) % st.n]) + '</b>';
   var sp = $('scSpecial');
@@ -2448,7 +2962,13 @@ function loadData() {
    WIRING
    ============================================================ */
 $('btnPlayCPU').onclick = function () { buildSetup(); show('scr-setup'); };
-$('btnScorer').onclick = function () { pick = { sel: [], dealer: null }; buildPickRows(); $('huntNote').textContent = ''; show('scr-scorer-setup'); };
+$('btnScorer').onclick = function () {
+  pick = { sel: [], dealer: null, rate: 5 };
+  buildPickRows();
+  renderStakes();
+  $('huntNote').textContent = '';
+  show('scr-scorer-setup');
+};
 $('btnRules').onclick = function () { modal('rulesModal', true); };
 $('btnRulesClose').onclick = function () { modal('rulesModal', false); };
 $('btnBackTitle').onclick = resetToTitle;
@@ -2458,6 +2978,10 @@ $('sizePlus').onclick = function () {
   var max = Math.min(7, ROSTER.length);
   if (setup.size < max) { setup.size++; buildSetup(); }
   else toast(ROSTER.length < 7 ? 'Add more names to the crew first' : 'Seven seats at most');
+};
+$('trainSeg').onclick = function (ev) {
+  var b = ev.target.closest('button');
+  if (b) { setup.train = +b.dataset.t; buildSetup(); }
 };
 $('diffSeg').onclick = function (ev) {
   var b = ev.target.closest('button');
@@ -2480,6 +3004,10 @@ $('btnCast').onclick = function () {
   toast(castOn ? 'Cast mode on \u2014 big, split in two, sheet fills the screen' : 'Cast mode off');
 };
 $('btnUndoRound').onclick = undoRound;
+$('stakeSeg').onclick = function (ev) {
+  var b = ev.target.closest('button');
+  if (b) { pick.rate = +b.dataset.s; renderStakes(); }
+};
 $('btnAceHunt').onclick = scorerAceHunt;
 $('btnScorerStart').onclick = startScorer;
 function addName(inputId, after) {
