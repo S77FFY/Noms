@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOMS · v3.5.3 · S77FFY</title>
+<title>NOMS · v3.6.2 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v3.5.3 — S77FFY
+   NOMS v3.6.2 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 /* Two skins. Neon is the default; Felt is the original table. */
@@ -159,12 +159,9 @@ body.theme-felt .mark h1{font-family:Georgia,serif;font-weight:400;letter-spacin
   border-radius:999px;
   background:linear-gradient(180deg,#3a3a40 0%,#1c1c20 18%,#0e0e11 55%,#232327 100%);
   box-shadow:0 20px 44px rgba(0,0,0,.6),
-             inset 0 3px 6px rgba(255,255,255,.16),
+             inset 0 4px 9px rgba(255,255,255,.20),
              inset 0 -8px 18px rgba(0,0,0,.75);
 }
-.tabletop::after{ /* sheen along the top of the padded rail */
-  content:'';position:absolute;inset:1.5% 1% auto 1%;height:26%;border-radius:999px;
-  background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,0));pointer-events:none}
 .tabletop .wood{position:absolute;inset:11.5% 6.2%;border-radius:999px;
   background:
     repeating-linear-gradient(96deg, rgba(0,0,0,.05) 0 3px, rgba(255,255,255,.035) 3px 7px),
@@ -193,8 +190,13 @@ body.theme-felt .mark h1{font-family:Georgia,serif;font-weight:400;letter-spacin
   box-shadow:0 0 18px rgba(34,211,238,.6)}
 .tseat.ace .tn{background:var(--gold);color:#04121a;border-color:var(--gold-hi);
   box-shadow:0 0 28px rgba(34,211,238,.85)}
-.tseat .num{display:block;font-size:9px;letter-spacing:.14em;color:var(--bone-dim);margin-bottom:3px}
-.tseat.you .num{color:var(--gold-hi);font-weight:800}
+.pipcard{display:inline-block;background:#fbf7ec;color:#141419;border:1px solid #cfc2a4;border-radius:3px;
+  font-family:Georgia,'Times New Roman',serif;font-weight:700;line-height:1;
+  font-size:11px;padding:3px 5px 2px;margin-bottom:4px;box-shadow:0 2px 4px rgba(0,0,0,.55)}
+.pipcard i{font-style:normal;display:block;font-size:9px;line-height:1;margin-top:1px}
+.tseat.you .pipcard{box-shadow:0 0 0 2px var(--gold),0 2px 4px rgba(0,0,0,.55)}
+body.cast .pipcard{font-size:15px;padding:4px 7px 3px}
+body.cast .pipcard i{font-size:12px}
 .tseat.you .tn{border-color:var(--gold)}
 #huntSlot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5}
 #huntSlot .card{--cw:clamp(44px,10.5vw,62px)}
@@ -568,6 +570,16 @@ body.cast #sheetModal .panel{max-width:none}
 }
 
 /* ---------- toast ---------- */
+/* keep clear of the cog in the corner */
+#scr-scorer .topbar{padding-right:62px}
+body.cast #scr-scorer .topbar{padding-right:76px}
+#scr-scorer-setup .pad{padding-top:56px}
+#cogFab{position:fixed;top:calc(9px + env(safe-area-inset-top));right:12px;z-index:35;display:none;
+  width:42px;height:42px;padding:9px;border-radius:50%;background:transparent;
+  border:1px solid var(--line);color:var(--bone-dim);opacity:.8}
+#cogFab svg{width:100%;height:100%;display:block}
+#cogFab:active{opacity:1;color:var(--gold-hi);border-color:var(--gold)}
+body.cast #cogFab{width:54px;height:54px;padding:12px}
 #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;
   background:var(--bone);color:var(--ink);padding:11px 18px;border-radius:999px;font-weight:600;font-size:14px;
   box-shadow:0 6px 20px rgba(0,0,0,.5);transition:all .25s;z-index:60;pointer-events:none;max-width:88vw;text-align:center}
@@ -599,7 +611,7 @@ body.cast #sheetModal .panel{max-width:none}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v3.5.3 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.6.2 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -705,7 +717,6 @@ body.cast #sheetModal .panel{max-width:none}
     <div class="chips" id="dealerChips"></div>
     <div style="margin-top:12px">
       <button class="btn ghost" id="btnAceHunt">Hunt the jack</button>
-      <button class="btn ghost" id="btnOpts2" style="margin-left:8px">&#9881; Options</button>
     </div>
     <div class="hint" id="huntNote"></div>
 
@@ -720,7 +731,6 @@ body.cast #sheetModal .panel{max-width:none}
 <div id="scr-scorer" class="screen">
   <div class="topbar">
     <div class="spacer"></div>
-    <button class="iconbtn" id="btnOpts" aria-label="Options">&#9881;</button>
     <button class="iconbtn" id="btnMisdeal" aria-label="Record a misdeal">misdeal</button>
     <button class="iconbtn" id="btnCast" aria-label="Toggle cast mode">TV</button>
     <button class="iconbtn" id="btnScSheet" aria-label="View scoresheet">&#9776; sheet</button>
@@ -930,6 +940,8 @@ body.cast #sheetModal .panel{max-width:none}
   <div class="fsub" id="flashSub"></div>
   <div class="fdeal" id="flashDeal"></div>
 </div></div>
+
+<button id="cogFab" aria-label="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.1 14.8a1.5 1.5 0 0 0 .3 1.66l.05.05a1.83 1.83 0 1 1-2.59 2.59l-.05-.05a1.5 1.5 0 0 0-1.66-.3 1.5 1.5 0 0 0-.91 1.38v.14a1.83 1.83 0 1 1-3.66 0v-.07a1.5 1.5 0 0 0-.98-1.38 1.5 1.5 0 0 0-1.66.3l-.05.05a1.83 1.83 0 1 1-2.59-2.59l.05-.05a1.5 1.5 0 0 0 .3-1.66 1.5 1.5 0 0 0-1.38-.91H3.9a1.83 1.83 0 1 1 0-3.66h.07a1.5 1.5 0 0 0 1.38-.98 1.5 1.5 0 0 0-.3-1.66l-.05-.05A1.83 1.83 0 1 1 7.59 4.9l.05.05a1.5 1.5 0 0 0 1.66.3h.07a1.5 1.5 0 0 0 .91-1.38V3.9a1.83 1.83 0 1 1 3.66 0v.07a1.5 1.5 0 0 0 .91 1.38 1.5 1.5 0 0 0 1.66-.3l.05-.05a1.83 1.83 0 1 1 2.59 2.59l-.05.05a1.5 1.5 0 0 0-.3 1.66v.07a1.5 1.5 0 0 0 1.38.91h.14a1.83 1.83 0 1 1 0 3.66h-.07a1.5 1.5 0 0 0-1.38.91z"/></svg></button>
 
 <div id="toast"></div>
 
@@ -1713,7 +1725,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v3.5.3 — UI layer — S77FFY
+   NOMS v3.6.2 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1721,7 +1733,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '3.5.3';
+var VERSION = '3.6.2';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -1737,6 +1749,8 @@ function toast(t) {
 function show(id) {
   var scr = document.querySelectorAll('.screen'), i;
   for (i = 0; i < scr.length; i++) scr[i].classList.toggle('on', scr[i].id === id);
+  var cog = $('cogFab');
+  if (cog) cog.style.display = (id === 'scr-scorer' || id === 'scr-scorer-setup') ? 'block' : 'none';
   window.scrollTo(0, 0);
 }
 function modal(id, on) { $(id).classList.toggle('on', !!on); }
@@ -2037,8 +2051,9 @@ function seatTable(names, hostId, youSeat) {
     d.className = 'tseat' + (i === youSeat ? ' you' : ''); d.id = 'ts' + i;
     d.style.left = p.x + '%';
     d.style.top = p.y + '%';
-    d.innerHTML = '<span class="num">' + (i === youSeat ? 'YOU' : (i + 1)) + '</span>' +
-      '<span class="tn">' + esc(nm) + '</span>';
+    // the crew cut for seats, ace first — show that card rather than a bare number
+    d.innerHTML = '<span class="pipcard">' + E.rankLabel(i === 0 ? 14 : i + 1) +
+      '<i>\u2660</i></span><span class="tn">' + esc(nm) + '</span>';
     host.appendChild(d);
   });
   // steel cup holders sunk into the oak, between the rail and the baize
@@ -2666,6 +2681,8 @@ function openResults() {
 var pick = { sel: [], dealer: null, rate: 5 }; // sel: row indices in tap order
 league.settings = league.settings || { buyIn: 2, fine: 0.5 };
 league.aliases = league.aliases || {};        // scorer -> { realName: shown }
+if (league.scorer === undefined) league.scorer = 'Caitlyn';        // she usually keeps the book
+if (!league.aliases['Caitlyn']) league.aliases['Caitlyn'] = { Kev: 'Dad' };
 var scorer = league.scorer || null;            // who is keeping score tonight
 
 /* The scorer can have their own name for someone — Caitlyn calls Kev "Dad".
@@ -2721,6 +2738,11 @@ function renderStakes() {
 function buildDealerChips() {
   var host = $('dealerChips');
   host.innerHTML = '';
+  if (pick.dealer == null) {          // Caitlyn deals first unless told otherwise
+    for (var di = 0; di < pick.sel.length; di++) {
+      if (pickName(pick.sel[di]) === 'Caitlyn') { pick.dealer = pick.sel[di]; break; }
+    }
+  }
   pick.sel.forEach(function (i) {
     var b = document.createElement('button');
     b.className = 'chipbtn' + (pick.dealer === i ? ' sel' : '');
@@ -3513,8 +3535,7 @@ $('btnBackfill').onclick = function () { openBackfill(null); };
 $('btnBfDelete').onclick = deleteNight;
 $('btnBfSave').onclick = saveBackfill;
 $('btnBfCancel').onclick = function () { bfEditId = null; renderLeague(); show('scr-league'); };
-$('btnOpts').onclick = openOpts;
-$('btnOpts2').onclick = openOpts;
+$('cogFab').onclick = openOpts;
 $('btnOptsClose').onclick = function () { modal('optsModal', false); };
 $('buyMinus').onclick = function () { league.settings.buyIn = stepList(BUYS, league.settings.buyIn, -1); saveLeague(); renderOpts(); };
 $('buyPlus').onclick  = function () { league.settings.buyIn = stepList(BUYS, league.settings.buyIn,  1); saveLeague(); renderOpts(); };
