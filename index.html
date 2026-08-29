@@ -3,23 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOMS · v3.2.0 · S77FFY</title>
+<title>NOMS · v3.3.0 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v3.2.0 — S77FFY
+   NOMS v3.3.0 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
+/* Two skins. Neon is the default; Felt is the original table. */
 :root{
+  --felt:#05070f; --felt2:#0d1430; --felt-edge:#01020a;
+  --purple:#a855f7; --purple-dk:#6d28d9; --panel:#0c1226;
+  --bone:#e9f2ff; --bone-dim:#8fa3c8; --paper:#f7f1df;
+  --ink:#101827; --ink-soft:#5b6b8a;
+  --gold:#22d3ee; --gold-hi:#8bf6ff; --gold-dk:#0b7f96;
+  --red:#a855f7; --red-hi:#d8a2ff; --green:#0f9d58; --green-hi:#5df2a8;
+  --line:rgba(139,246,255,.16);
+  --biro:#14141c;
+  --hand:'Bradley Hand','Noteworthy','Marker Felt','Segoe Print','Comic Sans MS',cursive;
+  --cw:clamp(68px,21vw,112px);
+  --glow:0 0 24px rgba(34,211,238,.45);
+}
+body.theme-felt{
+  background-image:radial-gradient(130% 90% at 50% -10%, var(--felt2) 0%, var(--felt) 52%, var(--felt-edge) 100%);
   --felt:#241338; --felt2:#331a4f; --felt-edge:#140a22;
+  --bg-a:rgba(0,0,0,0); --bg-b:rgba(0,0,0,0);
   --purple:#6c35cf; --purple-dk:#3d1a7e; --panel:#2b1546;
   --bone:#f4ecd9; --bone-dim:#cfc2a4; --paper:#f7f1df;
   --ink:#2a1733; --ink-soft:#6b5a72;
   --gold:#d9a94c; --gold-hi:#f2c96e; --gold-dk:#8a6520;
   --red:#c0392b; --red-hi:#ff7a6b; --green:#2e7d4f; --green-hi:#69c98f;
   --line:rgba(244,236,217,.16);
-  --biro:#14141c;
-  --hand:'Bradley Hand','Noteworthy','Marker Felt','Segoe Print','Comic Sans MS',cursive;
-  --cw:clamp(68px,21vw,112px);
+  --glow:none;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
@@ -27,6 +41,8 @@ body{
   font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   color:var(--bone);
   background:
+    radial-gradient(120% 80% at 12% -8%, rgba(168,85,247,.30) 0%, rgba(168,85,247,0) 55%),
+    radial-gradient(110% 70% at 88% 8%, rgba(34,211,238,.22) 0%, rgba(34,211,238,0) 55%),
     radial-gradient(130% 90% at 50% -10%, var(--felt2) 0%, var(--felt) 52%, var(--felt-edge) 100%);
   background-attachment:fixed;
   touch-action:manipulation;
@@ -46,8 +62,13 @@ input{font:inherit}
 /* ---------- buttons ---------- */
 .btn{
   display:inline-block;padding:13px 22px;border-radius:12px;font-weight:700;letter-spacing:.02em;
+  background:linear-gradient(180deg,var(--gold-hi),var(--gold));color:#04121a;
+  border:1px solid var(--gold-dk);
+  box-shadow:0 3px 10px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.45),0 0 22px rgba(34,211,238,.32);
+}
+body.theme-felt .btn{
   background:linear-gradient(180deg,var(--gold-hi),#c9963a);color:#241338;
-  border:1px solid var(--gold-dk);box-shadow:0 3px 10px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.5);
+  box-shadow:0 3px 10px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.5);
 }
 .btn:active{transform:translateY(1px)}
 .btn:disabled{opacity:.4;transform:none;cursor:default}
@@ -58,15 +79,26 @@ input{font:inherit}
 
 /* ---------- title screen ---------- */
 #scr-title{align-items:center;justify-content:center;text-align:center}
-.mark{position:relative;border:3px double var(--gold);border-radius:16px;padding:30px 34px 24px;margin-bottom:34px;background:rgba(0,0,0,.18)}
+.mark{position:relative;border:1px solid var(--gold);border-radius:20px;padding:30px 34px 24px;margin-bottom:34px;
+  background:linear-gradient(160deg,rgba(34,211,238,.10),rgba(168,85,247,.12));
+  box-shadow:0 0 30px rgba(34,211,238,.28),inset 0 0 30px rgba(168,85,247,.14)}
+body.theme-felt .mark{border:3px double var(--gold);border-radius:16px;background:rgba(0,0,0,.18);box-shadow:none}
 .mark::before,.mark::after{position:absolute;font-size:15px;color:var(--gold)}
 .mark::before{content:'\2660  \2663';top:8px;left:12px;letter-spacing:6px}
 .mark::after{content:'\2665  \2666';bottom:8px;right:12px;letter-spacing:6px;color:var(--red-hi)}
-.mark h1{font-family:Georgia,serif;font-size:clamp(62px,19vw,104px);line-height:.95;letter-spacing:.13em;margin-right:-.13em;
+.mark h1{font-size:clamp(62px,19vw,104px);line-height:.95;letter-spacing:.14em;margin-right:-.14em;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-weight:800;
+  color:#fff;
+  text-shadow:0 0 6px #fff,0 0 18px var(--gold),0 0 42px var(--gold),0 0 78px var(--purple)}
+body.theme-felt .mark h1{font-family:Georgia,serif;font-weight:400;letter-spacing:.13em;margin-right:-.13em;
   color:var(--bone);text-shadow:0 2px 0 rgba(0,0,0,.55),0 0 34px rgba(217,169,76,.28)}
 .mark .suits{font-size:clamp(17px,4.5vw,22px);letter-spacing:14px;margin-right:-14px;margin-bottom:8px;color:var(--gold)}
 .mark .suits .r{color:var(--red-hi)}
 .mark .tagline{font-family:Georgia,serif;font-style:italic;color:var(--bone-dim);font-size:15px;margin-top:10px}
+.themerow{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.themerow button{padding:7px 15px;border-radius:999px;border:1px solid var(--line);
+  background:rgba(255,255,255,.05);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-dim)}
+.themerow button.sel{border-color:var(--gold);color:var(--gold-hi);background:rgba(34,211,238,.14)}
 .titlebtns{display:flex;flex-direction:column;gap:12px;width:min(320px,84vw)}
 .foot{margin-top:34px;font-size:12px;color:var(--bone-dim);letter-spacing:.14em;text-transform:uppercase}
 
@@ -95,6 +127,9 @@ input{font:inherit}
 .seg button{flex:1;padding:11px 0;border:1px solid var(--line);border-radius:10px;background:rgba(244,236,217,.05);font-weight:700;font-size:16px}
 .seg button.sel{border-color:var(--gold);background:rgba(217,169,76,.18);color:var(--gold-hi)}
 .hint{font-size:13px;color:var(--bone-dim);margin-top:8px;font-style:italic}
+.tickrow{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:14px;cursor:pointer}
+.tickrow input{width:22px;height:22px;accent-color:var(--gold);flex:none}
+.tickrow.off{opacity:.45}
 .setupfoot{margin-top:30px;display:flex;flex-direction:column;gap:10px}
 
 /* scorer player picker */
@@ -126,8 +161,8 @@ input{font:inherit}
 
 .seats{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;padding:2px 8px 6px}
 .seat{min-width:88px;padding:7px 9px 8px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.26);text-align:center;transition:border-color .15s,box-shadow .15s}
-.seat.active{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 16px rgba(217,169,76,.35);animation:seatpulse 1.1s ease-in-out infinite}
-@keyframes seatpulse{50%{box-shadow:0 0 0 1px var(--gold),0 0 26px rgba(217,169,76,.55)}}
+.seat.active{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 18px rgba(34,211,238,.45);animation:seatpulse 1.1s ease-in-out infinite}
+@keyframes seatpulse{50%{box-shadow:0 0 0 1px var(--gold),0 0 30px rgba(34,211,238,.7)}}
 .snm{font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;gap:5px}
 .dbadge{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;
   background:var(--gold);color:#241338;font-size:10px;font-weight:900}
@@ -164,7 +199,7 @@ input{font:inherit}
   box-shadow:0 2px 6px rgba(0,0,0,.45);flex:none;user-select:none;
   font-size:var(--cw); /* children size in fractions of card width */
 }
-.card.red{color:#c0392b}
+.card.red{color:#c0392b}   /* suits stay red on the card stock in both skins */
 .corner{position:absolute;top:4%;left:6%;text-align:center;line-height:1.02}
 .corner b{display:block;font-family:Georgia,serif;font-size:.21em;font-weight:700}
 .corner i{display:block;font-style:normal;font-size:.17em}
@@ -178,6 +213,14 @@ input{font:inherit}
 .court .cl{font-family:Georgia,serif;font-size:.4em;font-weight:700;line-height:1}
 .court .cs{font-size:.2em;line-height:1}
 .card.back{
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.28) 0 5.5%, rgba(255,255,255,0) 6.5%),
+    repeating-linear-gradient(45deg, rgba(139,246,255,.20) 0 1.5px, transparent 1.5px 7px),
+    repeating-linear-gradient(-45deg, rgba(139,246,255,.20) 0 1.5px, transparent 1.5px 7px),
+    linear-gradient(155deg,#7b3ff2,#1b2ea8);
+  border:2px solid #cfe9ff;
+}
+body.theme-felt .card.back{
   background:
     radial-gradient(circle at 50% 50%, rgba(255,255,255,.25) 0 5.5%, rgba(255,255,255,0) 6.5%),
     repeating-linear-gradient(45deg, rgba(255,255,255,.15) 0 1.5px, transparent 1.5px 7px),
@@ -470,6 +513,9 @@ body.cast #sheetModal .panel{max-width:none}
     <div class="suits">&#9824;<span class="r">&#9829;</span><span class="r">&#9830;</span>&#9827;</div>
     <h1>NOMS</h1>
     <div class="tagline">a trick-taking game for the crew</div>
+    <div class="themerow" id="themeRow">
+      <button data-th="neon" class="sel">Neon</button><button data-th="felt">Felt</button>
+    </div>
   </div>
   <div class="titlebtns">
     <button class="btn wide" id="btnPlayCPU">Play the CPUs</button>
@@ -477,7 +523,7 @@ body.cast #sheetModal .panel{max-width:none}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v3.2.0 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.3.0 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -512,7 +558,8 @@ body.cast #sheetModal .panel{max-width:none}
     <div class="seg" id="trainSeg">
       <button data-t="0" class="sel">Off</button><button data-t="1">On</button>
     </div>
-    <div class="hint">Get a read on your hand before you nom, and rewind any round to try a different call.</div>
+    <div class="hint">Rewind any round and replay it with a different call.</div>
+    <label class="tickrow" id="tipsRow"><input type="checkbox" id="tipsBox" checked><span>Show nom tips &amp; odds</span></label>
 
     <div class="setupfoot">
       <button class="btn wide" id="btnHunt">Hunt the jack &rarr;</button>
@@ -1513,7 +1560,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v3.2.0 — UI layer — S77FFY
+   NOMS v3.3.0 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1521,7 +1568,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '3.2.0';
+var VERSION = '3.3.0';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -1720,7 +1767,14 @@ var justDealt = false;  // stagger the next hand render
 var blindReveal = false;
 var uiNote = '';        // transient table-talk line
 var training = false, roundSnap = null, rewound = 0, lastAdvice = null;
-var setup = { who: 0, size: 7, diff: 3, train: 0 };
+var tips = true;
+var theme = (league.theme === 'felt') ? 'felt' : 'neon';
+function applyTheme() {
+  document.body.classList.toggle('theme-felt', theme === 'felt');
+  var b = $('themeRow').querySelectorAll('button'), i;
+  for (i = 0; i < b.length; i++) b[i].classList.toggle('sel', b[i].dataset.th === theme);
+}
+var setup = { who: 0, size: 7, diff: 3, train: 0, tips: true };
 
 /* Levels 6-10 seat Pro players alongside level-5 ones. 10 is a full table of Pros. */
 function proCount(level, cpus) {
@@ -1773,6 +1827,8 @@ function buildSetup() {
   $('diffHint').textContent = diffHintText(setup.diff);
   var tsegs = $('trainSeg').querySelectorAll('button');
   for (var ti = 0; ti < tsegs.length; ti++) tsegs[ti].classList.toggle('sel', +tsegs[ti].dataset.t === setup.train);
+  $('tipsRow').style.display = setup.train ? '' : 'none';
+  $('tipsBox').checked = setup.tips !== false;
 }
 
 function startGame() {
@@ -1791,6 +1847,7 @@ function startGame() {
     diffs: diffs
   });
   training = !!setup.train;
+  tips = setup.tips !== false;
   runHunt();
 }
 
@@ -1984,7 +2041,7 @@ function renderAll() {
 /* ---------- human actions ---------- */
 function renderCoach() {
   var host = $('coach');
-  if (!training) { host.innerHTML = ''; lastAdvice = null; return; }
+  if (!training || !tips) { host.innerHTML = ''; lastAdvice = null; return; }
   var R = E.ROUNDS[st.round];
   if (R.blind) {
     host.innerHTML = '<div class="coachbox"><div class="coachline">Blind round \u2014 nobody can read this one. ' +
@@ -1992,35 +2049,44 @@ function renderCoach() {
     lastAdvice = null;
     return;
   }
-  var a = E.coachNom(st, 0, 70);
+  var a = E.coachNom(st, 0, 220);
   lastAdvice = a;
-  var lines = [];
   if (a.forced) {
-    host.innerHTML = '<div class="coachbox"><div class="coachline">You deal, and the noms in front of you ' +
-      'leave <b>' + a.best.nom + '</b> as your only legal call \u2014 anything else would make the table total ' +
+    host.innerHTML = '<div class="coachbox"><div class="coachline">You deal, and the calls in front of you leave ' +
+      '<b>' + a.best.nom + '</b> as your only legal one \u2014 anything else would make the table total ' +
       a.cards + '.</div></div>';
     return;
   }
-  lines.push('Your hand plays for about <b>' + a.meanTricks.toFixed(1) + '</b> ' +
-    (a.meanTricks < 1.5 ? 'trick' : 'tricks') + '. Best call is <b>' + a.best.nom +
-    '</b> \u2014 lands it <b>' + Math.round(a.best.hit * 100) + '%</b> of the time.');
+
+  var lines = [];
+  var pct = function (v) { return Math.round(v * 100) + '%'; };
+  var second = a.runnerUp;
+  var margin = second ? a.best.expected - second.expected : 99;
+
+  // the headline: the call, its odds, and the nearest rival
+  var head = '<b>' + a.best.nom + '</b> at ' + pct(a.best.hit);
+  if (second && margin < 2.5) head += ', then <b>' + second.nom + '</b> at ' + pct(second.hit) + ' \u2014 it is close';
+  else if (second) head += ', clear of <b>' + second.nom + '</b> at ' + pct(second.hit);
+  lines.push(head + '.');
+
+  // why: the thing about this hand that decides it
+  var why = coachReason(a);
+  if (why) lines.push(why);
+
+  // the table, only when it says something
   if (a.heard > 0) {
-    lines.push(a.heard + (a.heard === 1 ? ' player has' : ' players have') + ' nommed for <b>' + a.claimed +
-      '</b> of ' + a.cards + '. ' +
-      (a.loose <= 0 ? 'The round is already overbid \u2014 somebody has to go down.'
-        : a.loose + (a.loose === 1 ? ' trick is' : ' tricks are') + ' still going spare.') +
-      (a.toCome > 0 ? ' ' + a.toCome + ' still to call after you \u2014 you cannot know what they are sitting on.'
-        : ' You call last, so this is everything you get to know.'));
-  } else {
-    lines.push('You call first, so nobody has shown you anything yet.');
+    var t = a.claimed + ' of ' + a.cards + ' claimed by ' + a.heard +
+      (a.heard === 1 ? ' player' : ' players') + ' so far';
+    if (a.loose <= 0) t += ' \u2014 already overbid, so somebody goes down';
+    else if (a.loose === a.cards) t += ' \u2014 the tricks are all still going spare';
+    lines.push(t + '.');
   }
-  if (a.safeZero && a.best.nom === 0) {
-    lines.push('This is about as safe a <b>0</b> as you get \u2014 nothing here wants to win a trick.');
-  } else if (a.clear) {
-    lines.push('<b>' + a.best.nom + '</b> is clearly ahead of the alternatives here.');
-  } else if (a.runnerUp) {
-    lines.push('It is close between <b>' + a.best.nom + '</b> and <b>' + a.runnerUp.nom + '</b>.');
+
+  // the caveat, ONLY when a big call is on the table and people can still surprise you
+  if (a.toCome > 0 && a.best.nom >= 2 && a.best.hit < 0.6) {
+    lines.push(a.toCome + ' still to call behind you, so a call this big can still be spoiled.');
   }
+
   var h = '<div class="coachbox">';
   lines.forEach(function (l) { h += '<div class="coachline">' + l + '</div>'; });
   h += '<div class="oddswrap"><div class="odds">';
@@ -2028,13 +2094,50 @@ function renderCoach() {
   for (i = 0; i < a.rows.length; i++) if (a.rows[i].hit > top) top = a.rows[i].hit;
   for (i = 0; i < a.rows.length; i++) {
     var r = a.rows[i];
-    var pct = top > 0 ? Math.round((r.hit / top) * 100) : 0;
-    h += '<div class="' + (r.nom === a.best.nom ? 'pick' : '') + '" style="height:' + Math.max(2, pct) + '%">' +
+    var bar = top > 0 ? Math.round((r.hit / top) * 100) : 0;
+    h += '<div class="' + (r.nom === a.best.nom ? 'pick' : '') + '" style="height:' + Math.max(2, bar) + '%">' +
       '<span>' + r.nom + '</span></div>';
   }
   h += '</div></div></div>';
   host.innerHTML = h;
 }
+
+/* One line on what actually decides this hand — never the same line twice running. */
+function coachReason(a) {
+  var hand = st.hands[0], i, c;
+  var trump = st.trump, cards = a.cards;
+  var topTrumps = 0, aces = 0, voids = 0, counts = {};
+  for (i = 0; i < hand.length; i++) {
+    c = hand[i];
+    counts[c.s] = (counts[c.s] || 0) + 1;
+    if (trump && c.s === trump && c.r >= 12) topTrumps++;
+    if (c.r === 14 && c.s !== trump) aces++;
+  }
+  ['S', 'H', 'D', 'C'].forEach(function (s) { if (!counts[s]) voids++; });
+
+  if (a.best.nom === 0 && a.best.hit >= 0.5 && aces > 0 && st.n >= 5) {
+    return 'You are holding ' + (aces === 1 ? 'an ace' : aces + ' aces') + ' off-suit, but with ' + st.n +
+      ' players on ' + cards + ' cards somebody is usually void \u2014 ' +
+      (aces === 1 ? 'it gets' : 'they get') + ' ruffed more often than not.';
+  }
+  if (a.best.nom === 0 && a.best.hit >= 0.7) {
+    return 'Nothing here really wants to win a trick.';
+  }
+  if (topTrumps >= 2) {
+    return 'Your top trumps are the reliable part \u2014 they win whenever you choose to play them.';
+  }
+  if (voids >= 2 && trump && counts[trump]) {
+    return 'Two suits missing with trumps in hand \u2014 the ruffs are where your tricks come from.';
+  }
+  if (aces >= 2 && a.best.nom >= 2) {
+    return 'Two aces carry this, provided nobody is short enough to trump them.';
+  }
+  if (a.best.hit < 0.4) {
+    return 'No call is comfortable here \u2014 it is a hand for damage limitation.';
+  }
+  return '';
+}
+
 function openNomModal() {
   var R = E.ROUNDS[st.round];
   $('nomTitle').textContent = R.blind ? 'Blind nom' : 'Your nom';
@@ -2983,6 +3086,15 @@ $('trainSeg').onclick = function (ev) {
   var b = ev.target.closest('button');
   if (b) { setup.train = +b.dataset.t; buildSetup(); }
 };
+$('themeRow').onclick = function (ev) {
+  var b = ev.target.closest('button');
+  if (!b) return;
+  theme = b.dataset.th;
+  league.theme = theme;
+  saveLeague();
+  applyTheme();
+};
+$('tipsBox').onchange = function () { setup.tips = $('tipsBox').checked; };
 $('diffSeg').onclick = function (ev) {
   var b = ev.target.closest('button');
   if (b) { setup.diff = +b.dataset.d; buildSetup(); }
@@ -2998,6 +3110,7 @@ $('btnCast').onclick = function () {
   league.cast = castOn;
   saveLeague();
   applyCast();
+applyTheme();
   goFullscreen(castOn);
   castStep = 0;
   applyStep();
