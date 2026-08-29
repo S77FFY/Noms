@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOMS · v3.5.2 · S77FFY</title>
+<title>NOMS · v3.5.3 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v3.5.2 — S77FFY
+   NOMS v3.5.3 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 /* Two skins. Neon is the default; Felt is the original table. */
@@ -183,7 +183,7 @@ body.theme-felt .mark h1{font-family:Georgia,serif;font-weight:400;letter-spacin
   background:linear-gradient(160deg,#e8ecf0,#9aa3ad 45%,#4d545c 100%);
   box-shadow:inset 0 2px 3px rgba(255,255,255,.65), inset 0 -2px 4px rgba(0,0,0,.5),
              0 1px 3px rgba(0,0,0,.6);z-index:2}
-.cup::after{content:'';position:absolute;inset:22%;border-radius:999px;
+.cup::after{content:'';position:absolute;inset:13%;border-radius:999px;
   background:radial-gradient(closest-side at 40% 30%, #2b3036, #101317)}
 .tseat{position:absolute;transform:translate(-50%,-50%);text-align:center;z-index:4}
 .tseat .tn{font-size:12px;font-weight:700;line-height:1.15;
@@ -430,9 +430,13 @@ body.cast .colgrid{gap:0 44px}
 #punch{position:fixed;inset:0;z-index:58;display:none;align-items:center;justify-content:center;overflow:hidden;
   background:radial-gradient(70% 60% at 50% 45%, #4b2477 0%, #240f3d 60%, #140a22 100%)}
 #punch.on{display:flex}
-.burst{position:absolute;width:260vmax;height:260vmax;left:50%;top:50%;border-radius:50%;
+.burst{position:absolute;width:300vmax;height:300vmax;left:50%;top:50%;border-radius:50%;
   transform:translate(-50%,-50%);
-  background:repeating-conic-gradient(from 0deg at 50% 50%, rgba(242,201,110,.20) 0deg 7deg, rgba(242,201,110,0) 7deg 14deg);
+  background:repeating-conic-gradient(from 0deg at 50% 50%,
+    rgba(139,246,255,.22) 0deg 7deg, rgba(139,246,255,0) 7deg 14deg);
+  /* fade the rays out long before the edge, so it can never read as a box */
+  -webkit-mask-image:radial-gradient(closest-side, #000 0%, #000 20%, transparent 38%);
+  mask-image:radial-gradient(closest-side, #000 0%, #000 20%, transparent 38%);
   animation:spin 22s linear infinite}
 @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
 .punchwrap{position:relative;text-align:center;padding:0 16px}
@@ -595,7 +599,7 @@ body.cast #sheetModal .panel{max-width:none}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v3.5.2 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.5.3 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -1709,7 +1713,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v3.5.2 — UI layer — S77FFY
+   NOMS v3.5.3 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1717,7 +1721,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '3.5.2';
+var VERSION = '3.5.3';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -2811,7 +2815,6 @@ function punch(name, card, done) {
   function close() {
     if (closed) return;
     closed = true;
-    clearTimeout(t);
     el.classList.remove('on');
     el.onclick = null;
     if (done) done();
