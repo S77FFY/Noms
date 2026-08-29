@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOMS · v3.3.0 · S77FFY</title>
+<title>NOMS · v3.5.1 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v3.3.0 — S77FFY
+   NOMS v3.5.1 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 /* Two skins. Neon is the default; Felt is the original table. */
@@ -130,6 +130,18 @@ body.theme-felt .mark h1{font-family:Georgia,serif;font-weight:400;letter-spacin
 .tickrow{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:14px;cursor:pointer}
 .tickrow input{width:22px;height:22px;accent-color:var(--gold);flex:none}
 .tickrow.off{opacity:.45}
+.srow.pending .mini-step b{color:var(--bone-dim);opacity:.5}
+.srow.pending .snm2{color:var(--bone-dim)}
+.pendtag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-dim);
+  border:1px dashed var(--line);border-radius:5px;padding:1px 5px;margin-left:7px}
+.locktag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-hi);
+  border:1px solid rgba(34,211,238,.45);border-radius:5px;padding:1px 5px;margin-left:7px}
+.aliasrow{display:flex;align-items:center;gap:10px;padding:6px 0}
+.aliasrow .an{flex:1;font-weight:600;font-size:14px}
+.aliasrow input{width:130px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:9px;
+  color:var(--bone);padding:9px 10px;font-size:14px}
+.finerow{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--bone-dim);padding:3px 0}
+.finerow b{color:var(--bone)}
 .setupfoot{margin-top:30px;display:flex;flex-direction:column;gap:10px}
 
 /* scorer player picker */
@@ -139,6 +151,57 @@ body.theme-felt .mark h1{font-family:Georgia,serif;font-weight:400;letter-spacin
 .prow.sel .obadge{border-color:var(--gold);background:rgba(217,169,76,.2);color:var(--gold-hi)}
 .prow input{flex:1;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:10px;color:var(--bone);padding:10px 12px}
 .prow.sel input{border-color:rgba(217,169,76,.5)}
+
+/* ---------- the club table, from above ----------
+   Stadium shape: straight long sides, semicircular ends. Padded black
+   leather rail, oak surround with steel cup holders, red baize centre. */
+.tabletop{position:relative;width:min(96vw,560px);aspect-ratio:1.85/1;margin:6px auto 12px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#3a3a40 0%,#1c1c20 18%,#0e0e11 55%,#232327 100%);
+  box-shadow:0 20px 44px rgba(0,0,0,.6),
+             inset 0 3px 6px rgba(255,255,255,.16),
+             inset 0 -8px 18px rgba(0,0,0,.75);
+}
+.tabletop::after{ /* sheen along the top of the padded rail */
+  content:'';position:absolute;inset:1.5% 1% auto 1%;height:26%;border-radius:999px;
+  background:linear-gradient(180deg,rgba(255,255,255,.13),rgba(255,255,255,0));pointer-events:none}
+.tabletop .wood{position:absolute;inset:11.5% 6.2%;border-radius:999px;
+  background:
+    repeating-linear-gradient(96deg, rgba(0,0,0,.05) 0 3px, rgba(255,255,255,.035) 3px 7px),
+    linear-gradient(170deg,#c98a4b 0%,#b3762f 40%,#9a5f22 100%);
+  box-shadow:inset 0 0 0 2px rgba(0,0,0,.45), inset 0 4px 12px rgba(0,0,0,.35),
+             0 2px 8px rgba(0,0,0,.5)}
+.tabletop .baize{position:absolute;inset:30% 17%;border-radius:999px;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.07) 0 2px, rgba(255,255,255,.05) 2px 5px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.05) 0 2px, rgba(255,255,255,.03) 2px 5px),
+    linear-gradient(170deg,#e2404e 0%,#cf2f3d 45%,#ab2130 100%);
+  box-shadow:inset 0 0 22px rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.5),
+             inset 0 0 0 2px rgba(0,0,0,.18)}
+.cup{position:absolute;width:7.4%;aspect-ratio:1.55/1;transform:translate(-50%,-50%);
+  border-radius:999px;
+  background:linear-gradient(160deg,#e8ecf0,#9aa3ad 45%,#4d545c 100%);
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.65), inset 0 -2px 4px rgba(0,0,0,.5),
+             0 1px 3px rgba(0,0,0,.6);z-index:2}
+.cup::after{content:'';position:absolute;inset:22%;border-radius:999px;
+  background:radial-gradient(closest-side at 40% 30%, #2b3036, #101317)}
+.tseat{position:absolute;transform:translate(-50%,-50%);text-align:center;z-index:4}
+.tseat .tn{font-size:12px;font-weight:700;line-height:1.15;
+  background:rgba(4,8,16,.82);border:1px solid var(--line);border-radius:999px;padding:4px 9px;
+  display:inline-block;max-width:86px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tseat.hot .tn{border-color:var(--gold);color:var(--gold-hi);background:rgba(34,211,238,.24);
+  box-shadow:0 0 18px rgba(34,211,238,.6)}
+.tseat.ace .tn{background:var(--gold);color:#04121a;border-color:var(--gold-hi);
+  box-shadow:0 0 28px rgba(34,211,238,.85)}
+.tseat .num{display:block;font-size:9px;letter-spacing:.14em;color:var(--bone-dim);margin-bottom:3px}
+#huntSlot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5}
+#huntSlot .card{--cw:clamp(44px,10.5vw,62px)}
+.trail{display:flex;flex-wrap:wrap;justify-content:center;min-height:calc(var(--cw)*0.9);
+  padding:2px 10px 6px;margin-bottom:6px}
+.trail .card{--cw:clamp(30px,7vw,42px);margin-left:calc(var(--cw)*-0.55);box-shadow:0 3px 7px rgba(0,0,0,.5)}
+.trail .card:first-child{margin-left:0}
+.trail .card.lap{margin-left:calc(var(--cw)*0.22)}
+.trailcount{text-align:center;font-size:12px;color:var(--bone-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
 
 /* ---------- ace hunt ---------- */
 #scr-hunt{align-items:center;text-align:center}
@@ -291,6 +354,10 @@ body.theme-felt .card.back{
 .sheetT .tt{display:block;font-family:var(--hand);font-weight:700;font-size:21px;line-height:1.15;color:var(--biro)}
 .sheetT .tt sup{font-size:.5em;font-weight:400;line-height:0;position:relative;top:-.5em;margin-left:1px;opacity:.7}
 .sheetT .hit .tt{color:#0b6b3a}
+/* still perfect — not gone down once all night */
+.sheetT .perfect .tt{color:#a97400;text-shadow:0 0 1px rgba(169,116,0,.35)}
+.sheetT tfoot td.perfect{color:#a97400}
+.sheetT .perfect .tt sup{opacity:.85}
 .sheetT .miss .tt{color:#c0211b}
 .sheetT .pend{color:#c9c9d2}
 .sheetT tfoot td{border-top:2px solid #9a9aa6;font-family:var(--hand);font-weight:700;font-size:19px;padding:7px 5px;color:var(--biro)}
@@ -329,6 +396,10 @@ body.theme-felt .card.back{
 
 /* ---------- scorer entry ---------- */
 #scorerBody{max-width:560px;margin:0 auto;width:100%;padding:0 16px 40px}
+/* Columns are filled top to bottom, then across, so the nom order still reads
+   down the page. Set from JS to suit the number playing. */
+.colgrid{display:grid;grid-auto-flow:column;gap:0 26px}
+body.cast .colgrid{gap:0 44px}
 .srow{display:flex;align-items:center;gap:10px;padding:6px 0}
 .srow .snm2{flex:1;font-weight:600;font-size:15px;display:flex;align-items:center;gap:6px}
 .srow.forbid .snm2{color:var(--red-hi)}
@@ -488,7 +559,7 @@ body.cast #sheetModal .panel{max-width:none}
 
 /* widescreen: two columns of players so a full table fits without scrolling */
 @media (min-width:900px) and (min-aspect-ratio:7/5){
-  body.cast #nomsRows,body.cast #tricksRows{display:grid;grid-template-columns:1fr 1fr;gap:0 40px}
+  body.cast .srow{padding:7px 0}
 }
 
 /* ---------- toast ---------- */
@@ -523,7 +594,7 @@ body.cast #sheetModal .panel{max-width:none}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v3.3.0 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.5.1 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -572,9 +643,15 @@ body.cast #sheetModal .panel{max-width:none}
 <div id="scr-hunt" class="screen">
   <div class="pad" style="display:flex;flex-direction:column;align-items:center">
     <div class="h2" style="margin-top:12px">Hunting the jack</div>
-    <div class="sub">First jack turned deals round one.</div>
-    <div id="huntSeats"></div>
-    <div id="huntSlot"></div>
+    <div class="sub" id="huntSub">First jack turned deals round one.</div>
+    <div class="tabletop" id="huntTable">
+      <div class="wood"></div>
+      <div class="baize"></div>
+      <div id="huntSeats"></div>
+      <div id="huntSlot"></div>
+    </div>
+    <div class="trailcount" id="trailCount">&nbsp;</div>
+    <div class="trail" id="dealTrail"></div>
     <div id="huntMsg">&nbsp;</div>
     <button class="btn" id="btnHuntGo" style="visibility:hidden">Deal round 1 &rarr;</button>
   </div>
@@ -621,7 +698,10 @@ body.cast #sheetModal .panel{max-width:none}
 
     <div class="lbl">First dealer</div>
     <div class="chips" id="dealerChips"></div>
-    <div style="margin-top:12px"><button class="btn ghost" id="btnAceHunt">Hunt the jack for us</button></div>
+    <div style="margin-top:12px">
+      <button class="btn ghost" id="btnAceHunt">Hunt the jack for us</button>
+      <button class="btn ghost" id="btnOpts2" style="margin-left:8px">&#9881; Options</button>
+    </div>
     <div class="hint" id="huntNote"></div>
 
     <div class="setupfoot">
@@ -635,6 +715,8 @@ body.cast #sheetModal .panel{max-width:none}
 <div id="scr-scorer" class="screen">
   <div class="topbar">
     <div class="spacer"></div>
+    <button class="iconbtn" id="btnOpts" aria-label="Options">&#9881;</button>
+    <button class="iconbtn" id="btnMisdeal" aria-label="Record a misdeal">misdeal</button>
     <button class="iconbtn" id="btnCast" aria-label="Toggle cast mode">TV</button>
     <button class="iconbtn" id="btnScSheet" aria-label="View scoresheet">&#9776; sheet</button>
     <button class="iconbtn" id="btnUndoRound" aria-label="Undo last round">&#8630; undo</button>
@@ -652,6 +734,7 @@ body.cast #sheetModal .panel{max-width:none}
       <div class="lbl">Noms &mdash; left of dealer first, dealer last</div>
       <div id="nomsRows"></div>
       <div class="tallyline" id="nomTally"></div>
+      <div id="lastRoundNom"></div>
     </div>
 
     <div id="trickSection">
@@ -779,6 +862,39 @@ body.cast #sheetModal .panel{max-width:none}
   </div>
 </div>
 
+<div class="modal" id="optsModal">
+  <div class="panel">
+    <div class="ptitle">Options</div>
+    <div class="psub">Money, fines and who is keeping score.</div>
+    <div class="lbl">Buy-in each</div>
+    <div class="stepper"><button id="buyMinus">&minus;</button><b id="buyVal">&pound;2</b><button id="buyPlus">+</button></div>
+    <div class="lbl">Misdeal fine</div>
+    <div class="stepper"><button id="fineMinus">&minus;</button><b id="fineVal">50p</b><button id="finePlus">+</button></div>
+    <div class="hint">Fines go into the same pot as the buy-ins.</div>
+    <div class="lbl">Who is keeping score?</div>
+    <div class="chips" id="scorerChips"></div>
+    <div id="aliasBox"></div>
+    <div class="setupfoot"><button class="btn wide" id="btnOptsClose">Done</button></div>
+  </div>
+</div>
+
+<div class="modal" id="misdealModal">
+  <div class="panel">
+    <div class="ptitle">Misdeal</div>
+    <div class="psub">Who pays? Not always the dealer &mdash; whoever caused it.</div>
+    <div class="chips" id="misdealChips"></div>
+    <div class="lbl">What happened?</div>
+    <div class="seg wrap" id="misdealWhy">
+      <button data-w="misdeal" class="sel">Misdeal</button><button data-w="wrong count called">Wrong count</button><button data-w="dealt out of turn">Out of turn</button>
+    </div>
+    <div class="setupfoot">
+      <button class="btn wide" id="btnMisdealSave">Add fine &amp; redeal round</button>
+      <button class="btn ghost wide" id="btnMisdealNoFine">Redeal, no fine</button>
+      <button class="btn ghost wide" id="btnMisdealCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="dataModal">
   <div class="panel">
     <div class="ptitle">Back up / restore</div>
@@ -880,6 +996,8 @@ function newGame(opts) {
   return {
     mode: opts.mode || 'game',
     rate: opts.rate || 5,          // pence per point on the side bets
+    buyIn: opts.buyIn != null ? opts.buyIn : 2,
+    fines: [],                     // {name, amount, round, reason}
     names: names.slice(), n: n,
     humanSeat: (typeof opts.humanSeat === 'number') ? opts.humanSeat : -1,
     difficulty: opts.difficulty || 3,
@@ -900,8 +1018,8 @@ function newGame(opts) {
 function seatDiff(st, seat) { return st.diffs ? st.diffs[seat] : st.difficulty; }
 
 /* Deal face up around the table until a jack appears — that seat deals first. */
-function aceHunt(st) {
-  var deck = shuffle(makeDeck(), st.rng), seq = [], seat = 0, i = 0;
+function aceHunt(st, startSeat) {
+  var deck = shuffle(makeDeck(), st.rng), seq = [], seat = startSeat ? (startSeat % st.n) : 0, i = 0;
   while (true) {
     var c = deck[i++];
     seq.push({ seat: seat, card: c });
@@ -1041,7 +1159,7 @@ function advanceRound(st) {
   if (st.phase !== 'scored') throw new Error('round not finished');
   if (st.round === ROUNDS.length - 1) {
     st.phase = 'gameover';
-    st.payouts = computePayouts(st.names, st.totals, st.rate);
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st) });
     return false;
   }
   st.dealer = (st.dealer + 1) % st.n;
@@ -1096,7 +1214,7 @@ function scorerEdit(st, roundIdx, noms, won) {
   }
   st.sheet[roundIdx] = row;
   recomputeSheet(st);
-  if (st.phase === 'gameover') st.payouts = computePayouts(st.names, st.totals, st.rate);
+  if (st.phase === 'gameover') st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st) });
   return true;
 }
 
@@ -1104,7 +1222,7 @@ function scorerNext(st) {
   if (st.phase !== 'scored') throw new Error('round not saved');
   if (st.round === ROUNDS.length - 1) {
     st.phase = 'gameover';
-    st.payouts = computePayouts(st.names, st.totals, st.rate);
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st) });
     return false;
   }
   st.round++;
@@ -1129,16 +1247,19 @@ function scorerUndo(st) {
    Winner also collects a few pence per point off every other player,
    rounded UP to the nearest 50p per player.
    ratePence: 5 normally, 10 for a double-money night.      */
-function computePayouts(names, totals, ratePence) {
+function computePayouts(names, totals, ratePence, opts) {
   var rate = ratePence || 5;
-  var n = names.length, pot = 2 * n, i;
+  opts = opts || {};
+  var buyIn = opts.buyIn != null ? opts.buyIn : 2;   // £ per player
+  var extra = opts.extra || 0;                        // fines already in the pot
+  var n = names.length, pot = buyIn * n + extra, i;
   var order = [];
   for (i = 0; i < n; i++) order.push(i);
   order.sort(function (a, b) { return totals[b] - totals[a] || a - b; });
   var top = totals[order[0]];
   var winners = order.filter(function (p) { return totals[p] === top; });
   var rows = names.map(function (nm, p) {
-    return { seat: p, name: nm, total: totals[p], stake: 2, potShare: 0, side: 0, net: 0, sidePaid: 0 };
+    return { seat: p, name: nm, total: totals[p], stake: buyIn, potShare: 0, side: 0, net: 0, sidePaid: 0 };
   });
   var note = '', sideList = [];
   if (winners.length > 1) {
@@ -1167,7 +1288,8 @@ function computePayouts(names, totals, ratePence) {
   // settle-up view: the £2 a head is already in the pot, so net is what
   // each player collects or pays at the end — not profit vs their stake.
   rows.forEach(function (r) { r.net = r.potShare + r.side; });
-  return { pot: pot, rows: rows, rank: order, note: note, sideList: sideList, rate: rate };
+  return { pot: pot, rows: rows, rank: order, note: note, sideList: sideList,
+           rate: rate, buyIn: buyIn, extra: extra };
 }
 
 /* ================= the Pro player (difficulty 6) =================
@@ -1316,6 +1438,31 @@ function tableRead(st, seat) {
   var R = ROUNDS[st.round], made = nomsCount(st), claimed = nomsSum(st);
   return { made: made, claimed: claimed, toCome: st.n - made - 1,
            loose: R.cards - claimed, cards: R.cards };
+}
+
+/* ---------------- fines ----------------
+   A misdeal costs whoever caused it, and the money goes into the same pot. */
+function fineTotal(st) {
+  var t = 0, i;
+  if (!st.fines) return 0;
+  for (i = 0; i < st.fines.length; i++) t += st.fines[i].amount;
+  return Math.round(t * 100) / 100;
+}
+function addFine(st, name, amount, reason) {
+  if (!st.fines) st.fines = [];
+  st.fines.push({ name: name, amount: amount, round: st.round, reason: reason || 'misdeal' });
+  if (st.phase === 'gameover') {
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st) });
+  }
+  return fineTotal(st);
+}
+function removeFine(st, idx) {
+  if (!st.fines || idx < 0 || idx >= st.fines.length) return false;
+  st.fines.splice(idx, 1);
+  if (st.phase === 'gameover') {
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st) });
+  }
+  return true;
 }
 
 /* ---------------- training: rewind and replay a round ---------------- */
@@ -1550,7 +1697,8 @@ var api = {
   unseenCards: unseenCards, dealAddsUp: dealAddsUp, tableRead: tableRead,
   simulateRound: simulateRound, simulateFromPlay: simulateFromPlay,
   nomAnalysis: nomAnalysis, playAnalysis: playAnalysis,
-  snapshotRound: snapshotRound, restoreRound: restoreRound, coachNom: coachNom
+  snapshotRound: snapshotRound, restoreRound: restoreRound, coachNom: coachNom,
+  fineTotal: fineTotal, addFine: addFine, removeFine: removeFine
 };
 
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
@@ -1560,7 +1708,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v3.3.0 — UI layer — S77FFY
+   NOMS v3.5.1 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1568,7 +1716,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '3.3.0';
+var VERSION = '3.5.1';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -1851,51 +1999,73 @@ function startGame() {
   runHunt();
 }
 
-/* ---------- ace hunt ---------- */
+/* ---------- the table ---------- */
+/* Walk the outline of a stadium — two straight sides joined by semicircular
+   ends — so seats sit where people actually sit, not on an ellipse.
+   k is 0 at the top centre and runs clockwise; scale pulls it inwards. */
+function stadiumPoint(k, ratio, scale) {
+  var H = 1, W = ratio;
+  var r = H / 2, L = W - H;                 // straight run between the two arcs
+  var P = 2 * L + 2 * Math.PI * r;
+  var s = (((k % 1) + 1) % 1) * P;
+  var x, y, a;
+  if (s < L / 2) { x = s; y = -r; }
+  else if (s < L / 2 + Math.PI * r) {
+    a = (s - L / 2) / r - Math.PI / 2;
+    x = L / 2 + r * Math.cos(a); y = r * Math.sin(a);
+  } else if (s < L / 2 + Math.PI * r + L) {
+    x = L / 2 - (s - (L / 2 + Math.PI * r)); y = r;
+  } else if (s < L / 2 + 2 * Math.PI * r + L) {
+    a = (s - (L / 2 + Math.PI * r + L)) / r + Math.PI / 2;
+    x = -L / 2 + r * Math.cos(a); y = r * Math.sin(a);
+  } else { x = -L / 2 + (s - (L / 2 + 2 * Math.PI * r + L)); y = -r; }
+  return { x: 50 + (x / W) * 100 * scale, y: 50 + (y / H) * 100 * scale };
+}
+function seatTable(names, hostId) {
+  var host = $(hostId);
+  host.innerHTML = '';
+  var n = names.length, RATIO = 1.85;
+  names.forEach(function (nm, i) {
+    // whoever was picked first sits at the top, the rest go round clockwise
+    var p = stadiumPoint(i / n, RATIO, 0.96);
+    var d = document.createElement('div');
+    d.className = 'tseat'; d.id = 'ts' + i;
+    d.style.left = p.x + '%';
+    d.style.top = p.y + '%';
+    d.innerHTML = '<span class="num">' + (i + 1) + '</span><span class="tn">' + esc(nm) + '</span>';
+    host.appendChild(d);
+  });
+  // steel cup holders sunk into the oak, between the rail and the baize
+  var tbl = $('huntTable');
+  var old = tbl.querySelectorAll('.cup'), c;
+  for (c = 0; c < old.length; c++) old[c].parentNode.removeChild(old[c]);
+  for (c = 0; c < 8; c++) {
+    var q = stadiumPoint(c / 8 + 1 / 16, RATIO, 0.72);
+    var cup = document.createElement('div');
+    cup.className = 'cup';
+    cup.style.left = q.x + '%';
+    cup.style.top = q.y + '%';
+    tbl.appendChild(cup);
+  }
+}
+function trailAdd(card, lap) {
+  var t = $('dealTrail');
+  var el = cardEl(card);
+  if (lap) el.classList.add('lap');
+  el.classList.add('dealin');
+  t.appendChild(el);
+}
+
+/* ---------- jack hunt ---------- */
 function runHunt() {
   show('scr-hunt');
   var hunt = E.aceHunt(st);
-  var seatsEl = $('huntSeats');
-  seatsEl.innerHTML = '';
-  st.names.forEach(function (nm, i) {
-    var d = document.createElement('div');
-    d.className = 'hseat'; d.id = 'hs' + i;
-    d.textContent = i === 0 ? nm + ' (you)' : nm;
-    seatsEl.appendChild(d);
+  seatTable(st.names.map(function (nm, i) { return i === 0 ? nm + ' (you)' : nm; }), 'huntSeats');
+  dealRound(hunt, st.names, function () {
+    var go = $('btnHuntGo');
+    go.style.visibility = 'visible';
+    go.focus();
   });
-  $('huntSlot').innerHTML = '';
-  var msg = $('huntMsg');
-  msg.className = ''; msg.innerHTML = '&nbsp;';
-  var go = $('btnHuntGo');
-  go.style.visibility = 'hidden';
-  var i = 0;
-  function step() {
-    var s = hunt.sequence[i];
-    var slot = $('huntSlot');
-    slot.innerHTML = '';
-    var c = cardEl(s.card);
-    c.classList.add('flipin');
-    slot.appendChild(c);
-    var chips = seatsEl.querySelectorAll('.hseat'), k;
-    for (k = 0; k < chips.length; k++) chips[k].classList.remove('hot');
-    var chip = $('hs' + s.seat);
-    var last = i === hunt.sequence.length - 1;
-    if (last) {
-      chip.classList.add('ace');
-      c.classList.add('pop');
-      msg.className = 'done';
-      msg.textContent = st.names[hunt.dealer] + ' turns the jack \u2014 ' + st.names[hunt.dealer] + ' deals first';
-      go.style.visibility = 'visible';
-      go.focus();
-    } else {
-      chip.classList.add('hot');
-      msg.className = '';
-      msg.textContent = st.names[s.seat] + '\u2026';
-      i++;
-      pumpT = setTimeout(step, 300);
-    }
-  }
-  step();
   go.onclick = function () {
     E.startRound(st);
     blindReveal = false;
@@ -2268,6 +2438,8 @@ function sheetOrder(g) {
 function buildSheetHTML(g) {
   g = g || st;
   var ord = sheetOrder(g);
+  var clean = [];                              // who has landed every nom so far
+  for (var ci = 0; ci < g.n; ci++) clean.push(true);
   var h = '<table class="sheetT" id="sheetTbl"><thead><tr><th class="rlab">Rd</th><th class="dcol">Deal</th>';
   ord.forEach(function (p, i) {
     var tilt = [-2.4, 1.6, -1.1, 2.2, -1.8, 1.2, -2.0][i % 7];
@@ -2282,6 +2454,8 @@ function buildSheetHTML(g) {
       if (r < g.sheet.length) {
         var c = g.sheet[r][p];
         var cls = c.won === c.nom ? 'hit' : 'miss';
+        if (c.won !== c.nom) clean[p] = false;
+        if (clean[p]) cls += ' perfect';         // has not gone down yet
         var shown = c.total === 0 ? cryFace(1.35) : c.total;
         h += '<td class="' + cls + '"><span class="tt">' + shown + '<sup>' + c.nom + '</sup></span></td>';
       } else {
@@ -2293,7 +2467,10 @@ function buildSheetHTML(g) {
   h += '</tbody>';
   if (g.sheet.length === 16) { // final tally only once the last round is in
     h += '<tfoot><tr><td class="rlab">Tot</td><td class="dcol"></td>';
-    ord.forEach(function (p) { h += '<td>' + (g.totals[p] === 0 ? cryFace(1.45) : g.totals[p]) + '</td>'; });
+    ord.forEach(function (p) {
+      h += '<td' + (clean[p] ? ' class="perfect"' : '') + '>' +
+        (g.totals[p] === 0 ? cryFace(1.45) : g.totals[p]) + '</td>';
+    });
     h += '</tr></tfoot>';
   }
   h += '</table>';
@@ -2449,17 +2626,27 @@ function openResults() {
   });
   $('resStand').innerHTML = standHTML;
 
-  var mh = '<div class="mhead">Settle up \u2014 \u00A3' + pay.pot.toFixed(2).replace(/\.00$/, '') + ' pot, \u00A32 a head already in' +
+  var fines = (st.fines || []);
+  var mh = '<div class="mhead">Settle up \u2014 \u00A3' + pay.pot.toFixed(2).replace(/\.00$/, '') + ' pot' +
     (pay.rate === 10 ? ' \u00B7 double money' : '') + '</div>';
+  mh += '<div class="mline">' + poundStr(pay.buyIn) + ' a head already in' +
+    (pay.extra > 0 ? ', plus ' + poundStr(pay.extra) + ' of fines' : '') + '</div>';
+  fines.forEach(function (f) {
+    mh += '<div class="mline" style="opacity:.75">\u2022 ' + esc(f.name) + ' \u2014 ' + poundStr(f.amount) +
+      ' (' + esc(f.reason) + ', round ' + (f.round + 1) + ')</div>';
+  });
   pay.rows.forEach(function (r) {
     if (r.potShare > 0) {
       mh += '<div class="mline"><b>' + esc(r.name) + '</b> takes ' + money(r.potShare) + ' from the pot</div>';
     }
   });
-  pay.sideList.forEach(function (s) {
-    mh += '<div class="mline"><b>' + esc(st.names[s.from]) + '</b> pays <b>' + esc(st.names[s.to]) + '</b> ' +
-      money(s.amount) + ' <span style="opacity:.7">(' + s.diff + ' behind)</span></div>';
-  });
+  if (pay.sideList.length) {
+    mh += '<div class="mhead" style="margin-top:12px">Then, out of pocket to ' + esc(st.names[pay.sideList[0].to]) + '</div>';
+    pay.sideList.forEach(function (s) {
+      mh += '<div class="mline"><b>' + esc(st.names[s.from]) + '</b> pays ' + money(s.amount) +
+        ' <span style="opacity:.7">(' + s.diff + ' behind)</span></div>';
+    });
+  }
   $('resMoney').innerHTML = mh;
   $('resNote').textContent = pay.note || '';
   $('btnResSheet').style.display = st.mode === 'scorer' ? '' : 'none';
@@ -2470,6 +2657,19 @@ function openResults() {
    SCORER MODE
    ============================================================ */
 var pick = { sel: [], dealer: null, rate: 5 }; // sel: row indices in tap order
+league.settings = league.settings || { buyIn: 2, fine: 0.5 };
+league.aliases = league.aliases || {};        // scorer -> { realName: shown }
+var scorer = league.scorer || null;            // who is keeping score tonight
+
+/* The scorer can have their own name for someone — Caitlyn calls Kev "Dad".
+   Entry screens use it; the scoresheet always shows the real name. */
+function shownName(real) {
+  var map = scorer && league.aliases[scorer];
+  return (map && map[real]) ? map[real] : real;
+}
+function poundStr(v) {
+  return v < 1 ? Math.round(v * 100) + 'p' : '\u00A3' + (v % 1 === 0 ? v : v.toFixed(2));
+}
 var scNoms = [], scTricks = [], undoArmed = 0;
 
 function buildPickRows() {
@@ -2527,12 +2727,20 @@ function scorerAceHunt() {
   if (pick.sel.length < 2) { toast('Pick at least two players first'); return; }
   var names = pick.sel.map(pickName);
   var tmp = E.newGame({ names: names });
-  var hunt = E.aceHunt(tmp);
+  // start dealing from whoever sits after the player who turned the jack last game
+  var start = 0;
+  if (league.lastJack) {
+    var at = names.indexOf(league.lastJack);
+    if (at >= 0) start = (at + 1) % names.length;
+  }
+  var hunt = E.aceHunt(tmp, start);
   pick.dealer = pick.sel[hunt.dealer];
   var jack = hunt.sequence[hunt.sequence.length - 1].card;
   $('huntNote').textContent = 'Jack of ' + SUIT_NAME[jack.s] + ' turned on card ' + hunt.sequence.length +
     ' \u2014 ' + pickName(pick.dealer) + ' deals first.';
   buildDealerChips();
+  league.lastJack = names[hunt.dealer];
+  saveLeague();
   dealForJack(names, hunt, function () { buildDealerChips(); show('scr-scorer-setup'); });
 }
 
@@ -2540,40 +2748,52 @@ function scorerAceHunt() {
    name lands on the screen like a comic book and the jack slides up. */
 function dealForJack(names, hunt, done) {
   show('scr-hunt');
-  var seatsEl = $('huntSeats');
-  seatsEl.innerHTML = '';
-  names.forEach(function (nm, i) {
-    var d = document.createElement('div');
-    d.className = 'hseat'; d.id = 'hs' + i;
-    d.textContent = nm;
-    seatsEl.appendChild(d);
-  });
+  $('huntSub').textContent = 'Cards go round until a jack turns \u2014 that seat deals first.';
+  seatTable(names, 'huntSeats');
+  dealRound(hunt, names, done);
+}
+/* Cards go round the table one at a time. Each lands on the felt, then joins
+   the run of dealt cards below so the tension builds if no jack shows. */
+function dealRound(hunt, names, done) {
   $('huntSlot').innerHTML = '';
+  $('dealTrail').innerHTML = '';
+  $('trailCount').innerHTML = '&nbsp;';
   var msg = $('huntMsg');
   msg.className = ''; msg.innerHTML = '&nbsp;';
   $('btnHuntGo').style.visibility = 'hidden';
-  var i = 0;
+  var n = names.length, i = 0, prev = null;
   function step() {
     var s = hunt.sequence[i];
     var slot = $('huntSlot');
-    slot.innerHTML = '';
+    if (prev) trailAdd(prev.card, prev.lap);
     var c = cardEl(s.card);
     c.classList.add('flipin');
+    slot.innerHTML = '';
     slot.appendChild(c);
-    var chips = seatsEl.querySelectorAll('.hseat'), k;
-    for (k = 0; k < chips.length; k++) chips[k].classList.remove('hot');
-    var chip = $('hs' + s.seat);
-    if (i === hunt.sequence.length - 1) {
-      chip.classList.add('ace');
+    var seats = $('huntSeats').querySelectorAll('.tseat'), k;
+    for (k = 0; k < seats.length; k++) seats[k].classList.remove('hot');
+    var seat = $('ts' + s.seat);
+    var lap = Math.floor(i / n);
+    var last = i === hunt.sequence.length - 1;
+    if (lap > 0) {
+      $('trailCount').textContent = 'round the table ' + (lap + 1) + ' time' + (lap ? 's' : '') +
+        ' \u2014 ' + (i + 1) + ' cards out';
+    } else if (i >= 2) {
+      $('trailCount').textContent = (i + 1) + ' cards out';
+    }
+    if (last) {
+      seat.classList.add('ace');
       c.classList.add('pop');
       msg.className = 'done';
       msg.textContent = 'Jack!';
-      pumpT = setTimeout(function () { punch(names[hunt.dealer], s.card, done); }, 620);
+      pumpT = setTimeout(function () { punch(names[hunt.dealer], s.card, done); }, 640);
     } else {
-      chip.classList.add('hot');
+      seat.classList.add('hot');
       msg.textContent = names[s.seat] + '\u2026';
+      prev = { card: s.card, lap: (i + 1) % n === 0 };
       i++;
-      pumpT = setTimeout(step, 340);
+      // slow down a touch on each lap so it builds
+      pumpT = setTimeout(step, lap === 0 ? 330 : lap === 1 ? 400 : 470);
     }
   }
   step();
@@ -2600,7 +2820,7 @@ function startScorer() {
   var names = pick.sel.map(pickName);
   if (pick.dealer == null) { toast('Pick who deals first'); return; }
   var dealerIdx = pick.sel.indexOf(pick.dealer);
-  st = E.newGame({ names: names, mode: 'scorer', rate: pick.rate });
+  st = E.newGame({ names: names, mode: 'scorer', rate: pick.rate, buyIn: league.settings.buyIn });
   st.date = todayKey();
   E.scorerStart(st, dealerIdx);
   show('scr-scorer');
@@ -2616,10 +2836,12 @@ function scorerShuffle(done) {
   el.classList.add('on');
   pumpT = setTimeout(function () { el.classList.remove('on'); if (done) done(); }, 1100);
 }
-function stepRow(name, isDealer, arr, seat, max, after, showNom) {
+function stepRow(name, isDealer, arr, seat, max, after, showNom, lockable) {
   var row = document.createElement('div');
-  row.className = 'srow';
+  row.className = 'srow' + (lockable && !nomSaid[seat] ? ' pending' : '');
+  row.id = 'srow' + (lockable ? 'n' : 't') + seat;
   row.innerHTML = '<span class="snm2">' + esc(name) + (isDealer ? '<span class="dbadge">D</span>' : '') +
+    (lockable ? '<span class="' + (nomSaid[seat] ? 'locktag">in' : 'pendtag">\u2014') + '</span>' : '') +
     (showNom ? '<span class="nomtag" data-seat="' + seat + '">' + scNoms[seat] + '</span>' : '') + '</span>';
   var step = document.createElement('div');
   step.className = 'mini-step';
@@ -2628,8 +2850,12 @@ function stepRow(name, isDealer, arr, seat, max, after, showNom) {
   var val = document.createElement('b'); val.textContent = arr[seat];
   var plus = document.createElement('button'); plus.textContent = '+';
   plus.setAttribute('aria-label', name + ' up');
-  minus.onclick = function () { if (arr[seat] > 0) { arr[seat]--; val.textContent = arr[seat]; after(); } };
-  plus.onclick = function () { if (arr[seat] < max) { arr[seat]++; val.textContent = arr[seat]; after(); } };
+  function touched() {
+    if (lockable) lockNomsUpTo(seat);
+    after();
+  }
+  minus.onclick = function () { if (arr[seat] > 0) { arr[seat]--; val.textContent = arr[seat]; } touched(); };
+  plus.onclick = function () { if (arr[seat] < max) { arr[seat]++; val.textContent = arr[seat]; } touched(); };
   step.appendChild(minus); step.appendChild(val); step.appendChild(plus);
   row.appendChild(step);
   return row;
@@ -2672,10 +2898,53 @@ function stepToTricks() {
   var R = E.ROUNDS[entryRound];
   var ns = scNoms.reduce(function (a, b) { return a + b; }, 0);
   if (ns === R.cards) { toast('Noms can\u2019t total ' + R.cards + ' \u2014 the dealer has to change theirs'); return; }
+  var q;
+  if (st) for (q = 0; q < st.n; q++) nomSaid[q] = true;   // turning the page confirms every nom
   castStep = 1;
   applyStep();
 }
 var editing = -1, entryRound = 0, stash = null;
+/* Keep the whole table on one screen: one column up to four players, two up to
+   six, three beyond that — always filled downwards before moving across. */
+function layoutColumns(host, n) {
+  var cols = n <= 4 ? 1 : n <= 6 ? 2 : (castOn ? 3 : 2);
+  if (cols === 1) {
+    host.className = '';
+    host.style.gridTemplateColumns = '';
+    host.style.gridTemplateRows = '';
+    return;
+  }
+  var rows = Math.ceil(n / cols);
+  host.className = 'colgrid';
+  host.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
+  host.style.gridTemplateRows = 'repeat(' + rows + ',auto)';
+}
+
+var nomSaid = [];      // which noms have actually been said out loud
+/* Nobody bothers saying "nought". So the moment a later player's nom goes in,
+   everyone before them is locked in at whatever their counter shows. */
+function lockNomsUpTo(seat) {
+  var dealer = (st.dealer0 + entryRound) % st.n, k, p;
+  var pos = -1, order = [];
+  for (k = 1; k <= st.n; k++) order.push((dealer + k) % st.n);
+  pos = order.indexOf(seat);
+  for (k = 0; k <= pos; k++) nomSaid[order[k]] = true;
+  refreshNomLocks();
+}
+function refreshNomLocks() {
+  var dealer = (st.dealer0 + entryRound) % st.n, k;
+  for (k = 0; k < st.n; k++) {
+    var row = $('srown' + k);
+    if (!row) continue;
+    row.classList.toggle('pending', !nomSaid[k]);
+    var tag = row.querySelector('.pendtag') || row.querySelector('.locktag');
+    if (tag) {
+      tag.className = nomSaid[k] ? 'locktag' : 'pendtag';
+      tag.textContent = nomSaid[k] ? 'in' : '\u2014';
+    }
+  }
+  updateScorerLive();
+}
 function renderScorer(editRound, prefill) {
   var isEdit = editRound != null && editRound >= 0;
   var r = isEdit ? editRound : st.round;
@@ -2713,14 +2982,17 @@ function renderScorer(editRound, prefill) {
 
   var nr = $('nomsRows');
   nr.innerHTML = '';
+  layoutColumns(nr, st.n);
   order.forEach(function (seat) {
-    nr.appendChild(stepRow(st.names[seat], seat === dealer, scNoms, seat, R.cards, updateScorerLive));
+    nr.appendChild(stepRow(shownName(st.names[seat]), seat === dealer, scNoms, seat, R.cards, updateScorerLive, false, true));
   });
   var tr = $('tricksRows');
   tr.innerHTML = '';
+  layoutColumns(tr, st.n);
   order.forEach(function (seat) {
-    tr.appendChild(stepRow(st.names[seat], seat === dealer, scTricks, seat, R.cards, updateScorerLive, true));
+    tr.appendChild(stepRow(shownName(st.names[seat]), seat === dealer, scTricks, seat, R.cards, updateScorerLive, true));
   });
+  nomSaid = new Array(st.n).fill(!!(isEdit || prefill));   // a reopened round is already spoken for
   castStep = 0;
   applyStep();
   renderLastRound();
@@ -2744,9 +3016,9 @@ function endEdit() {
   stash = null;
 }
 function renderLastRound() {
-  var host = $('lastRound');
+  var host = $('lastRound'), host2 = $('lastRoundNom');
   var prev = (editing >= 0 ? editing : entryRound) - 1;
-  if (prev < 0 || prev >= st.sheet.length) { host.innerHTML = ''; return; }
+  if (prev < 0 || prev >= st.sheet.length) { host.innerHTML = ''; host2.innerHTML = ''; return; }
   var ord = sheetOrder(st), row = st.sheet[prev], R = E.ROUNDS[prev];
   var label = R.nt ? 'No Trumps' : R.blind ? 'Blind' : R.cards + (R.cards === 1 ? ' card' : ' cards');
   var h = '<div class="lastcard"><div class="lasthead">After round ' + (prev + 1) + ' \u00B7 ' + label + '</div>' +
@@ -2758,10 +3030,15 @@ function renderLastRound() {
   h += '</tr></thead><tbody><tr>';
   ord.forEach(function (p) {
     var c = row[p], cls = c.won === c.nom ? 'hit' : 'miss';
+    var cleanSoFar = true, rr;
+    for (rr = 0; rr <= prev; rr++) if (st.sheet[rr][p].won !== st.sheet[rr][p].nom) cleanSoFar = false;
+    if (cleanSoFar) cls += ' perfect';
     h += '<td class="' + cls + '"><span class="tt">' + (c.total === 0 ? cryFace(1.35) : c.total) +
       '<sup>' + c.nom + '</sup></span></td>';
   });
-  host.innerHTML = h + '</tr></tbody></table></div>';
+  h += '</tr></tbody></table></div>';
+  host.innerHTML = h;
+  host2.innerHTML = h;
 }
 function updateScorerLive() {
   var R = E.ROUNDS[entryRound];
@@ -2772,6 +3049,11 @@ function updateScorerLive() {
     nt.innerHTML = '<span style="color:var(--red-hi)">Noms total ' + ns + ' \u2014 can\u2019t equal the cards. The dealer has to change theirs.</span>';
   } else {
     nt.textContent = 'Noms ' + ns + ' of ' + R.cards + (ns > R.cards ? ' \u2014 overbid round' : ' \u2014 underbid round');
+  }
+  var unsaid = 0, u;
+  if (st) for (u = 0; u < st.n; u++) if (!nomSaid[u]) unsaid++;
+  if (unsaid > 0 && castStep === 0) {
+    nt.innerHTML += ' <span style="color:var(--bone-dim)">\u00B7 ' + unsaid + ' still to call (counted as 0)</span>';
   }
   var left = R.cards - ts;
   $('trickTally').textContent = left === 0 ? 'All ' + R.cards + ' tricks placed \u2713' :
@@ -3040,6 +3322,83 @@ function deleteNight() {
   show('scr-league');
 }
 
+/* ---------- options ---------- */
+var BUYS = [1, 2, 3, 5, 10], FINES = [0, 0.2, 0.5, 1, 2];
+function stepList(list, cur, dir) {
+  var i = list.indexOf(cur);
+  if (i < 0) i = 0;
+  i = Math.min(list.length - 1, Math.max(0, i + dir));
+  return list[i];
+}
+function renderOpts() {
+  var s = league.settings;
+  $('buyVal').textContent = poundStr(s.buyIn);
+  $('fineVal').textContent = poundStr(s.fine);
+  var names = (st && st.mode === 'scorer') ? st.names : pick.sel.map(pickName);
+  // the scorer often isn't playing, so offer the whole crew
+  var whoCan = ROSTER.slice();
+  names.forEach(function (nm) { if (whoCan.indexOf(nm) === -1) whoCan.push(nm); });
+  var host = $('scorerChips');
+  host.innerHTML = '';
+  whoCan.forEach(function (nm) {
+    var b = document.createElement('button');
+    b.className = 'chipbtn' + (scorer === nm ? ' sel' : '');
+    b.textContent = nm;
+    b.onclick = function () {
+      scorer = (scorer === nm) ? null : nm;
+      league.scorer = scorer;
+      saveLeague();
+      renderOpts();
+      if (st && st.mode === 'scorer' && st.phase === 'scorer-entry') renderScorer();
+    };
+    host.appendChild(b);
+  });
+  var ab = $('aliasBox');
+  // Caitlyn calls Kev "Dad" — that is the only nickname anybody asked for
+  if (scorer === 'Caitlyn' && names.indexOf('Kev') !== -1) {
+    var on = !!(league.aliases['Caitlyn'] && league.aliases['Caitlyn'].Kev);
+    ab.innerHTML = '<label class="tickrow" id="kevRow"><input type="checkbox" id="kevDad"' +
+      (on ? ' checked' : '') + '><span>Show Kev as &ldquo;Dad&rdquo;</span></label>' +
+      '<div class="hint">Only on the nom and trick screens \u2014 the scoresheet still says Kev.</div>';
+    $('kevDad').onchange = function () {
+      league.aliases['Caitlyn'] = league.aliases['Caitlyn'] || {};
+      if (this.checked) league.aliases['Caitlyn'].Kev = 'Dad';
+      else delete league.aliases['Caitlyn'].Kev;
+      saveLeague();
+      if (st && st.mode === 'scorer' && st.phase === 'scorer-entry') renderScorer();
+    };
+  } else {
+    ab.innerHTML = '';
+  }
+}
+
+function openOpts() {
+  renderOpts();
+  modal('optsModal', true);
+}
+
+/* ---------- misdeal ---------- */
+var misdealWho = null, misdealWhy = 'misdeal';
+function renderMisdeal() {
+  var host = $('misdealChips');
+  host.innerHTML = '';
+  st.names.forEach(function (nm) {
+    var b = document.createElement('button');
+    b.className = 'chipbtn' + (misdealWho === nm ? ' sel' : '');
+    b.textContent = shownName(nm) + (nm === st.names[(st.dealer0 + entryRound) % st.n] ? ' (dealt)' : '');
+    b.onclick = function () { misdealWho = nm; renderMisdeal(); };
+    host.appendChild(b);
+  });
+  var segs = $('misdealWhy').querySelectorAll('button'), i;
+  for (i = 0; i < segs.length; i++) segs[i].classList.toggle('sel', segs[i].dataset.w === misdealWhy);
+  $('btnMisdealSave').textContent = 'Add ' + poundStr(league.settings.fine) + ' fine & redeal round';
+}
+function redealRound() {
+  modal('misdealModal', false);
+  renderScorer(editing >= 0 ? editing : null);
+  toast('Round ' + (entryRound + 1) + ' cleared \u2014 deal again');
+}
+
 /* ---------- backup ---------- */
 function openData() {
   $('dataBox').value = JSON.stringify(league);
@@ -3149,6 +3508,33 @@ $('btnBackfill').onclick = function () { openBackfill(null); };
 $('btnBfDelete').onclick = deleteNight;
 $('btnBfSave').onclick = saveBackfill;
 $('btnBfCancel').onclick = function () { bfEditId = null; renderLeague(); show('scr-league'); };
+$('btnOpts').onclick = openOpts;
+$('btnOpts2').onclick = openOpts;
+$('btnOptsClose').onclick = function () { modal('optsModal', false); };
+$('buyMinus').onclick = function () { league.settings.buyIn = stepList(BUYS, league.settings.buyIn, -1); saveLeague(); renderOpts(); };
+$('buyPlus').onclick  = function () { league.settings.buyIn = stepList(BUYS, league.settings.buyIn,  1); saveLeague(); renderOpts(); };
+$('fineMinus').onclick = function () { league.settings.fine = stepList(FINES, league.settings.fine, -1); saveLeague(); renderOpts(); };
+$('finePlus').onclick  = function () { league.settings.fine = stepList(FINES, league.settings.fine,  1); saveLeague(); renderOpts(); };
+$('btnMisdeal').onclick = function () {
+  if (!st || st.mode !== 'scorer') return;
+  misdealWho = st.names[(st.dealer0 + entryRound) % st.n];
+  misdealWhy = 'misdeal';
+  renderMisdeal();
+  modal('misdealModal', true);
+};
+$('misdealWhy').onclick = function (ev) {
+  var b = ev.target.closest('button');
+  if (b) { misdealWhy = b.dataset.w; renderMisdeal(); }
+};
+$('btnMisdealCancel').onclick = function () { modal('misdealModal', false); };
+$('btnMisdealNoFine').onclick = redealRound;
+$('btnMisdealSave').onclick = function () {
+  if (!misdealWho) { toast('Tap whoever pays'); return; }
+  E.addFine(st, misdealWho, league.settings.fine, misdealWhy);
+  toast(misdealWho + ' puts ' + poundStr(league.settings.fine) + ' in \u2014 pot now \u00A3' +
+    (st.buyIn * st.n + E.fineTotal(st)).toFixed(2));
+  redealRound();
+};
 $('btnData').onclick = openData;
 $('btnDataLoad').onclick = loadData;
 $('btnDataClose').onclick = function () { modal('dataModal', false); };
