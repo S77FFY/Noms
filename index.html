@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="app-repo" content="Noms">
-<meta name="app-version" content="3.6.8">
-<title>NOMS · v3.6.8 · S77FFY</title>
+<meta name="app-version" content="3.6.9">
+<title>NOMS · v3.6.9 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v3.6.8 — S77FFY
+   NOMS v3.6.9 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 /* Two skins. Neon is the default; Felt is the original table. */
@@ -609,7 +609,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v3.6.8 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.6.9 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -943,7 +943,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
   <div class="fdeal" id="flashDeal"></div>
 </div></div>
 
-<div id="vtag">v3.6.8</div>
+<div id="vtag">v3.6.9</div>
 
 <button id="cogFab" aria-label="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.1 14.8a1.5 1.5 0 0 0 .3 1.66l.05.05a1.83 1.83 0 1 1-2.59 2.59l-.05-.05a1.5 1.5 0 0 0-1.66-.3 1.5 1.5 0 0 0-.91 1.38v.14a1.83 1.83 0 1 1-3.66 0v-.07a1.5 1.5 0 0 0-.98-1.38 1.5 1.5 0 0 0-1.66.3l-.05.05a1.83 1.83 0 1 1-2.59-2.59l.05-.05a1.5 1.5 0 0 0 .3-1.66 1.5 1.5 0 0 0-1.38-.91H3.9a1.83 1.83 0 1 1 0-3.66h.07a1.5 1.5 0 0 0 1.38-.98 1.5 1.5 0 0 0-.3-1.66l-.05-.05A1.83 1.83 0 1 1 7.59 4.9l.05.05a1.5 1.5 0 0 0 1.66.3h.07a1.5 1.5 0 0 0 .91-1.38V3.9a1.83 1.83 0 1 1 3.66 0v.07a1.5 1.5 0 0 0 .91 1.38 1.5 1.5 0 0 0 1.66-.3l.05-.05a1.83 1.83 0 1 1 2.59 2.59l-.05.05a1.5 1.5 0 0 0-.3 1.66v.07a1.5 1.5 0 0 0 1.38.91h.14a1.83 1.83 0 1 1 0 3.66h-.07a1.5 1.5 0 0 0-1.38.91z"/></svg></button>
 
@@ -1763,7 +1763,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v3.6.8 — UI layer — S77FFY
+   NOMS v3.6.9 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1771,7 +1771,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '3.6.8';
+var VERSION = '3.6.9';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -2948,6 +2948,30 @@ function stepRow(name, isDealer, arr, seat, max, after, showNom, lockable) {
   return row;
 }
 var castOn = !!league.cast, castStep = 0;
+/* Hold the screen awake while the game is up on the telly. Safari drops the
+   lock whenever the tab is hidden, so it is taken again on the way back. */
+var wakeLock = null;
+function keepAwake(on) {
+  try {
+    if (!navigator.wakeLock) return;
+    if (on) {
+      navigator.wakeLock.request('screen').then(function (lock) {
+        wakeLock = lock;
+        if (lock.addEventListener) lock.addEventListener('release', function () { wakeLock = null; });
+      }).catch(function () {});
+    } else if (wakeLock) {
+      var l = wakeLock;
+      wakeLock = null;
+      if (l.release) l.release();
+    }
+  } catch (e) {}
+}
+if (document.addEventListener) {
+  document.addEventListener('visibilitychange', function () {
+    if (castOn && !document.hidden && !wakeLock) keepAwake(true);
+  });
+}
+
 /* Ask the browser for true fullscreen while casting. Guarded: iOS Safari
    won't do element fullscreen, in which case the layout is edge-to-edge anyway. */
 function goFullscreen(on) {
@@ -3560,11 +3584,13 @@ $('btnCast').onclick = function () {
   league.cast = castOn;
   saveLeague();
   applyCast();
-applyTheme();
   goFullscreen(castOn);
+  keepAwake(castOn);
   castStep = 0;
   applyStep();
-  toast(castOn ? 'Cast mode on \u2014 big, split in two, sheet fills the screen' : 'Cast mode off');
+  if (!castOn) toast('Cast mode off');
+  else if (navigator.wakeLock) toast('Cast mode on \u2014 the screen will stay awake');
+  else toast('Cast mode on \u2014 set Auto-Lock to Never to stop it sleeping');
 };
 $('btnUndoRound').onclick = undoRound;
 $('stakeSeg').onclick = function (ev) {
@@ -3630,6 +3656,8 @@ $('btnDataLoad').onclick = loadData;
 $('btnDataClose').onclick = function () { modal('dataModal', false); };
 $('btnDataCopy').onclick = function () { var b = $('dataBox'); b.focus(); b.select(); toast('Selected \u2014 hold and copy'); };
 applyCast();
+applyTheme();
+keepAwake(castOn);            // TV mode may already be on from last time
 $('btnNewGame').onclick = resetToTitle;
 $('btnCancelEdit').onclick = endEdit;
 $('btnResSheet').onclick = function () { modal('resultsModal', false); openSheet('peek'); };
