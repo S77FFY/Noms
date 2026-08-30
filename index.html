@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="app-repo" content="Noms">
-<meta name="app-version" content="3.6.3">
-<title>NOMS · v3.6.3 · S77FFY</title>
+<meta name="app-version" content="3.6.6">
+<title>NOMS · v3.6.6 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v3.6.3 — S77FFY
+   NOMS v3.6.6 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 /* Two skins. Neon is the default; Felt is the original table. */
@@ -434,15 +434,8 @@ body.cast .colgrid{gap:0 44px}
 #punch{position:fixed;inset:0;z-index:58;display:none;align-items:center;justify-content:center;overflow:hidden;
   background:radial-gradient(70% 60% at 50% 45%, #4b2477 0%, #240f3d 60%, #140a22 100%)}
 #punch.on{display:flex}
-.burst{position:absolute;width:300vmax;height:300vmax;left:50%;top:50%;border-radius:50%;
-  transform:translate(-50%,-50%);
-  background:repeating-conic-gradient(from 0deg at 50% 50%,
-    rgba(139,246,255,.22) 0deg 7deg, rgba(139,246,255,0) 7deg 14deg);
-  /* fade the rays out long before the edge, so it can never read as a box */
-  -webkit-mask-image:radial-gradient(closest-side, #000 0%, #000 20%, transparent 38%);
-  mask-image:radial-gradient(closest-side, #000 0%, #000 20%, transparent 38%);
-  animation:spin 22s linear infinite}
-@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.burst{position:absolute;inset:0;width:100%;height:100%;display:block}
+.burst .rays{fill:rgba(139,246,255,.20)}   /* spun about 0,0 by the SVG itself */
 .punchwrap{position:relative;text-align:center;padding:0 16px}
 .punchname{font-family:Georgia,serif;font-weight:700;font-size:clamp(46px,15vw,150px);line-height:.92;
   letter-spacing:.02em;color:#f7e6b8;text-transform:uppercase;
@@ -616,7 +609,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v3.6.3 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.6.6 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -929,7 +922,11 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
 </div>
 
 <div id="punch">
-  <div class="burst"></div>
+  <svg class="burst" viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <path class="rays" d="M0 0L900.0 0.0L893.3 109.7ZM0 0L869.3 232.9L834.5 337.1ZM0 0L779.4 450.0L718.8 541.6ZM0 0L636.4 636.4L554.1 709.2ZM0 0L450.0 779.4L351.7 828.5ZM0 0L232.9 869.3L125.3 891.2ZM0 0L0.0 900.0L-109.7 893.3ZM0 0L-232.9 869.3L-337.1 834.5ZM0 0L-450.0 779.4L-541.6 718.8ZM0 0L-636.4 636.4L-709.2 554.1ZM0 0L-779.4 450.0L-828.5 351.7ZM0 0L-869.3 232.9L-891.2 125.3ZM0 0L-900.0 0.0L-893.3 -109.7ZM0 0L-869.3 -232.9L-834.5 -337.1ZM0 0L-779.4 -450.0L-718.8 -541.6ZM0 0L-636.4 -636.4L-554.1 -709.2ZM0 0L-450.0 -779.4L-351.7 -828.5ZM0 0L-232.9 -869.3L-125.3 -891.2ZM0 0L-0.0 -900.0L109.7 -893.3ZM0 0L232.9 -869.3L337.1 -834.5ZM0 0L450.0 -779.4L541.6 -718.8ZM0 0L636.4 -636.4L709.2 -554.1ZM0 0L779.4 -450.0L828.5 -351.7ZM0 0L869.3 -232.9L891.2 -125.3Z">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="26s" repeatCount="indefinite"/>
+    </path>
+  </svg>
   <div class="punchwrap">
     <div class="punchname" id="punchName"></div>
     <div class="punchsub" id="punchSub">deals first</div>
@@ -946,7 +943,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
   <div class="fdeal" id="flashDeal"></div>
 </div></div>
 
-<div id="vtag">v3.6.3</div>
+<div id="vtag">v3.6.6</div>
 
 <button id="cogFab" aria-label="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.1 14.8a1.5 1.5 0 0 0 .3 1.66l.05.05a1.83 1.83 0 1 1-2.59 2.59l-.05-.05a1.5 1.5 0 0 0-1.66-.3 1.5 1.5 0 0 0-.91 1.38v.14a1.83 1.83 0 1 1-3.66 0v-.07a1.5 1.5 0 0 0-.98-1.38 1.5 1.5 0 0 0-1.66.3l-.05.05a1.83 1.83 0 1 1-2.59-2.59l.05-.05a1.5 1.5 0 0 0 .3-1.66 1.5 1.5 0 0 0-1.38-.91H3.9a1.83 1.83 0 1 1 0-3.66h.07a1.5 1.5 0 0 0 1.38-.98 1.5 1.5 0 0 0-.3-1.66l-.05-.05A1.83 1.83 0 1 1 7.59 4.9l.05.05a1.5 1.5 0 0 0 1.66.3h.07a1.5 1.5 0 0 0 .91-1.38V3.9a1.83 1.83 0 1 1 3.66 0v.07a1.5 1.5 0 0 0 .91 1.38 1.5 1.5 0 0 0 1.66-.3l.05-.05a1.83 1.83 0 1 1 2.59 2.59l-.05.05a1.5 1.5 0 0 0-.3 1.66v.07a1.5 1.5 0 0 0 1.38.91h.14a1.83 1.83 0 1 1 0 3.66h-.07a1.5 1.5 0 0 0-1.38.91z"/></svg></button>
 
@@ -955,7 +952,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
 <script>
 // === ENGINE START ===
 /* ============================================================
-   NOMS v3.6.3 — game engine (pure logic, no DOM) — S77FFY
+   NOMS v1.0.0 — game engine (pure logic, no DOM) — S77FFY
    Trick-taking "Nomination Whist" for the crew.
    16 rounds: 1..7 cards, No Trumps (7), Blind (7), then 7..1.
    ============================================================ */
@@ -1195,7 +1192,8 @@ function advanceRound(st) {
 
 function scorerStart(st, dealer) {
   st.mode = 'scorer';
-  st.dealer = dealer; st.dealer0 = dealer;
+  var d = ((dealer % st.n) + st.n) % st.n;   // keep it inside the table
+  st.dealer = d; st.dealer0 = d;
   st.round = 0;
   st.phase = 'scorer-entry';
 }
@@ -1732,7 +1730,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v3.6.3 — UI layer — S77FFY
+   NOMS v3.6.6 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1740,7 +1738,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '3.6.3';
+var VERSION = '3.6.6';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -1780,7 +1778,7 @@ function roundFlash(r, done) {
   $('flashRd').textContent = 'Round ' + (r + 1) + ' of 16';
   $('flashBig').textContent = big;
   $('flashSub').textContent = sub;
-  var dealer = st.names[(st.dealer0 + r) % st.n];
+  var dealer = st.names[seatAt(st.dealer0 + r, st.n)];
   $('flashDeal').innerHTML = 'Dealer: <b style="color:var(--bone)">' + esc(dealer) + '</b>';
   var el = $('flash');
   el.classList.add('on');
@@ -2006,9 +2004,11 @@ function buildSetup() {
 }
 
 function startGame() {
-  var me = E.CREW[setup.who];
+  // must come from ROSTER, not the original crew — anyone added since lives here
+  if (setup.who < 0 || setup.who >= ROSTER.length) setup.who = 0;
+  var me = ROSTER[setup.who];
   var others = ROSTER.filter(function (n) { return n !== me; }).slice(0, setup.size - 1);
-  var names = [me].concat(others);
+  var names = [me].concat(others).filter(function (n) { return !!n; });
   var diffs = null;
   if (setup.diff >= 6) {
     var cpus = names.length - 1, pc = proCount(setup.diff, cpus), k;
@@ -2458,10 +2458,14 @@ function cryFace(em) {
     '<path d="M14.2 29.8c1.3-4.2 9.6-4.4 11.4-.2"/>' +
     '</svg>';
 }
+/* JS gives a negative result for (-1 % 4), which then indexes past the end of
+   the names array and prints "undefined". Everything that turns a rotation
+   into a seat goes through here. */
+function seatAt(i, n) { return ((i % n) + n) % n; }
 function sheetOrder(g) {
   // names in round-one nom order: left of the first dealer first, first dealer last
   var o = [], k;
-  for (k = 1; k <= g.n; k++) o.push((g.dealer0 + k) % g.n);
+  for (k = 1; k <= g.n; k++) o.push(seatAt(g.dealer0 + k, g.n));
   return o;
 }
 function buildSheetHTML(g) {
@@ -2478,7 +2482,7 @@ function buildSheetHTML(g) {
   for (var r = 0; r < 16; r++) {
     var cur = g.phase !== 'gameover' && r === g.round ? ' class="cur"' : '';
     h += '<tr' + cur + '><td class="rlab">' + E.ROUNDS[r].label + '</td>' +
-      '<td class="dcol">' + esc(g.names[(g.dealer0 + r) % g.n]) + '</td>';
+      '<td class="dcol">' + esc(g.names[seatAt(g.dealer0 + r, g.n)]) + '</td>';
     ord.forEach(function (p) {
       if (r < g.sheet.length) {
         var c = g.sheet[r][p];
@@ -2527,10 +2531,14 @@ function openSheet(modeStr) {
   var go = $('btnSheetGo');
   if (modeStr === 'continue') {
     var last = st.round === 15;
-    if (training && st.mode === 'game') {
-      var rb = $('btnRewind');
-      rb.style.display = roundSnap ? '' : 'none';
+    // rewind belongs to training against the CPUs only — never to a real table
+    var rb = $('btnRewind');
+    if (training && st.mode === 'game' && roundSnap) {
+      rb.style.display = '';
       rb.onclick = rewindRound;
+    } else {
+      rb.style.display = 'none';
+      rb.onclick = null;
     }
     $('sheetSub').textContent = 'After round ' + (st.round + 1) + ' \u2014 ' +
       (E.ROUNDS[st.round].nt ? 'No Trumps' : E.ROUNDS[st.round].blind ? 'Blind' : E.ROUNDS[st.round].cards + ' cards') +
@@ -2854,6 +2862,7 @@ function startScorer() {
   var names = pick.sel.map(pickName);
   if (pick.dealer == null) { toast('Pick who deals first'); return; }
   var dealerIdx = pick.sel.indexOf(pick.dealer);
+  if (dealerIdx < 0) dealerIdx = 0;          // never leave it unresolved
   st = E.newGame({ names: names, mode: 'scorer', rate: pick.rate, buyIn: league.settings.buyIn });
   st.date = todayKey();
   E.scorerStart(st, dealerIdx);
@@ -2958,7 +2967,7 @@ var nomSaid = [];      // which noms have actually been said out loud
 /* Nobody bothers saying "nought". So the moment a later player's nom goes in,
    everyone before them is locked in at whatever their counter shows. */
 function lockNomsUpTo(seat) {
-  var dealer = (st.dealer0 + entryRound) % st.n, k, p;
+  var dealer = seatAt(st.dealer0 + entryRound, st.n), k, p;
   var pos = -1, order = [];
   for (k = 1; k <= st.n; k++) order.push((dealer + k) % st.n);
   pos = order.indexOf(seat);
@@ -2966,7 +2975,7 @@ function lockNomsUpTo(seat) {
   refreshNomLocks();
 }
 function refreshNomLocks() {
-  var dealer = (st.dealer0 + entryRound) % st.n, k;
+  var dealer = seatAt(st.dealer0 + entryRound, st.n), k;
   for (k = 0; k < st.n; k++) {
     var row = $('srown' + k);
     if (!row) continue;
@@ -2984,7 +2993,7 @@ function renderScorer(editRound, prefill) {
   var r = isEdit ? editRound : st.round;
   entryRound = r;
   var R = E.ROUNDS[r];
-  var dealer = (st.dealer0 + r) % st.n;
+  var dealer = seatAt(st.dealer0 + r, st.n);
   $('scRound').textContent = (isEdit ? 'Fixing R' : 'R') + (r + 1);
   $('scCards').textContent = R.cards + (R.cards === 1 ? ' card' : ' cards') + ' \u00B7 of 16';
   if (st.rate === 10) {
@@ -3419,7 +3428,7 @@ function renderMisdeal() {
   st.names.forEach(function (nm) {
     var b = document.createElement('button');
     b.className = 'chipbtn' + (misdealWho === nm ? ' sel' : '');
-    b.textContent = shownName(nm) + (nm === st.names[(st.dealer0 + entryRound) % st.n] ? ' (dealt)' : '');
+    b.textContent = shownName(nm) + (nm === st.names[seatAt(st.dealer0 + entryRound, st.n)] ? ' (dealt)' : '');
     b.onclick = function () { misdealWho = nm; renderMisdeal(); };
     host.appendChild(b);
   });
@@ -3550,7 +3559,7 @@ $('fineMinus').onclick = function () { league.settings.fine = stepList(FINES, le
 $('finePlus').onclick  = function () { league.settings.fine = stepList(FINES, league.settings.fine,  1); saveLeague(); renderOpts(); };
 $('btnMisdeal').onclick = function () {
   if (!st || st.mode !== 'scorer') return;
-  misdealWho = st.names[(st.dealer0 + entryRound) % st.n];
+  misdealWho = st.names[seatAt(st.dealer0 + entryRound, st.n)];
   misdealWhy = 'misdeal';
   renderMisdeal();
   modal('misdealModal', true);
