@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOMS · v3.6.2 · S77FFY</title>
+<meta name="app-repo" content="Noms">
+<meta name="app-version" content="3.6.3">
+<title>NOMS · v3.6.3 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v3.6.2 — S77FFY
+   NOMS v3.6.3 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 /* Two skins. Neon is the default; Felt is the original table. */
@@ -574,6 +576,9 @@ body.cast #sheetModal .panel{max-width:none}
 #scr-scorer .topbar{padding-right:62px}
 body.cast #scr-scorer .topbar{padding-right:76px}
 #scr-scorer-setup .pad{padding-top:56px}
+#vtag{position:fixed;left:8px;bottom:calc(5px + env(safe-area-inset-bottom));z-index:70;
+  font-size:10px;letter-spacing:.1em;color:var(--bone-dim);opacity:.32;pointer-events:none;
+  font-variant-numeric:tabular-nums}
 #cogFab{position:fixed;top:calc(9px + env(safe-area-inset-top));right:12px;z-index:35;display:none;
   width:42px;height:42px;padding:9px;border-radius:50%;background:transparent;
   border:1px solid var(--line);color:var(--bone-dim);opacity:.8}
@@ -611,7 +616,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v3.6.2 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.6.3 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -941,6 +946,8 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
   <div class="fdeal" id="flashDeal"></div>
 </div></div>
 
+<div id="vtag">v3.6.3</div>
+
 <button id="cogFab" aria-label="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.1 14.8a1.5 1.5 0 0 0 .3 1.66l.05.05a1.83 1.83 0 1 1-2.59 2.59l-.05-.05a1.5 1.5 0 0 0-1.66-.3 1.5 1.5 0 0 0-.91 1.38v.14a1.83 1.83 0 1 1-3.66 0v-.07a1.5 1.5 0 0 0-.98-1.38 1.5 1.5 0 0 0-1.66.3l-.05.05a1.83 1.83 0 1 1-2.59-2.59l.05-.05a1.5 1.5 0 0 0 .3-1.66 1.5 1.5 0 0 0-1.38-.91H3.9a1.83 1.83 0 1 1 0-3.66h.07a1.5 1.5 0 0 0 1.38-.98 1.5 1.5 0 0 0-.3-1.66l-.05-.05A1.83 1.83 0 1 1 7.59 4.9l.05.05a1.5 1.5 0 0 0 1.66.3h.07a1.5 1.5 0 0 0 .91-1.38V3.9a1.83 1.83 0 1 1 3.66 0v.07a1.5 1.5 0 0 0 .91 1.38 1.5 1.5 0 0 0 1.66-.3l.05-.05a1.83 1.83 0 1 1 2.59 2.59l-.05.05a1.5 1.5 0 0 0-.3 1.66v.07a1.5 1.5 0 0 0 1.38.91h.14a1.83 1.83 0 1 1 0 3.66h-.07a1.5 1.5 0 0 0-1.38.91z"/></svg></button>
 
 <div id="toast"></div>
@@ -948,7 +955,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
 <script>
 // === ENGINE START ===
 /* ============================================================
-   NOMS v1.0.0 — game engine (pure logic, no DOM) — S77FFY
+   NOMS v3.6.3 — game engine (pure logic, no DOM) — S77FFY
    Trick-taking "Nomination Whist" for the crew.
    16 rounds: 1..7 cards, No Trumps (7), Blind (7), then 7..1.
    ============================================================ */
@@ -1725,7 +1732,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v3.6.2 — UI layer — S77FFY
+   NOMS v3.6.3 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1733,7 +1740,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '3.6.2';
+var VERSION = '3.6.3';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
