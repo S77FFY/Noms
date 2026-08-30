@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="app-repo" content="Noms">
-<meta name="app-version" content="3.6.6">
-<title>NOMS · v3.6.6 · S77FFY</title>
+<meta name="app-version" content="3.6.8">
+<title>NOMS · v3.6.8 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v3.6.6 — S77FFY
+   NOMS v3.6.8 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 /* Two skins. Neon is the default; Felt is the original table. */
@@ -609,7 +609,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v3.6.6 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.6.8 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -943,7 +943,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
   <div class="fdeal" id="flashDeal"></div>
 </div></div>
 
-<div id="vtag">v3.6.6</div>
+<div id="vtag">v3.6.8</div>
 
 <button id="cogFab" aria-label="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.1 14.8a1.5 1.5 0 0 0 .3 1.66l.05.05a1.83 1.83 0 1 1-2.59 2.59l-.05-.05a1.5 1.5 0 0 0-1.66-.3 1.5 1.5 0 0 0-.91 1.38v.14a1.83 1.83 0 1 1-3.66 0v-.07a1.5 1.5 0 0 0-.98-1.38 1.5 1.5 0 0 0-1.66.3l-.05.05a1.83 1.83 0 1 1-2.59-2.59l.05-.05a1.5 1.5 0 0 0 .3-1.66 1.5 1.5 0 0 0-1.38-.91H3.9a1.83 1.83 0 1 1 0-3.66h.07a1.5 1.5 0 0 0 1.38-.98 1.5 1.5 0 0 0-.3-1.66l-.05-.05A1.83 1.83 0 1 1 7.59 4.9l.05.05a1.5 1.5 0 0 0 1.66.3h.07a1.5 1.5 0 0 0 .91-1.38V3.9a1.83 1.83 0 1 1 3.66 0v.07a1.5 1.5 0 0 0 .91 1.38 1.5 1.5 0 0 0 1.66-.3l.05-.05a1.83 1.83 0 1 1 2.59 2.59l-.05.05a1.5 1.5 0 0 0-.3 1.66v.07a1.5 1.5 0 0 0 1.38.91h.14a1.83 1.83 0 1 1 0 3.66h-.07a1.5 1.5 0 0 0-1.38.91z"/></svg></button>
 
@@ -1018,6 +1018,7 @@ function newGame(opts) {
     mode: opts.mode || 'game',
     rate: opts.rate || 5,          // pence per point on the side bets
     buyIn: opts.buyIn != null ? opts.buyIn : 2,
+    carry: opts.carry || 0,        // coins carried over from a previous night
     fines: [],                     // {name, amount, round, reason}
     names: names.slice(), n: n,
     humanSeat: (typeof opts.humanSeat === 'number') ? opts.humanSeat : -1,
@@ -1180,7 +1181,7 @@ function advanceRound(st) {
   if (st.phase !== 'scored') throw new Error('round not finished');
   if (st.round === ROUNDS.length - 1) {
     st.phase = 'gameover';
-    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st) });
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
     return false;
   }
   st.dealer = (st.dealer + 1) % st.n;
@@ -1236,7 +1237,7 @@ function scorerEdit(st, roundIdx, noms, won) {
   }
   st.sheet[roundIdx] = row;
   recomputeSheet(st);
-  if (st.phase === 'gameover') st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st) });
+  if (st.phase === 'gameover') st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
   return true;
 }
 
@@ -1244,7 +1245,7 @@ function scorerNext(st) {
   if (st.phase !== 'scored') throw new Error('round not saved');
   if (st.round === ROUNDS.length - 1) {
     st.phase = 'gameover';
-    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st) });
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
     return false;
   }
   st.round++;
@@ -1269,12 +1270,24 @@ function scorerUndo(st) {
    Winner also collects a few pence per point off every other player,
    rounded UP to the nearest 50p per player.
    ratePence: 5 normally, 10 for a double-money night.      */
+/* Shave 10p at a time until the money divides into whole pence each way.
+   Whatever comes off is left in the pot for next week. */
+function splitEvenly(pounds, w) {
+  var p = Math.round(pounds * 100), cut = 0;
+  if (w <= 1) return { each: p / 100, left: 0 };
+  while (cut < 10 * w && (p - cut) % w !== 0) cut += 10;
+  if ((p - cut) % w !== 0) cut = 0;          // never shave money away for nothing
+  return { each: (p - cut) / w / 100, left: cut / 100 };
+}
+
 function computePayouts(names, totals, ratePence, opts) {
   var rate = ratePence || 5;
   opts = opts || {};
   var buyIn = opts.buyIn != null ? opts.buyIn : 2;   // £ per player
   var extra = opts.extra || 0;                        // fines already in the pot
-  var n = names.length, pot = buyIn * n + extra, i;
+  var carryIn = opts.carry || 0;                      // coins left over last time
+  var n = names.length, pot = buyIn * n + extra + carryIn, i;
+  var carryOut = 0;
   var order = [];
   for (i = 0; i < n; i++) order.push(i);
   order.sort(function (a, b) { return totals[b] - totals[a] || a - b; });
@@ -1285,9 +1298,29 @@ function computePayouts(names, totals, ratePence, opts) {
   });
   var note = '', sideList = [];
   if (winners.length > 1) {
-    var share = pot / winners.length;
-    winners.forEach(function (p) { rows[p].potShare = share; });
-    note = 'Tie for first — pot split ' + winners.map(function (p) { return names[p]; }).join(' & ') + '; side bets waived.';
+    // The tied winners share the whole pot — buy-ins and fines alike — and
+    // everyone below them still pays per point, split between the winners.
+    var W = winners.length;
+    var potSplit = splitEvenly(pot, W);
+    carryOut += potSplit.left;
+    winners.forEach(function (p) { rows[p].potShare = potSplit.each; });
+    for (i = 0; i < n; i++) {
+      var q = order[i];
+      if (winners.indexOf(q) !== -1) continue;
+      var gap = top - totals[q];
+      var owed = Math.ceil((gap * rate) / 50) * 50 / 100;
+      var s = splitEvenly(owed, W);        // the loser pays in full either way
+      carryOut += s.left;
+      rows[q].side -= owed;
+      rows[q].sidePaid = owed;
+      winners.forEach(function (w) {
+        rows[w].side += s.each;
+        sideList.push({ from: q, to: w, diff: gap, amount: s.each });
+      });
+    }
+    note = 'Tie for first \u2014 ' + winners.map(function (p) { return names[p]; }).join(' & ') +
+      ' share the pot, and the per-point money between them.' +
+      (carryOut > 0 ? ' ' + Math.round(carryOut * 100) + 'p would not split evenly, so it stays in the pot for next time.' : '');
   } else {
     var W = winners[0];
     rows[W].potShare = pot / 2;
@@ -1311,7 +1344,7 @@ function computePayouts(names, totals, ratePence, opts) {
   // each player collects or pays at the end — not profit vs their stake.
   rows.forEach(function (r) { r.net = r.potShare + r.side; });
   return { pot: pot, rows: rows, rank: order, note: note, sideList: sideList,
-           rate: rate, buyIn: buyIn, extra: extra };
+           rate: rate, buyIn: buyIn, extra: extra, carryIn: carryIn, carryOut: carryOut };
 }
 
 /* ================= the Pro player (difficulty 6) =================
@@ -1474,7 +1507,7 @@ function addFine(st, name, amount, reason) {
   if (!st.fines) st.fines = [];
   st.fines.push({ name: name, amount: amount, round: st.round, reason: reason || 'misdeal' });
   if (st.phase === 'gameover') {
-    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st) });
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
   }
   return fineTotal(st);
 }
@@ -1482,7 +1515,7 @@ function removeFine(st, idx) {
   if (!st.fines || idx < 0 || idx >= st.fines.length) return false;
   st.fines.splice(idx, 1);
   if (st.phase === 'gameover') {
-    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st) });
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
   }
   return true;
 }
@@ -1720,7 +1753,7 @@ var api = {
   simulateRound: simulateRound, simulateFromPlay: simulateFromPlay,
   nomAnalysis: nomAnalysis, playAnalysis: playAnalysis,
   snapshotRound: snapshotRound, restoreRound: restoreRound, coachNom: coachNom,
-  fineTotal: fineTotal, addFine: addFine, removeFine: removeFine
+  fineTotal: fineTotal, addFine: addFine, removeFine: removeFine, splitEvenly: splitEvenly
 };
 
 if (typeof module !== 'undefined' && module.exports) module.exports = api;
@@ -1730,7 +1763,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v3.6.6 — UI layer — S77FFY
+   NOMS v3.6.8 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1738,7 +1771,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '3.6.6';
+var VERSION = '3.6.8';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -2625,6 +2658,7 @@ function rewindRound() {
    RESULTS
    ============================================================ */
 function archiveGame() {
+  if (st.payouts) { league.carry = st.payouts.carryOut || 0; }   // coins stay for next week
   if (st.mode !== 'scorer') return; // league is for real nights, not CPU practice
   if (!st.gameId) st.gameId = 'g' + Date.now().toString(36) + Math.floor(Math.random() * 46656).toString(36);
   var rec = {
@@ -2667,7 +2701,8 @@ function openResults() {
   var mh = '<div class="mhead">Settle up \u2014 \u00A3' + pay.pot.toFixed(2).replace(/\.00$/, '') + ' pot' +
     (pay.rate === 10 ? ' \u00B7 double money' : '') + '</div>';
   mh += '<div class="mline">' + poundStr(pay.buyIn) + ' a head already in' +
-    (pay.extra > 0 ? ', plus ' + poundStr(pay.extra) + ' of fines' : '') + '</div>';
+    (pay.extra > 0 ? ', plus ' + poundStr(pay.extra) + ' of fines' : '') +
+    (pay.carryIn > 0 ? ', plus ' + poundStr(pay.carryIn) + ' carried over' : '') + '</div>';
   fines.forEach(function (f) {
     mh += '<div class="mline" style="opacity:.75">\u2022 ' + esc(f.name) + ' \u2014 ' + poundStr(f.amount) +
       ' (' + esc(f.reason) + ', round ' + (f.round + 1) + ')</div>';
@@ -2678,11 +2713,19 @@ function openResults() {
     }
   });
   if (pay.sideList.length) {
-    mh += '<div class="mhead" style="margin-top:12px">Then, out of pocket to ' + esc(st.names[pay.sideList[0].to]) + '</div>';
+    var payees = {}, nPayees = 0, k2;
+    pay.sideList.forEach(function (s) { if (!payees[s.to]) { payees[s.to] = 1; nPayees++; } });
+    mh += '<div class="mhead" style="margin-top:12px">Then, out of pocket' +
+      (nPayees === 1 ? ' to ' + esc(st.names[pay.sideList[0].to]) : '') + '</div>';
     pay.sideList.forEach(function (s) {
-      mh += '<div class="mline"><b>' + esc(st.names[s.from]) + '</b> pays ' + money(s.amount) +
+      mh += '<div class="mline"><b>' + esc(st.names[s.from]) + '</b> pays ' +
+        (nPayees > 1 ? '<b>' + esc(st.names[s.to]) + '</b> ' : '') + money(s.amount) +
         ' <span style="opacity:.7">(' + s.diff + ' behind)</span></div>';
     });
+  }
+  if (pay.carryOut > 0) {
+    mh += '<div class="mline" style="margin-top:10px;color:var(--gold-hi)">' +
+      poundStr(pay.carryOut) + ' would not split evenly \u2014 it stays in the pot for next time.</div>';
   }
   $('resMoney').innerHTML = mh;
   $('resNote').textContent = pay.note || '';
@@ -2863,7 +2906,8 @@ function startScorer() {
   if (pick.dealer == null) { toast('Pick who deals first'); return; }
   var dealerIdx = pick.sel.indexOf(pick.dealer);
   if (dealerIdx < 0) dealerIdx = 0;          // never leave it unresolved
-  st = E.newGame({ names: names, mode: 'scorer', rate: pick.rate, buyIn: league.settings.buyIn });
+  st = E.newGame({ names: names, mode: 'scorer', rate: pick.rate,
+                   buyIn: league.settings.buyIn, carry: league.carry || 0 });
   st.date = todayKey();
   E.scorerStart(st, dealerIdx);
   show('scr-scorer');
@@ -3412,6 +3456,10 @@ function renderOpts() {
     };
   } else {
     ab.innerHTML = '';
+  }
+  if (league.carry > 0) {
+    ab.innerHTML += '<div class="hint" style="margin-top:14px">' + poundStr(league.carry) +
+      ' is carried over from last time and goes into this pot.</div>';
   }
 }
 
