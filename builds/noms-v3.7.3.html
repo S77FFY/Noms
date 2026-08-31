@@ -1,0 +1,3741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="app-repo" content="Noms">
+<meta name="app-version" content="3.7.3">
+<title>NOMS · v3.7.3 · S77FFY</title>
+<style>
+/* ============================================================
+   NOMS v3.7.3 — S77FFY
+   Palette: purple felt / bone card stock / brass / scoresheet ink
+   ============================================================ */
+/* Two skins. Neon is the default; Felt is the original table. */
+:root{
+  --felt:#05070f; --felt2:#0d1430; --felt-edge:#01020a;
+  --purple:#a855f7; --purple-dk:#6d28d9; --panel:#0c1226;
+  --bone:#e9f2ff; --bone-dim:#8fa3c8; --paper:#f7f1df;
+  --ink:#101827; --ink-soft:#5b6b8a;
+  --gold:#22d3ee; --gold-hi:#8bf6ff; --gold-dk:#0b7f96;
+  --red:#a855f7; --red-hi:#d8a2ff; --green:#0f9d58; --green-hi:#5df2a8;
+  --line:rgba(139,246,255,.16);
+  --biro:#14141c;
+  --hand:'Bradley Hand','Noteworthy','Marker Felt','Segoe Print','Comic Sans MS',cursive;
+  --cw:clamp(68px,21vw,112px);
+  --glow:0 0 24px rgba(34,211,238,.45);
+}
+body.theme-felt{
+  background-image:radial-gradient(130% 90% at 50% -10%, var(--felt2) 0%, var(--felt) 52%, var(--felt-edge) 100%);
+  --felt:#241338; --felt2:#331a4f; --felt-edge:#140a22;
+  --bg-a:rgba(0,0,0,0); --bg-b:rgba(0,0,0,0);
+  --purple:#6c35cf; --purple-dk:#3d1a7e; --panel:#2b1546;
+  --bone:#f4ecd9; --bone-dim:#cfc2a4; --paper:#f7f1df;
+  --ink:#2a1733; --ink-soft:#6b5a72;
+  --gold:#d9a94c; --gold-hi:#f2c96e; --gold-dk:#8a6520;
+  --red:#c0392b; --red-hi:#ff7a6b; --green:#2e7d4f; --green-hi:#69c98f;
+  --line:rgba(244,236,217,.16);
+  --glow:none;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color:var(--bone);
+  background:
+    radial-gradient(120% 80% at 12% -8%, rgba(168,85,247,.30) 0%, rgba(168,85,247,0) 55%),
+    radial-gradient(110% 70% at 88% 8%, rgba(34,211,238,.22) 0%, rgba(34,211,238,0) 55%),
+    radial-gradient(130% 90% at 50% -10%, var(--felt2) 0%, var(--felt) 52%, var(--felt-edge) 100%);
+  background-attachment:fixed;
+  touch-action:manipulation;
+  min-height:100%;
+}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--gold-hi);outline-offset:2px;border-radius:6px}
+input{font:inherit}
+
+.serif{font-family:Georgia,'Times New Roman',serif}
+
+/* ---------- screens ---------- */
+.screen{position:fixed;inset:0;display:none;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+.screen.on{display:flex}
+.pad{width:100%;max-width:560px;margin:0 auto;padding:22px 18px 40px}
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-block;padding:13px 22px;border-radius:12px;font-weight:700;letter-spacing:.02em;
+  background:linear-gradient(180deg,var(--gold-hi),var(--gold));color:#04121a;
+  border:1px solid var(--gold-dk);
+  box-shadow:0 3px 10px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.45),0 0 22px rgba(34,211,238,.32);
+}
+body.theme-felt .btn{
+  background:linear-gradient(180deg,var(--gold-hi),#c9963a);color:#241338;
+  box-shadow:0 3px 10px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.5);
+}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.4;transform:none;cursor:default}
+.btn.ghost{background:rgba(244,236,217,.06);color:var(--bone);border:1px solid var(--line);box-shadow:none}
+.btn.wide{display:block;width:100%;text-align:center}
+.btn.danger{background:rgba(192,57,43,.16);color:var(--red-hi);border-color:rgba(192,57,43,.5);box-shadow:none}
+.iconbtn{padding:6px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(244,236,217,.06);font-size:15px;line-height:1}
+
+/* ---------- title screen ---------- */
+#scr-title{align-items:center;justify-content:center;text-align:center}
+.mark{position:relative;border:1px solid var(--gold);border-radius:20px;padding:30px 34px 24px;margin-bottom:34px;
+  background:linear-gradient(160deg,rgba(34,211,238,.10),rgba(168,85,247,.12));
+  box-shadow:0 0 30px rgba(34,211,238,.28),inset 0 0 30px rgba(168,85,247,.14)}
+body.theme-felt .mark{border:3px double var(--gold);border-radius:16px;background:rgba(0,0,0,.18);box-shadow:none}
+.mark::before,.mark::after{position:absolute;font-size:15px;color:var(--gold)}
+.mark::before{content:'\2660  \2663';top:8px;left:12px;letter-spacing:6px}
+.mark::after{content:'\2665  \2666';bottom:8px;right:12px;letter-spacing:6px;color:var(--red-hi)}
+.mark h1{font-size:clamp(62px,19vw,104px);line-height:.95;letter-spacing:.14em;margin-right:-.14em;
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-weight:800;
+  color:#fff;
+  text-shadow:0 0 6px #fff,0 0 18px var(--gold),0 0 42px var(--gold),0 0 78px var(--purple)}
+body.theme-felt .mark h1{font-family:Georgia,serif;font-weight:400;letter-spacing:.13em;margin-right:-.13em;
+  color:var(--bone);text-shadow:0 2px 0 rgba(0,0,0,.55),0 0 34px rgba(217,169,76,.28)}
+.mark .suits{font-size:clamp(17px,4.5vw,22px);letter-spacing:14px;margin-right:-14px;margin-bottom:8px;color:var(--gold)}
+.mark .suits .r{color:var(--red-hi)}
+.mark .tagline{font-family:Georgia,serif;font-style:italic;color:var(--bone-dim);font-size:15px;margin-top:10px}
+.themerow{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.themerow button{padding:7px 15px;border-radius:999px;border:1px solid var(--line);
+  background:rgba(255,255,255,.05);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-dim)}
+.themerow button.sel{border-color:var(--gold);color:var(--gold-hi);background:rgba(34,211,238,.14)}
+.titlebtns{display:flex;flex-direction:column;gap:12px;width:min(320px,84vw)}
+.foot{margin-top:34px;font-size:12px;color:var(--bone-dim);letter-spacing:.14em;text-transform:uppercase}
+
+/* ---------- shared setup blocks ---------- */
+.h2{font-family:Georgia,serif;font-size:26px;letter-spacing:.04em;margin-bottom:4px}
+.sub{color:var(--bone-dim);font-size:14px;margin-bottom:20px}
+.lbl{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:22px 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chipbtn{padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(244,236,217,.05);font-weight:600}
+.chipbtn.sel{border-color:var(--gold);background:rgba(217,169,76,.16);color:var(--gold-hi)}
+.addrow{display:flex;gap:8px;margin-top:10px}
+.addrow input{flex:1;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:10px;color:var(--bone);padding:11px 12px}
+.addrow input::placeholder{color:var(--bone-dim)}
+.addrow button{padding:0 18px;border-radius:10px;border:1px solid var(--gold-dk);background:rgba(217,169,76,.2);color:var(--gold-hi);font-weight:700}
+.chipbtn .x{margin-left:7px;opacity:.55;font-weight:400}
+.stepper{display:flex;align-items:center;gap:14px}
+.stepper button{width:46px;height:46px;border-radius:12px;border:1px solid var(--line);background:rgba(244,236,217,.06);font-size:22px;font-weight:700}
+.stepper b{font-family:Georgia,serif;font-size:30px;min-width:44px;text-align:center}
+.seg{display:flex;gap:6px}
+.seg.wrap{flex-wrap:wrap}
+.seg.wrap button{flex:1 0 16%}
+.seg button.pro{border-color:rgba(242,201,110,.35)}
+.seg button.pro.sel{background:rgba(242,201,110,.28)}
+.protag{font-size:8px;letter-spacing:.1em;font-weight:800;color:#241338;background:var(--gold);
+  border-radius:4px;padding:1px 4px;margin-left:5px;vertical-align:1px}
+.seg button{flex:1;padding:11px 0;border:1px solid var(--line);border-radius:10px;background:rgba(244,236,217,.05);font-weight:700;font-size:16px}
+.seg button.sel{border-color:var(--gold);background:rgba(217,169,76,.18);color:var(--gold-hi)}
+.hint{font-size:13px;color:var(--bone-dim);margin-top:8px;font-style:italic}
+.tickrow{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:14px;cursor:pointer}
+.tickrow input{width:22px;height:22px;accent-color:var(--gold);flex:none}
+.tickrow.off{opacity:.45}
+.srow.pending .mini-step b{color:var(--bone-dim);opacity:.5}
+.srow.pending .snm2{color:var(--bone-dim)}
+.pendtag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--bone-dim);
+  border:1px dashed var(--line);border-radius:5px;padding:1px 5px;margin-left:7px}
+.locktag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-hi);
+  border:1px solid rgba(34,211,238,.45);border-radius:5px;padding:1px 5px;margin-left:7px}
+.aliasrow{display:flex;align-items:center;gap:10px;padding:6px 0}
+.aliasrow .an{flex:1;font-weight:600;font-size:14px}
+.aliasrow input{width:130px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:9px;
+  color:var(--bone);padding:9px 10px;font-size:14px}
+.finerow{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--bone-dim);padding:3px 0}
+.finerow b{color:var(--bone)}
+.setupfoot{margin-top:30px;display:flex;flex-direction:column;gap:10px}
+
+/* scorer player picker */
+.prow{display:flex;align-items:center;gap:10px;padding:7px 0}
+.obadge{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:rgba(244,236,217,.05);
+  font-weight:800;font-size:15px;flex:none;color:var(--bone-dim)}
+.prow.sel .obadge{border-color:var(--gold);background:rgba(217,169,76,.2);color:var(--gold-hi)}
+.prow input{flex:1;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:10px;color:var(--bone);padding:10px 12px}
+.prow.sel input{border-color:rgba(217,169,76,.5)}
+
+/* ---------- the club table, from above ----------
+   Stadium shape: straight long sides, semicircular ends. Padded black
+   leather rail, oak surround with steel cup holders, red baize centre. */
+.tabletop{position:relative;width:min(96vw,560px);aspect-ratio:1.85/1;margin:6px auto 12px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#3a3a40 0%,#1c1c20 18%,#0e0e11 55%,#232327 100%);
+  box-shadow:0 20px 44px rgba(0,0,0,.6),
+             inset 0 4px 9px rgba(255,255,255,.20),
+             inset 0 -8px 18px rgba(0,0,0,.75);
+}
+.tabletop .wood{position:absolute;inset:11.5% 6.2%;border-radius:999px;
+  background:
+    repeating-linear-gradient(96deg, rgba(0,0,0,.05) 0 3px, rgba(255,255,255,.035) 3px 7px),
+    linear-gradient(170deg,#c98a4b 0%,#b3762f 40%,#9a5f22 100%);
+  box-shadow:inset 0 0 0 2px rgba(0,0,0,.45), inset 0 4px 12px rgba(0,0,0,.35),
+             0 2px 8px rgba(0,0,0,.5)}
+.tabletop .baize{position:absolute;inset:30% 17%;border-radius:999px;
+  background:
+    repeating-linear-gradient(45deg, rgba(0,0,0,.07) 0 2px, rgba(255,255,255,.05) 2px 5px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.05) 0 2px, rgba(255,255,255,.03) 2px 5px),
+    linear-gradient(170deg,#e2404e 0%,#cf2f3d 45%,#ab2130 100%);
+  box-shadow:inset 0 0 22px rgba(0,0,0,.35), 0 1px 3px rgba(0,0,0,.5),
+             inset 0 0 0 2px rgba(0,0,0,.18)}
+.cup{position:absolute;width:4.6%;aspect-ratio:1;transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:linear-gradient(160deg,#e8ecf0,#9aa3ad 45%,#4d545c 100%);
+  box-shadow:inset 0 2px 3px rgba(255,255,255,.65), inset 0 -2px 4px rgba(0,0,0,.5),
+             0 1px 3px rgba(0,0,0,.6);z-index:2}
+.cup::after{content:'';position:absolute;inset:13%;border-radius:999px;
+  background:radial-gradient(closest-side at 40% 30%, #2b3036, #101317)}
+.tseat{position:absolute;transform:translate(-50%,-50%);text-align:center;z-index:4}
+.tseat .tn{font-size:12px;font-weight:700;line-height:1.15;
+  background:rgba(4,8,16,.82);border:1px solid var(--line);border-radius:999px;padding:4px 9px;
+  display:inline-block;max-width:86px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tseat.hot .tn{border-color:var(--gold);color:var(--gold-hi);background:rgba(34,211,238,.24);
+  box-shadow:0 0 18px rgba(34,211,238,.6)}
+.tseat.ace .tn{background:var(--gold);color:#04121a;border-color:var(--gold-hi);
+  box-shadow:0 0 28px rgba(34,211,238,.85)}
+.pipcard{display:inline-block;background:#fbf7ec;color:#141419;border:1px solid #cfc2a4;border-radius:3px;
+  font-family:Georgia,'Times New Roman',serif;font-weight:700;line-height:1;
+  font-size:11px;padding:3px 5px 2px;margin-bottom:4px;box-shadow:0 2px 4px rgba(0,0,0,.55)}
+.pipcard i{font-style:normal;display:block;font-size:9px;line-height:1;margin-top:1px}
+.tseat.you .pipcard{box-shadow:0 0 0 2px var(--gold),0 2px 4px rgba(0,0,0,.55)}
+body.cast .pipcard{font-size:15px;padding:4px 7px 3px}
+body.cast .pipcard i{font-size:12px}
+.tseat.you .tn{border-color:var(--gold)}
+#huntSlot{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5}
+#huntSlot .card{--cw:clamp(44px,10.5vw,62px)}
+.trail{display:flex;flex-wrap:wrap;justify-content:center;min-height:calc(var(--cw)*0.9);
+  padding:2px 10px 6px;margin-bottom:6px}
+.trail .card{--cw:clamp(30px,7vw,42px);margin-left:calc(var(--cw)*-0.55);box-shadow:0 3px 7px rgba(0,0,0,.5)}
+.trail .card:first-child{margin-left:0}
+.trail .card.lap{margin-left:calc(var(--cw)*0.22)}
+.trailcount{text-align:center;font-size:12px;color:var(--bone-dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+
+/* ---------- ace hunt ---------- */
+#scr-hunt{align-items:center;text-align:center}
+#huntSeats{position:absolute;inset:0}
+#huntMsg{font-family:Georgia,serif;font-style:italic;font-size:18px;min-height:26px;margin-bottom:22px;color:var(--bone-dim)}
+#huntMsg.done{color:var(--gold-hi);font-style:normal;font-weight:700}
+
+/* ---------- game table ---------- */
+#scr-game{overflow:hidden}
+.topbar{display:flex;align-items:center;gap:8px;padding:10px 12px;flex-wrap:wrap}
+.chip{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(0,0,0,.28);font-size:13px;font-weight:600;letter-spacing:.02em}
+.chip .sym{font-size:15px}
+.chip.over{color:var(--red-hi)} .chip.under{color:var(--green-hi)}
+.chip.blind{color:var(--gold-hi);border-color:rgba(217,169,76,.5)}
+.spacer{flex:1}
+
+.seats{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;padding:2px 8px 6px}
+.seat{min-width:88px;padding:7px 9px 8px;border-radius:12px;border:1px solid var(--line);background:rgba(0,0,0,.26);text-align:center;transition:border-color .15s,box-shadow .15s}
+.seat.active{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),0 0 18px rgba(34,211,238,.45);animation:seatpulse 1.1s ease-in-out infinite}
+@keyframes seatpulse{50%{box-shadow:0 0 0 1px var(--gold),0 0 30px rgba(34,211,238,.7)}}
+.snm{font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center;gap:5px}
+.dbadge{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;
+  background:var(--gold);color:#241338;font-size:10px;font-weight:900}
+.sback{display:flex;justify-content:center;margin:6px 0 5px;height:26px}
+.sback .card{--cw:18px;margin-left:-11px}
+.sback .card:first-child{margin-left:0}
+.snw{font-size:11px;color:var(--bone-dim)}
+.snw b{color:var(--bone)}
+.snw .hit{color:var(--green-hi)} .snw .bust{color:var(--red-hi)}
+
+.tablemid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 10px;min-height:150px}
+.trick{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;align-items:flex-start}
+.tplay{text-align:center}
+.tplay .card{--cw:clamp(56px,15vw,84px)}
+.tnm{font-size:11px;color:var(--bone-dim);margin-top:4px}
+.tplay.winner .card{box-shadow:0 0 0 2px var(--gold-hi),0 0 22px rgba(242,201,110,.6)}
+.tplay.winner .tnm{color:var(--gold-hi);font-weight:700}
+.msg{font-family:Georgia,serif;font-style:italic;font-size:16px;color:var(--bone-dim);margin-top:14px;text-align:center;min-height:22px}
+.msg.gold{color:var(--gold-hi);font-style:normal}
+
+.me{padding:4px 8px calc(14px + env(safe-area-inset-bottom))}
+.meinfo{display:flex;justify-content:center;align-items:center;gap:8px;font-size:13px;color:var(--bone-dim);margin-bottom:8px}
+.meinfo b{color:var(--bone)}
+.hand{display:flex;justify-content:center;min-height:calc(var(--cw)*1.4 + 12px)}
+.hand .card{margin-left:calc(var(--cw)*-0.50);transition:transform .12s}
+.hand .card:first-child{margin-left:0}
+.hand .card.can{transform:translateY(-12px);cursor:pointer;box-shadow:0 6px 14px rgba(0,0,0,.5),0 0 0 1px rgba(242,201,110,.65)}
+.hand .card.dim{opacity:.45}
+
+/* ---------- cards ---------- */
+.card{
+  position:relative;width:var(--cw);height:calc(var(--cw)*1.4);border-radius:9%;
+  background:#fbf7ec;border:1px solid #cfc2a4;color:#221b26;
+  box-shadow:0 2px 6px rgba(0,0,0,.45);flex:none;user-select:none;
+  font-size:var(--cw); /* children size in fractions of card width */
+}
+.card.red{color:#c0392b}   /* suits stay red on the card stock in both skins */
+.corner{position:absolute;top:4%;left:6%;text-align:center;line-height:1.02}
+.corner b{display:block;font-family:Georgia,serif;font-size:.21em;font-weight:700}
+.corner i{display:block;font-style:normal;font-size:.17em}
+.corner.br{top:auto;left:auto;bottom:4%;right:6%;transform:rotate(180deg)}
+.pip{position:absolute;transform:translate(-50%,-50%);font-size:.22em;line-height:1}
+.pip.f{transform:translate(-50%,-50%) rotate(180deg)}
+.apip{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:.52em;line-height:1}
+.apip.asp{font-size:.66em;text-shadow:0 0 1px #221b26}
+.court{position:absolute;inset:16% 18%;border:2px double currentColor;border-radius:8%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2%}
+.court .cl{font-family:Georgia,serif;font-size:.4em;font-weight:700;line-height:1}
+.court .cs{font-size:.2em;line-height:1}
+.card.back{
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.28) 0 5.5%, rgba(255,255,255,0) 6.5%),
+    repeating-linear-gradient(45deg, rgba(139,246,255,.20) 0 1.5px, transparent 1.5px 7px),
+    repeating-linear-gradient(-45deg, rgba(139,246,255,.20) 0 1.5px, transparent 1.5px 7px),
+    linear-gradient(155deg,#7b3ff2,#1b2ea8);
+  border:2px solid #cfe9ff;
+}
+body.theme-felt .card.back{
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.25) 0 5.5%, rgba(255,255,255,0) 6.5%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.15) 0 1.5px, transparent 1.5px 7px),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,.15) 0 1.5px, transparent 1.5px 7px),
+    linear-gradient(155deg,#7b40e2,#4a1e99);
+  border:2px solid #f4ecd9;
+}
+.card.back::after{content:'';position:absolute;inset:7%;border:1.5px solid rgba(255,255,255,.55);border-radius:8%}
+.flipin{animation:flipin .35s ease-out}
+@keyframes flipin{from{transform:rotateY(88deg)}to{transform:rotateY(0)}}
+.dealin{animation:dealin .3s ease-out both}
+@keyframes dealin{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.pop{animation:pop .35s ease-out}
+@keyframes pop{0%{transform:scale(.4)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+
+.shuffling{position:relative;width:calc(var(--cw)*2.4);height:calc(var(--cw)*1.5)}
+.shuffling .card{position:absolute;left:50%;top:50%;margin:calc(var(--cw)*-0.7) 0 0 calc(var(--cw)*-0.5)}
+.shuffling .card:nth-child(odd){animation:shufL .4s ease-in-out infinite alternate}
+.shuffling .card:nth-child(even){animation:shufR .4s ease-in-out infinite alternate}
+.shuffling .card:nth-child(2){animation-delay:.08s}
+.shuffling .card:nth-child(3){animation-delay:.16s}
+.shuffling .card:nth-child(4){animation-delay:.24s}
+.shuffling .card:nth-child(5){animation-delay:.32s}
+@keyframes shufL{from{transform:translateX(-4%) rotate(0)}to{transform:translateX(-44%) rotate(-8deg)}}
+@keyframes shufR{from{transform:translateX(4%) rotate(0)}to{transform:translateX(44%) rotate(8deg)}}
+
+/* ---------- modals ---------- */
+.modal{position:fixed;inset:0;display:none;align-items:flex-end;justify-content:center;
+  background:var(--felt-edge);z-index:40;padding:0}
+.modal.on{display:flex}
+.panel{width:100%;max-width:560px;max-height:92vh;overflow-y:auto;background:var(--panel);
+  border:1px solid var(--line);border-bottom:none;border-radius:20px 20px 0 0;padding:20px 18px calc(22px + env(safe-area-inset-bottom))}
+@media(min-width:600px){.modal{align-items:center;padding:20px}.panel{border-radius:20px;border-bottom:1px solid var(--line)}}
+.ptitle{font-family:Georgia,serif;font-size:23px;letter-spacing:.03em;margin-bottom:2px}
+.psub{color:var(--bone-dim);font-size:14px;margin-bottom:16px}
+.nomgrid{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:14px}
+.nombtn{width:52px;height:52px;border-radius:12px;border:1px solid var(--line);background:rgba(244,236,217,.07);
+  font-family:Georgia,serif;font-size:23px;font-weight:700}
+.nombtn:not(:disabled):active{background:rgba(217,169,76,.25)}
+.nombtn:disabled{opacity:.28;text-decoration:line-through}
+.nomhand{display:flex;justify-content:center;flex-wrap:wrap;margin:2px 0 16px;--cw:clamp(52px,14vw,80px)}
+.nomhand .card{margin-left:calc(var(--cw)*-0.45)}
+.nomhand .card:first-child{margin-left:0}
+.warn{font-size:13px;color:var(--red-hi);font-style:italic}
+
+/* ---------- scoresheet ---------- */
+/* A full table has to fit a phone screen, or the last player falls off the
+   right-hand edge without anybody noticing. Tighten up as the table fills. */
+@media (max-width:560px){
+  .sheetT.p6 th.pname,.sheetT.p7 th.pname{font-size:12px;letter-spacing:-.02em}
+  .sheetT.p6 td,.sheetT.p7 td{min-width:36px;padding-left:2px;padding-right:2px}
+  .sheetT.p6 th,.sheetT.p7 th{padding-left:2px;padding-right:2px}
+  .sheetT.p6 .tt,.sheetT.p7 .tt{font-size:17px}
+  .sheetT.p6 .tt sup,.sheetT.p7 .tt sup{font-size:.46em;padding:0 .16em}
+  .sheetT.p6 .dcol,.sheetT.p7 .dcol{font-size:11px;max-width:42px;min-width:34px}
+  .sheetT.p7 .rlab{min-width:24px}
+  .sheetT.p5 th.pname{font-size:14px}
+}
+/* if it still overflows, shade the edge it runs off and say so */
+.sheetwrap.scrolls{box-shadow:inset -20px 0 20px -20px rgba(0,0,0,.55)}
+#sheetModal .sheetwrap.scrolls{box-shadow:inset -22px 0 22px -22px rgba(0,0,0,.5)}
+.swipehint{color:#a2621e;font-size:12px;letter-spacing:.05em}
+
+/* pre-printed white sheet, filled in with a black biro */
+.sheetwrap{overflow-x:auto;background:#fff;border-radius:10px;border:1px solid #cfcfd6;
+  box-shadow:0 2px 10px rgba(0,0,0,.35);margin-bottom:16px}
+#sheetTbl,#sheetTbl2{border-collapse:collapse;width:100%;color:var(--biro);font-size:12px;background:#fff}
+.sheetT th{font-family:Georgia,serif;font-size:11px;letter-spacing:.04em;padding:8px 5px;border-bottom:2px solid #9a9aa6;
+  white-space:nowrap;font-weight:700;color:#5c5c68;text-transform:uppercase}
+.sheetT th.pname{font-family:var(--hand);font-size:17px;font-weight:400;text-transform:none;letter-spacing:0;
+  color:var(--biro);padding-bottom:5px}
+.sheetT th.pname span{display:inline-block}
+.sheetT td{padding:7px 5px 4px;border-bottom:1px solid #dcdce4;text-align:center;min-width:44px}
+.sheetT .rlab{font-family:Georgia,serif;font-weight:700;color:#5c5c68;border-right:2px solid #9a9aa6;min-width:30px;background:#f4f4f7}
+.sheetT .dcol{font-family:var(--hand);font-size:13px;color:var(--biro);white-space:nowrap;max-width:64px;overflow:hidden;
+  text-overflow:ellipsis;min-width:40px;border-right:1px solid #c6c6d0;text-align:center;padding:4px 6px}
+.sheetT th.dcol{font-family:Georgia,serif;font-size:11px;letter-spacing:.05em;color:#5c5c68}
+/* names stay put at the top, round labels stay put on the left */
+.sheetT thead th{position:sticky;top:0;z-index:3;background:#fff;box-shadow:inset 0 -2px 0 #9a9aa6}
+.sheetT .rlab{position:sticky;left:0;z-index:2}
+.sheetT thead th.rlab{z-index:4}
+.sheetT tr.cur td{background:#fff8e2}
+.sheetT tr.sel td{background:#dbe7ff;box-shadow:inset 0 1px 0 #1b3fa8,inset 0 -1px 0 #1b3fa8}
+.sheetT tr.sel .rlab{background:#c6daff}
+.sheetT .tt{display:block;font-family:var(--hand);font-weight:700;font-size:21px;line-height:1.15;color:var(--biro)}
+.sheetT .tt sup{font-size:.44em;font-weight:600;line-height:1;position:relative;top:-.62em;
+  margin-left:.18em;opacity:.75}   /* same colour as the score it belongs to */
+.sheetT .hit .tt{color:#0b6b3a}
+/* still perfect — not gone down once all night */
+.sheetT .perfect .tt{color:#00b83c;text-shadow:0 0 1px rgba(0,184,60,.4)}
+.sheetT tfoot td.perfect{color:#00b83c}
+.sheetT .perfect .tt sup{opacity:.85}
+.sheetT .miss .tt{color:#c0211b}
+.sheetT .pend{color:#c9c9d2}
+.sheetT tfoot td{border-top:2px solid #9a9aa6;font-family:var(--hand);font-weight:700;font-size:19px;padding:7px 5px;color:var(--biro)}
+.sheetT tfoot .rlab{font-family:Georgia,serif;font-size:11px}
+.cry{display:inline-block;vertical-align:-.2em;color:#c0211b}
+
+/* the sheet takes the whole screen, like a real piece of paper */
+#sheetModal{align-items:stretch;justify-content:center;padding:0;background:var(--felt-edge)}
+#sheetModal .panel{width:100%;max-width:none;height:100%;max-height:none;border:none;border-radius:0;
+  background:#fff;padding:0;display:flex;flex-direction:column;overflow:hidden}
+.sheettop{flex:none;padding:calc(12px + env(safe-area-inset-top)) 16px 9px;background:#fff;border-bottom:1px solid #dcdce4}
+.sheettop .ptitle{color:var(--biro);margin-bottom:1px}
+.sheettop .psub{color:#6a6a76;margin-bottom:0;font-size:13px}
+#sheetModal .sheetwrap{flex:1;min-height:0;overflow:auto;margin:0;border:none;border-radius:0;box-shadow:none}
+#sheetModal #sheetTbl{height:100%}
+#sheetModal .sheetT td,#sheetModal .sheetT th{padding-left:4px;padding-right:4px}
+.sheetbar{flex:none;display:flex;flex-direction:column;gap:9px;background:#fff;border-top:1px solid #dcdce4;
+  padding:11px 16px calc(13px + env(safe-area-inset-bottom));box-shadow:0 -6px 16px rgba(0,0,0,.09)}
+.sheetbar .btn.ghost{background:#f2f2f6;color:#3a3a46;border:1px solid #c6c6d0}
+@media(min-width:700px){
+  #sheetModal .panel{max-width:760px;height:100%}
+}
+
+/* ---------- results ---------- */
+.standrow{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--line)}
+.standrow .pos{font-family:Georgia,serif;font-size:19px;font-weight:700;width:44px;color:var(--bone-dim)}
+.standrow.first .pos{color:var(--gold-hi)}
+.standrow .nm{flex:1;font-weight:700;font-size:16px}
+.standrow .pts{color:var(--bone-dim);font-size:13px;margin-right:10px}
+.standrow .net{font-weight:800;font-size:15px}
+.net.plus{color:var(--green-hi)} .net.minus{color:var(--red-hi)}
+.moneyblock{margin-top:18px;padding:14px;border:1px solid var(--line);border-radius:12px;background:rgba(0,0,0,.22)}
+.moneyblock .mline{font-size:14px;padding:4px 0;color:var(--bone-dim)}
+.moneyblock .mline b{color:var(--bone)}
+.moneyblock .mhead{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+
+/* ---------- scorer entry ---------- */
+#scorerBody{max-width:560px;margin:0 auto;width:100%;padding:0 16px calc(20px + env(safe-area-inset-bottom))}
+#scorerBody .setupfoot{flex-direction:row;flex-wrap:wrap;gap:10px;margin-top:20px}
+#scorerBody .setupfoot .btn{flex:1 1 45%;display:block;width:auto;padding:14px 10px}
+/* Columns are filled top to bottom, then across, so the nom order still reads
+   down the page. Set from JS to suit the number playing. */
+.colgrid{display:grid;grid-auto-flow:column;gap:0 26px}
+body.cast .colgrid{gap:0 44px}
+.srow{display:flex;align-items:center;gap:10px;padding:6px 0}
+.srow .snm2{flex:1;font-weight:600;font-size:15px;display:flex;align-items:center;gap:6px}
+.srow.forbid .snm2{color:var(--red-hi)}
+.mini-step{display:flex;align-items:center;gap:8px}
+.mini-step button{width:42px;height:42px;border-radius:10px;border:1px solid var(--line);background:rgba(244,236,217,.06);font-size:19px;font-weight:700}
+.mini-step b{font-family:Georgia,serif;font-size:21px;min-width:26px;text-align:center}
+.srow.forbid .mini-step b{color:var(--red-hi)}
+.tallyline{display:flex;gap:8px;align-items:center;margin:8px 0 4px;font-size:13px;color:var(--bone-dim);flex-wrap:wrap}
+
+/* ---------- the coach ---------- */
+#coach{margin:2px 0 16px}
+.coachbox{border:1px solid rgba(217,169,76,.4);background:rgba(217,169,76,.09);border-radius:12px;padding:11px 13px}
+.coachline{font-size:14px;line-height:1.5;color:var(--bone-dim)}
+.coachline b{color:var(--gold-hi)}
+.coachline+.coachline{margin-top:6px}
+.odds{display:flex;gap:4px;margin-top:10px;align-items:flex-end;height:46px}
+.odds div{flex:1;background:rgba(244,236,217,.14);border-radius:4px 4px 0 0;position:relative;min-height:2px}
+.odds div.pick{background:var(--gold)}
+.odds span{position:absolute;bottom:-16px;left:0;right:0;text-align:center;font-size:10px;color:var(--bone-dim)}
+.odds div.pick span{color:var(--gold-hi);font-weight:700}
+.oddswrap{padding-bottom:18px}
+.verdict{margin-top:9px;font-size:13px;font-style:italic;color:var(--bone-dim)}
+.verdict.good{color:var(--green-hi);font-style:normal}
+.verdict.bad{color:var(--red-hi);font-style:normal}
+.trainchip{border-color:rgba(217,169,76,.5);color:var(--gold-hi)}
+
+/* ---------- comic punch ---------- */
+#punch{position:fixed;inset:0;z-index:58;display:none;align-items:center;justify-content:center;overflow:hidden;
+  background:radial-gradient(70% 60% at 50% 45%, #4b2477 0%, #240f3d 60%, #140a22 100%)}
+#punch.on{display:flex}
+.burst{position:absolute;inset:0;width:100%;height:100%;display:block}
+.burst .rays{fill:rgba(139,246,255,.20)}   /* spun about 0,0 by the SVG itself */
+.punchwrap{position:relative;text-align:center;padding:0 16px}
+.punchname{font-family:Georgia,serif;font-weight:700;font-size:clamp(46px,15vw,150px);line-height:.92;
+  letter-spacing:.02em;color:#f7e6b8;text-transform:uppercase;
+  text-shadow:4px 4px 0 #b3231a, 8px 8px 0 #2a1030, 0 0 60px rgba(242,201,110,.5);
+  transform:rotate(-4deg);animation:slam .5s cubic-bezier(.2,1.6,.35,1) both}
+@keyframes slam{0%{transform:rotate(-4deg) scale(2.6);opacity:0}60%{transform:rotate(-4deg) scale(.93);opacity:1}100%{transform:rotate(-4deg) scale(1)}}
+.punchsub{margin-top:14px;font-family:Georgia,serif;font-size:clamp(15px,4vw,26px);letter-spacing:.22em;
+  text-transform:uppercase;color:var(--gold-hi);animation:slam .5s .16s cubic-bezier(.2,1.6,.35,1) both}
+.punchcard{margin-top:20px;display:flex;justify-content:center;animation:slideup .55s .3s cubic-bezier(.2,1.15,.35,1) both}
+@keyframes slideup{from{transform:translateY(90vh) rotate(-14deg);opacity:0}to{transform:translateY(0) rotate(0);opacity:1}}
+.punchcard .card{--cw:clamp(78px,25vw,150px)}
+.punchtap{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom));left:0;right:0;text-align:center;
+  font-size:13px;color:var(--bone-dim);letter-spacing:.14em;text-transform:uppercase}
+
+/* ---------- round flash ---------- */
+#flash{position:fixed;inset:0;z-index:55;display:none;align-items:center;justify-content:center;
+  background:radial-gradient(80% 60% at 50% 50%, #1b1038, #060812);text-align:center}
+#flash.on{display:flex;animation:flashfade .3s ease-out}
+@keyframes flashfade{from{opacity:0}to{opacity:1}}
+#flash .fin{animation:flashpop .45s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes flashpop{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+#flash .frd{font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+#flash .fbig{font-family:Georgia,serif;font-size:clamp(52px,17vw,110px);line-height:1;letter-spacing:.04em;
+  color:var(--bone);text-shadow:0 3px 0 rgba(0,0,0,.5),0 0 44px rgba(217,169,76,.35)}
+#flash .fsub{font-family:Georgia,serif;font-style:italic;font-size:clamp(17px,5vw,24px);color:var(--gold-hi);margin-top:14px}
+#flash .fdeal{font-size:14px;color:var(--bone-dim);margin-top:18px;letter-spacing:.05em}
+#flash .fsuits{font-size:20px;letter-spacing:12px;margin-right:-12px;color:var(--gold);margin-bottom:18px}
+#flash .fsuits .r{color:var(--red-hi)}
+
+/* ---------- scorer big header ---------- */
+.schead{padding:14px 16px 4px;max-width:560px;margin:0 auto;width:100%}
+.schead .scline1{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.schead .scr{font-family:Georgia,serif;font-size:clamp(30px,8.5vw,44px);line-height:1;letter-spacing:.02em}
+.schead .sccards{font-family:Georgia,serif;font-style:italic;font-size:clamp(16px,4.5vw,21px);color:var(--gold-hi)}
+.schead .scd{font-size:clamp(15px,4vw,18px);color:var(--bone-dim);margin-top:8px}
+.schead .scd b{color:var(--bone);font-weight:700}
+.schead .scd .dbadge{vertical-align:1px}
+
+/* ---------- league ---------- */
+.monthbar{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.monthbar b{flex:1;text-align:center;font-family:Georgia,serif;font-size:22px;letter-spacing:.02em}
+.monthbar button{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:rgba(244,236,217,.06);font-size:20px}
+.ltable{width:100%;border-collapse:collapse;margin-top:4px}
+.ltable th{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-align:left;padding:6px 5px;border-bottom:1px solid var(--line)}
+.ltable td{padding:9px 5px;border-bottom:1px solid var(--line);font-size:15px}
+.ltable td.pos{width:34px;font-family:Georgia,serif;color:var(--bone-dim)}
+.ltable tr.top td.pos{color:var(--gold-hi);font-weight:700}
+.ltable td.nm{font-weight:700}
+.ltable td.num{text-align:right;width:52px;font-family:Georgia,serif;font-size:18px}
+.ltable td.gp{text-align:right;width:44px;color:var(--bone-dim);font-size:13px}
+.ltable .unpaid{opacity:.45}
+.nightrow{display:flex;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--line);width:100%;text-align:left}
+.nightrow .nd{font-weight:700;font-size:15px;flex:1}
+.nightrow .nw2{font-size:13px;color:var(--bone-dim)}
+.nightrow .chev{color:var(--gold);font-size:18px}
+.tag{font-size:10px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:6px;padding:2px 6px;color:var(--bone-dim);margin-left:8px}
+.bfrow{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+.bfrow .bnm{flex:1;font-weight:600}
+.bfrow input[type=number]{width:82px;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:10px;color:var(--bone);padding:10px;text-align:center;font-size:17px}
+.bfrow.off{opacity:.4}
+.bfrow.off input{visibility:hidden}
+.dateinput{width:100%;background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:10px;color:var(--bone);padding:12px}
+#dataBox{width:100%;height:150px;background:rgba(0,0,0,.3);border:1px solid var(--line);border-radius:10px;color:var(--bone-dim);
+  padding:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;resize:none}
+.warnbox{border:1px solid rgba(217,169,76,.4);background:rgba(217,169,76,.1);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--gold-hi);margin-top:14px}
+
+/* ---------- nom tags + last round on its own scrap of paper ---------- */
+.nomtag{font-family:Georgia,serif;font-size:14px;font-weight:700;color:var(--gold-hi);
+  border:1px solid rgba(217,169,76,.45);background:rgba(217,169,76,.12);border-radius:999px;
+  min-width:28px;padding:2px 8px;margin-left:9px;text-align:center;display:inline-block;line-height:1.35}
+.lastcard{background:#fff;border-radius:10px;border:1px solid #cfcfd6;box-shadow:0 2px 12px rgba(0,0,0,.32);
+  padding:9px 11px 11px;margin-top:22px;overflow-x:auto}
+.lasthead{font-family:Georgia,serif;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:#5c5c68;margin-bottom:5px;text-align:center}
+.lastT{width:100%;border-collapse:collapse}
+.lastT th,.lastT td{position:static;border-bottom:none;min-width:40px}
+.lastT th.pname{padding:0 4px 5px}
+.lastT td{padding:9px 4px 2px}
+
+/* ---------- cast mode: sized for a telly across the room ---------- */
+.iconbtn.on{border-color:var(--gold);background:rgba(217,169,76,.22);color:var(--gold-hi);font-weight:700}
+body.cast #scorerBody,body.cast .schead{max-width:1100px}
+body.cast .schead .scr{font-size:clamp(38px,6.5vw,76px)}
+body.cast .schead .sccards{font-size:clamp(20px,3.2vw,36px)}
+body.cast .schead .scd{font-size:clamp(17px,2.5vw,30px);margin-top:12px}
+body.cast .lbl{font-size:clamp(14px,1.9vw,20px);letter-spacing:.2em;margin:26px 0 12px}
+body.cast .srow{padding:9px 0}
+body.cast .srow .snm2{font-size:clamp(20px,3vw,36px)}
+body.cast .mini-step button{width:62px;height:62px;font-size:28px;border-radius:15px}
+body.cast .mini-step b{font-size:clamp(28px,3.6vw,48px);min-width:52px}
+body.cast .tallyline{font-size:clamp(15px,2vw,24px);margin-top:14px}
+body.cast .nomtag{font-size:clamp(16px,2.2vw,26px);min-width:42px;padding:3px 12px;margin-left:14px}
+body.cast .lastcard{padding:12px 15px 15px;margin-top:26px}
+body.cast .lastT td{padding-top:13px}
+body.cast .lasthead{font-size:clamp(12px,1.6vw,19px)}
+body.cast .dbadge{width:22px;height:22px;font-size:13px}
+body.cast .btn{font-size:clamp(17px,2.2vw,24px);padding:17px 26px}
+body.cast .iconbtn{font-size:18px;padding:9px 16px}
+body.cast .chip{font-size:16px;padding:8px 15px}
+/* the sheet on a big screen */
+body.cast .sheetT th.pname{font-size:clamp(18px,2.6vw,34px)}
+body.cast .sheetT .tt{font-size:clamp(20px,3vw,38px)}
+body.cast .sheetT .tt sup{font-size:.36em}
+body.cast .sheetT .dcol,body.cast .sheetT .rlab{font-size:clamp(13px,1.7vw,21px)}
+body.cast .sheetT tfoot td{font-size:clamp(20px,2.8vw,34px)}
+body.cast #sheetModal .sheetT td{padding-top:11px;padding-bottom:11px}
+body.cast .sheettop .ptitle{font-size:clamp(24px,3vw,34px)}
+body.cast .sheettop .psub{font-size:clamp(14px,1.7vw,19px)}
+/* cast: the sheet takes the whole widescreen, sized to fit the height */
+body.cast #sheetModal .panel{max-width:none}
+@media (min-aspect-ratio:7/5){
+  body.cast .sheettop{padding:calc(6px + env(safe-area-inset-top)) 20px 5px}
+  body.cast .sheettop .ptitle{font-size:clamp(18px,3vh,32px)}
+  body.cast .sheettop .psub{font-size:clamp(11px,1.7vh,18px)}
+  body.cast .sheetbar{flex-direction:row;gap:12px;padding:8px 20px calc(9px + env(safe-area-inset-bottom))}
+  body.cast .sheetbar .btn{flex:1;padding:12px 18px;font-size:clamp(14px,2.2vh,22px)}
+  body.cast #sheetModal .sheetT th{padding-top:4px;padding-bottom:4px}
+  body.cast #sheetModal .sheetT td{padding-top:5px;padding-bottom:1px}
+  body.cast #sheetModal .sheetT th.pname{font-size:clamp(15px,2.9vh,36px)}
+  body.cast #sheetModal .sheetT .tt{font-size:clamp(18px,3.7vh,48px)}
+  body.cast #sheetModal .sheetT .dcol,body.cast #sheetModal .sheetT .rlab{font-size:clamp(11px,1.9vh,23px)}
+  body.cast #sheetModal .sheetT tfoot td{font-size:clamp(16px,2.7vh,34px)}
+}
+
+/* widescreen: two columns of players so a full table fits without scrolling */
+@media (min-width:900px) and (min-aspect-ratio:7/5){
+  body.cast .srow{padding:7px 0}
+}
+
+/* ---------- toast ---------- */
+/* keep clear of the cog in the corner */
+#scr-scorer .topbar{padding-right:62px}
+body.cast #scr-scorer .topbar{padding-right:76px}
+#scr-scorer-setup .pad{padding-top:56px}
+#vtag{position:fixed;left:8px;bottom:calc(5px + env(safe-area-inset-bottom));z-index:70;
+  font-size:10px;letter-spacing:.1em;color:var(--bone-dim);opacity:.32;pointer-events:none;
+  font-variant-numeric:tabular-nums}
+#cogFab{position:fixed;top:calc(9px + env(safe-area-inset-top));right:12px;z-index:35;display:none;
+  width:42px;height:42px;padding:9px;border-radius:50%;background:transparent;
+  border:1px solid var(--line);color:var(--bone-dim);opacity:.8}
+#cogFab svg{width:100%;height:100%;display:block}
+#cogFab:active{opacity:1;color:var(--gold-hi);border-color:var(--gold)}
+body.cast #cogFab{width:54px;height:54px;padding:12px}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);opacity:0;
+  background:var(--bone);color:var(--ink);padding:11px 18px;border-radius:999px;font-weight:600;font-size:14px;
+  box-shadow:0 6px 20px rgba(0,0,0,.5);transition:all .25s;z-index:60;pointer-events:none;max-width:88vw;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.ruletxt p{margin-bottom:10px;font-size:14.5px;line-height:1.55;color:var(--bone-dim)}
+.ruletxt p b{color:var(--bone)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= TITLE ================= -->
+<div id="scr-title" class="screen on">
+  <div class="mark">
+    <div class="suits">&#9824;<span class="r">&#9829;</span><span class="r">&#9830;</span>&#9827;</div>
+    <h1>NOMS</h1>
+    <div class="tagline">a trick-taking game for the crew</div>
+    <div class="themerow" id="themeRow">
+      <button data-th="neon" class="sel">Neon</button><button data-th="felt">Felt</button>
+    </div>
+  </div>
+  <div class="titlebtns">
+    <button class="btn wide" id="btnPlayCPU">Play the CPUs</button>
+    <button class="btn ghost wide" id="btnScorer">Score a table game</button>
+    <button class="btn ghost wide" id="btnLeague">Season table</button>
+    <button class="btn ghost wide" id="btnRules">How it plays</button>
+  </div>
+  <div class="foot">NOMS v3.7.3 &middot; S77FFY</div>
+</div>
+
+<!-- ================= GAME SETUP ================= -->
+<div id="scr-setup" class="screen">
+  <div class="pad">
+    <div class="h2">Play the CPUs</div>
+    <div class="sub">Pick your seat, size up the table, choose how sharp they are.</div>
+
+    <div class="lbl">Who are you?</div>
+    <div class="chips" id="whoChips"></div>
+    <div class="addrow">
+      <input id="newName1" placeholder="Add someone to the crew" maxlength="12">
+      <button id="btnAddName1">Add</button>
+    </div>
+
+    <div class="lbl">Table size</div>
+    <div class="stepper">
+      <button id="sizeMinus" aria-label="Fewer players">&minus;</button>
+      <b id="sizeVal">7</b>
+      <button id="sizePlus" aria-label="More players">+</button>
+    </div>
+    <div class="hint">You plus CPUs from the crew. 2&ndash;7 at the table.</div>
+
+    <div class="lbl">CPU difficulty</div>
+    <div class="seg wrap" id="diffSeg">
+      <button data-d="1">1</button><button data-d="2">2</button><button data-d="3" class="sel">3</button><button data-d="4">4</button><button data-d="5">5</button>
+      <button data-d="6">6</button><button data-d="7">7</button><button data-d="8">8</button><button data-d="9">9</button><button data-d="10">10</button>
+    </div>
+    <div class="hint" id="diffHint">3 &mdash; Regular: counts their hand, plays sensibly.</div>
+
+    <div class="lbl">Training mode</div>
+    <div class="seg" id="trainSeg">
+      <button data-t="0" class="sel">Off</button><button data-t="1">On</button>
+    </div>
+    <div class="hint">Rewind any round and replay it with a different call.</div>
+    <label class="tickrow" id="tipsRow"><input type="checkbox" id="tipsBox" checked><span>Show nom tips &amp; odds</span></label>
+
+    <div class="setupfoot">
+      <button class="btn wide" id="btnHunt">Hunt the jack &rarr;</button>
+      <button class="btn ghost wide" id="btnBackTitle">Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ACE HUNT ================= -->
+<div id="scr-hunt" class="screen">
+  <div class="pad" style="display:flex;flex-direction:column;align-items:center">
+    <div class="h2" style="margin-top:12px">Hunting the jack</div>
+    <div class="sub" id="huntSub">First jack turned deals round one.</div>
+    <div class="tabletop" id="huntTable">
+      <div class="wood"></div>
+      <div class="baize"></div>
+      <div id="huntSeats"></div>
+      <div id="huntSlot"></div>
+    </div>
+    <div class="trailcount" id="trailCount">&nbsp;</div>
+    <div class="trail" id="dealTrail"></div>
+    <div id="huntMsg">&nbsp;</div>
+    <button class="btn" id="btnHuntGo" style="visibility:hidden">Deal round 1 &rarr;</button>
+  </div>
+</div>
+
+<!-- ================= GAME TABLE ================= -->
+<div id="scr-game" class="screen">
+  <div class="topbar">
+    <div class="chip" id="roundChip">R1</div>
+    <div class="chip" id="trumpChip"></div>
+    <div class="chip" id="tallyChip"></div>
+    <div class="spacer"></div>
+    <button class="iconbtn" id="btnSheetPeek" aria-label="View scoresheet">&#9776; sheet</button>
+  </div>
+  <div class="seats" id="seats"></div>
+  <div class="tablemid">
+    <div class="trick" id="trick"></div>
+    <div class="msg" id="msg"></div>
+  </div>
+  <div class="me">
+    <div class="meinfo" id="meInfo"></div>
+    <div class="hand" id="hand"></div>
+  </div>
+</div>
+
+<!-- ================= SCORER SETUP ================= -->
+<div id="scr-scorer-setup" class="screen">
+  <div class="pad">
+    <div class="h2">Score a table game</div>
+    <div class="sub">Real cards on a real table &mdash; this keeps the sheet and does the maths.</div>
+
+    <div class="lbl">Tap players in seating order</div>
+    <div id="pickRows"></div>
+    <div class="addrow">
+      <input id="newName2" placeholder="Add someone to the crew" maxlength="12">
+      <button id="btnAddName2">Add</button>
+    </div>
+
+    <div class="lbl">Stakes</div>
+    <div class="seg" id="stakeSeg">
+      <button data-s="5" class="sel">Normal</button><button data-s="10">Double money</button>
+    </div>
+    <div class="hint" id="stakeHint"></div>
+
+    <div class="lbl">First dealer</div>
+    <div class="chips" id="dealerChips"></div>
+    <div style="margin-top:12px">
+      <button class="btn ghost" id="btnAceHunt">Hunt the jack</button>
+    </div>
+    <div class="hint" id="huntNote"></div>
+
+    <div class="setupfoot">
+      <button class="btn wide" id="btnScorerStart" disabled>Start scoring &rarr;</button>
+      <button class="btn ghost wide" id="btnBackTitle2">Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= SCORER ROUNDS ================= -->
+<div id="scr-scorer" class="screen">
+  <div class="topbar">
+    <div class="spacer"></div>
+    <button class="iconbtn" id="btnMisdeal" aria-label="Record a misdeal">misdeal</button>
+    <button class="iconbtn" id="btnCast" aria-label="Toggle cast mode">TV</button>
+    <button class="iconbtn" id="btnScSheet" aria-label="View scoresheet">&#9776; sheet</button>
+    <button class="iconbtn" id="btnUndoRound" aria-label="Undo last round">&#8630; undo</button>
+  </div>
+  <div class="schead">
+    <div class="scline1">
+      <span class="scr" id="scRound">R1</span>
+      <span class="sccards" id="scCards"></span>
+      <span class="chip blind" id="scSpecial" style="display:none"></span>
+    </div>
+    <div class="scd" id="scDealer"></div>
+  </div>
+  <div id="scorerBody">
+    <div id="nomSection">
+      <div class="lbl">Noms &mdash; left of dealer first, dealer last</div>
+      <div id="nomsRows"></div>
+      <div class="tallyline" id="nomTally"></div>
+      <div id="lastRoundNom"></div>
+    </div>
+
+    <div id="trickSection">
+      <div class="lbl">Tricks won</div>
+      <div id="tricksRows"></div>
+      <div class="tallyline" id="trickTally"></div>
+      <div id="lastRound"></div>
+    </div>
+
+    <div class="setupfoot">
+      <button class="btn wide" id="btnStepNext" style="display:none">Tricks &rarr;</button>
+      <button class="btn wide" id="btnSaveRound">Save round &rarr;</button>
+      <button class="btn ghost wide" id="btnStepBack" style="display:none">&larr; Back to noms</button>
+      <button class="btn ghost wide" id="btnCancelEdit" style="display:none">Cancel correction</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= LEAGUE ================= -->
+<div id="scr-league" class="screen">
+  <div class="pad">
+    <div class="monthbar">
+      <button id="monthPrev" aria-label="Previous month">&lsaquo;</button>
+      <b id="monthLabel"></b>
+      <button id="monthNext" aria-label="Next month">&rsaquo;</button>
+    </div>
+    <div class="sub" id="leagueSub"></div>
+
+    <div class="lbl">Paid up this month</div>
+    <div class="chips" id="paidChips"></div>
+    <div class="hint">Tap a name to mark them in or out. Only paid players score league points.</div>
+
+    <div class="lbl">Season table</div>
+    <div id="leagueTable"></div>
+
+    <div class="lbl">Nights</div>
+    <div id="nightList"></div>
+
+    <div class="setupfoot">
+      <button class="btn wide" id="btnBackfill">Add a night we missed</button>
+      <button class="btn ghost wide" id="btnData">Back up / restore</button>
+      <button class="btn ghost wide" id="btnLeagueBack">Back</button>
+    </div>
+    <div class="warnbox" id="storeWarn" style="display:none"></div>
+  </div>
+</div>
+
+<!-- ================= BACKFILL ================= -->
+<div id="scr-backfill" class="screen">
+  <div class="pad">
+    <div class="h2" id="bfTitle">Add a night we missed</div>
+    <div class="sub" id="bfSub">Tick who played and put in their final scores. League points work themselves out.</div>
+    <div class="warnbox" id="bfWarn" style="display:none"></div>
+
+    <div class="lbl">Date</div>
+    <input type="date" class="dateinput" id="bfDate">
+
+    <div class="lbl">Who played &amp; final scores</div>
+    <div id="bfRows"></div>
+    <div class="hint" id="bfHint"></div>
+
+    <div class="setupfoot">
+      <button class="btn wide" id="btnBfSave">Save that night</button>
+      <button class="btn ghost wide" id="btnBfCancel">Cancel</button>
+      <button class="btn danger wide" id="btnBfDelete" style="display:none">Delete this night</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODALS ================= -->
+<div class="modal" id="nomModal">
+  <div class="panel">
+    <div class="ptitle" id="nomTitle">Your nom</div>
+    <div class="psub" id="nomSub"></div>
+    <div class="nomhand" id="nomHand"></div>
+    <div id="coach"></div>
+    <div class="nomgrid" id="nomGrid"></div>
+    <div class="warn" id="nomWarn"></div>
+  </div>
+</div>
+
+<div class="modal" id="sheetModal">
+  <div class="panel">
+    <div class="sheettop">
+      <div class="ptitle">Scoresheet</div>
+      <div class="psub" id="sheetSub"></div>
+    </div>
+    <div class="sheetwrap" id="sheetHost"></div>
+    <div class="sheetbar">
+      <button class="btn wide" id="btnSheetGo">Close</button>
+      <button class="btn ghost wide" id="btnSheetUndo" style="display:none">&#8630; Undo this round</button>
+      <button class="btn ghost wide" id="btnRewind" style="display:none">&#8630; Rewind &amp; try another nom</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="resultsModal">
+  <div class="panel">
+    <div class="ptitle">Final reckoning</div>
+    <div class="psub" id="resSub"></div>
+    <div id="resStand"></div>
+    <div class="moneyblock" id="resMoney"></div>
+    <div class="hint" id="resNote"></div>
+    <div class="setupfoot">
+      <button class="btn ghost wide" id="btnResSheet" style="display:none">Check the sheet / fix a round</button>
+      <button class="btn wide" id="btnNewGame">Back to start</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="rulesModal">
+  <div class="panel">
+    <div class="ptitle">How it plays</div>
+    <div class="psub">Noms, as the crew plays it.</div>
+    <div class="ruletxt">
+      <p><b>Sixteen rounds.</b> One card up to seven, then No Trumps (7 cards), then Blind (7 cards), then back down seven to one.</p>
+      <p><b>Trumps.</b> After the deal the next card is turned up &mdash; that suit is trumps. No turn-up in the No Trumps round.</p>
+      <p><b>Noms.</b> Starting left of the dealer, everyone nominates how many tricks they'll take. The dealer noms last and can't take the total to the number of cards dealt &mdash; someone always misses.</p>
+      <p><b>Blind round.</b> Nom before you look at your hand.</p>
+      <p><b>Play.</b> Left of dealer leads. Follow suit if you can. Highest trump wins the trick, otherwise highest card of the suit led. Winner leads next.</p>
+      <p><b>Scoring.</b> +1 a trick, +10 for landing your nom exactly.</p>
+      <p><b>The money.</b> &pound;2 each in the pot &mdash; 1st and 2nd take half each. The winner also collects 5p a point off every other player, rounded up to the nearest 50p per player.</p>
+    </div>
+    <button class="btn wide" id="btnRulesClose">Close</button>
+  </div>
+</div>
+
+<div class="modal" id="optsModal">
+  <div class="panel">
+    <div class="ptitle">Options</div>
+    <div class="psub">Money, fines and who is keeping score.</div>
+    <div class="lbl">Buy-in each</div>
+    <div class="stepper"><button id="buyMinus">&minus;</button><b id="buyVal">&pound;2</b><button id="buyPlus">+</button></div>
+    <div class="lbl">Misdeal fine</div>
+    <div class="stepper"><button id="fineMinus">&minus;</button><b id="fineVal">50p</b><button id="finePlus">+</button></div>
+    <div class="hint">Fines go into the same pot as the buy-ins.</div>
+    <div class="lbl">Who is keeping score?</div>
+    <div class="chips" id="scorerChips"></div>
+    <div id="aliasBox"></div>
+    <div class="setupfoot"><button class="btn wide" id="btnOptsClose">Done</button></div>
+  </div>
+</div>
+
+<div class="modal" id="misdealModal">
+  <div class="panel">
+    <div class="ptitle">Misdeal</div>
+    <div class="psub">Who pays? Not always the dealer &mdash; whoever caused it.</div>
+    <div class="chips" id="misdealChips"></div>
+    <div class="lbl">What happened?</div>
+    <div class="seg wrap" id="misdealWhy">
+      <button data-w="misdeal" class="sel">Misdeal</button><button data-w="wrong count called">Wrong count</button><button data-w="dealt out of turn">Out of turn</button>
+    </div>
+    <div class="setupfoot">
+      <button class="btn wide" id="btnMisdealSave">Add fine &amp; redeal round</button>
+      <button class="btn ghost wide" id="btnMisdealNoFine">Redeal, no fine</button>
+      <button class="btn ghost wide" id="btnMisdealCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="dataModal">
+  <div class="panel">
+    <div class="ptitle">Back up / restore</div>
+    <div class="psub">Copy this somewhere safe, or paste a backup in and load it.</div>
+    <textarea id="dataBox" spellcheck="false"></textarea>
+    <div class="setupfoot">
+      <button class="btn wide" id="btnDataCopy">Select all to copy</button>
+      <button class="btn ghost wide" id="btnDataLoad">Load what's in the box</button>
+      <button class="btn ghost wide" id="btnDataClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="punch">
+  <svg class="burst" viewBox="-100 -100 200 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <path class="rays" d="M0 0L900.0 0.0L893.3 109.7ZM0 0L869.3 232.9L834.5 337.1ZM0 0L779.4 450.0L718.8 541.6ZM0 0L636.4 636.4L554.1 709.2ZM0 0L450.0 779.4L351.7 828.5ZM0 0L232.9 869.3L125.3 891.2ZM0 0L0.0 900.0L-109.7 893.3ZM0 0L-232.9 869.3L-337.1 834.5ZM0 0L-450.0 779.4L-541.6 718.8ZM0 0L-636.4 636.4L-709.2 554.1ZM0 0L-779.4 450.0L-828.5 351.7ZM0 0L-869.3 232.9L-891.2 125.3ZM0 0L-900.0 0.0L-893.3 -109.7ZM0 0L-869.3 -232.9L-834.5 -337.1ZM0 0L-779.4 -450.0L-718.8 -541.6ZM0 0L-636.4 -636.4L-554.1 -709.2ZM0 0L-450.0 -779.4L-351.7 -828.5ZM0 0L-232.9 -869.3L-125.3 -891.2ZM0 0L-0.0 -900.0L109.7 -893.3ZM0 0L232.9 -869.3L337.1 -834.5ZM0 0L450.0 -779.4L541.6 -718.8ZM0 0L636.4 -636.4L709.2 -554.1ZM0 0L779.4 -450.0L828.5 -351.7ZM0 0L869.3 -232.9L891.2 -125.3Z">
+      <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="26s" repeatCount="indefinite"/>
+    </path>
+  </svg>
+  <div class="punchwrap">
+    <div class="punchname" id="punchName"></div>
+    <div class="punchsub" id="punchSub">deals first</div>
+    <div class="punchcard" id="punchCard"></div>
+  </div>
+  <div class="punchtap">tap to carry on</div>
+</div>
+
+<div id="flash"><div class="fin">
+  <div class="fsuits">&#9824;<span class="r">&#9829;</span><span class="r">&#9830;</span>&#9827;</div>
+  <div class="frd" id="flashRd"></div>
+  <div class="fbig" id="flashBig"></div>
+  <div class="fsub" id="flashSub"></div>
+  <div class="fdeal" id="flashDeal"></div>
+</div></div>
+
+<div id="vtag">v3.7.3</div>
+
+<button id="cogFab" aria-label="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.1 14.8a1.5 1.5 0 0 0 .3 1.66l.05.05a1.83 1.83 0 1 1-2.59 2.59l-.05-.05a1.5 1.5 0 0 0-1.66-.3 1.5 1.5 0 0 0-.91 1.38v.14a1.83 1.83 0 1 1-3.66 0v-.07a1.5 1.5 0 0 0-.98-1.38 1.5 1.5 0 0 0-1.66.3l-.05.05a1.83 1.83 0 1 1-2.59-2.59l.05-.05a1.5 1.5 0 0 0 .3-1.66 1.5 1.5 0 0 0-1.38-.91H3.9a1.83 1.83 0 1 1 0-3.66h.07a1.5 1.5 0 0 0 1.38-.98 1.5 1.5 0 0 0-.3-1.66l-.05-.05A1.83 1.83 0 1 1 7.59 4.9l.05.05a1.5 1.5 0 0 0 1.66.3h.07a1.5 1.5 0 0 0 .91-1.38V3.9a1.83 1.83 0 1 1 3.66 0v.07a1.5 1.5 0 0 0 .91 1.38 1.5 1.5 0 0 0 1.66-.3l.05-.05a1.83 1.83 0 1 1 2.59 2.59l-.05.05a1.5 1.5 0 0 0-.3 1.66v.07a1.5 1.5 0 0 0 1.38.91h.14a1.83 1.83 0 1 1 0 3.66h-.07a1.5 1.5 0 0 0-1.38.91z"/></svg></button>
+
+<div id="toast"></div>
+
+<script>
+// === ENGINE START ===
+/* ============================================================
+   NOMS v1.0.0 — game engine (pure logic, no DOM) — S77FFY
+   Trick-taking "Nomination Whist" for the crew.
+   16 rounds: 1..7 cards, No Trumps (7), Blind (7), then 7..1.
+   ============================================================ */
+(function (root) {
+'use strict';
+
+var SUITS = ['S', 'H', 'D', 'C'];
+var SUIT_SYM = { S: '\u2660', H: '\u2665', D: '\u2666', C: '\u2663' };
+var SUIT_RED = { H: true, D: true };
+var SUIT_ORDER = { S: 0, H: 1, C: 2, D: 3 }; // alternating colours for display
+var CREW = ['Caitlyn', 'Flish', 'Kev', 'Tuffey', 'Ray', 'Jay', 'Stiffy'];
+
+function rankLabel(r) {
+  return r === 14 ? 'A' : r === 13 ? 'K' : r === 12 ? 'Q' : r === 11 ? 'J' : String(r);
+}
+
+function mulberry32(seed) {
+  var a = seed >>> 0;
+  function f() {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    var t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+  f.getState = function () { return a >>> 0; };
+  f.setState = function (v) { a = v >>> 0; };
+  return f;
+}
+
+function makeDeck() {
+  var d = [], i, r;
+  for (i = 0; i < SUITS.length; i++) for (r = 2; r <= 14; r++) d.push({ r: r, s: SUITS[i] });
+  return d;
+}
+
+function shuffle(a, rng) {
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(rng() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function buildRounds() {
+  var r = [], c;
+  for (c = 1; c <= 7; c++) r.push({ cards: c, label: String(c), nt: false, blind: false });
+  r.push({ cards: 7, label: 'NT', nt: true, blind: false });
+  r.push({ cards: 7, label: 'B', nt: false, blind: true });
+  for (c = 7; c >= 1; c--) r.push({ cards: c, label: String(c), nt: false, blind: false });
+  return r;
+}
+var ROUNDS = buildRounds(); // length 16
+
+function sortHand(h) {
+  h.sort(function (a, b) { return SUIT_ORDER[a.s] - SUIT_ORDER[b.s] || b.r - a.r; });
+}
+
+/* ---------------- game state ---------------- */
+
+function newGame(opts) {
+  var names = opts.names, n = names.length;
+  return {
+    mode: opts.mode || 'game',
+    rate: opts.rate || 5,          // pence per point on the side bets
+    buyIn: opts.buyIn != null ? opts.buyIn : 2,
+    carry: opts.carry || 0,        // coins carried over from a previous night
+    fines: [],                     // {name, amount, round, reason}
+    names: names.slice(), n: n,
+    humanSeat: (typeof opts.humanSeat === 'number') ? opts.humanSeat : -1,
+    difficulty: opts.difficulty || 3,
+    diffs: opts.diffs || null, // optional per-seat difficulty (used by tests)
+    rng: mulberry32(opts.seed != null ? opts.seed : (Math.random() * 0xffffffff) >>> 0),
+    round: -1, dealer: 0, dealer0: 0,
+    totals: new Array(n).fill(0),
+    sheet: [],               // per round: [{nom, won, pts, total}]
+    phase: 'lobby',
+    hands: [], noms: [], won: [],
+    trump: null, trumpCard: null,
+    nomTurn: -1, leader: -1, turn: -1,
+    trick: [], trickNo: 0, played: [],
+    lastTrick: null, payouts: null
+  };
+}
+
+function seatDiff(st, seat) { return st.diffs ? st.diffs[seat] : st.difficulty; }
+
+/* Deal face up around the table until a jack appears — that seat deals first. */
+function aceHunt(st, startSeat) {
+  var deck = shuffle(makeDeck(), st.rng), seq = [], seat = startSeat ? (startSeat % st.n) : 0, i = 0;
+  while (true) {
+    var c = deck[i++];
+    seq.push({ seat: seat, card: c });
+    if (c.r === 11) { st.dealer = seat; st.dealer0 = seat; break; }
+    seat = (seat + 1) % st.n;
+  }
+  return { sequence: seq, dealer: st.dealer };
+}
+
+function startRound(st) {
+  st.round++;
+  var R = ROUNDS[st.round];
+  var deck = shuffle(makeDeck(), st.rng);
+  var p, k, idx = 0;
+  st.hands = [];
+  for (p = 0; p < st.n; p++) st.hands.push([]);
+  for (k = 0; k < R.cards; k++) {
+    for (p = 0; p < st.n; p++) {
+      var seat = (st.dealer + 1 + p) % st.n;
+      st.hands[seat].push(deck[idx++]);
+    }
+  }
+  st.trumpCard = R.nt ? null : deck[idx++]; // turn up next card (never runs out: 49+1 <= 52)
+  st.trump = st.trumpCard ? st.trumpCard.s : null;
+  st.noms = new Array(st.n).fill(null);
+  st.won = new Array(st.n).fill(0);
+  st.trick = []; st.trickNo = 0; st.played = []; st.lastTrick = null;
+  st.leader = (st.dealer + 1) % st.n;
+  st.nomTurn = (st.dealer + 1) % st.n;
+  st.turn = -1;
+  st.phase = 'nom';
+  for (p = 0; p < st.n; p++) sortHand(st.hands[p]);
+  return R;
+}
+
+/* ---------------- nominations ---------------- */
+
+function nomsSum(st) { var s = 0, i; for (i = 0; i < st.n; i++) if (st.noms[i] != null) s += st.noms[i]; return s; }
+function nomsCount(st) { var c = 0, i; for (i = 0; i < st.n; i++) if (st.noms[i] != null) c++; return c; }
+
+/* Screw the dealer: dealer noms last and cannot take total noms to the cards dealt. */
+function forbiddenNom(st, seat) {
+  if (seat !== st.dealer) return -1;
+  if (nomsCount(st) !== st.n - 1) return -1;
+  var R = ROUNDS[st.round], f = R.cards - nomsSum(st);
+  return (f >= 0 && f <= R.cards) ? f : -1;
+}
+
+function legalNoms(st, seat) {
+  var R = ROUNDS[st.round], f = forbiddenNom(st, seat), out = [], i;
+  for (i = 0; i <= R.cards; i++) if (i !== f) out.push(i);
+  return out;
+}
+
+function submitNom(st, seat, v) {
+  if (st.phase !== 'nom' || seat !== st.nomTurn) throw new Error('nom out of turn');
+  if (legalNoms(st, seat).indexOf(v) === -1) throw new Error('illegal nom');
+  st.noms[seat] = v;
+  if (nomsCount(st) === st.n) {
+    st.phase = 'play'; st.turn = st.leader; st.nomTurn = -1;
+  } else {
+    st.nomTurn = (st.nomTurn + 1) % st.n;
+  }
+}
+
+/* ---------------- trick play ---------------- */
+
+function legalPlayIdxs(st, seat) {
+  var h = st.hands[seat], out = [], i;
+  if (st.trick.length === 0) { for (i = 0; i < h.length; i++) out.push(i); return out; }
+  var led = st.trick[0].card.s;
+  for (i = 0; i < h.length; i++) if (h[i].s === led) out.push(i);
+  if (out.length) return out;
+  for (i = 0; i < h.length; i++) out.push(i);
+  return out;
+}
+
+/* Does candidate a beat current best b? (b is always led-suit or trump) */
+function beats(a, b, trump) {
+  if (a.s === b.s) return a.r > b.r;
+  if (trump) {
+    if (a.s === trump && b.s !== trump) return true;
+    if (b.s === trump && a.s !== trump) return false;
+  }
+  return false;
+}
+
+function currentWinner(st) {
+  if (!st.trick.length) return -1;
+  var best = 0, i;
+  for (i = 1; i < st.trick.length; i++) {
+    if (beats(st.trick[i].card, st.trick[best].card, st.trump)) best = i;
+  }
+  return best;
+}
+
+function playCard(st, seat, handIdx) {
+  if (st.phase !== 'play' || seat !== st.turn) throw new Error('play out of turn');
+  if (legalPlayIdxs(st, seat).indexOf(handIdx) === -1) throw new Error('illegal card');
+  var c = st.hands[seat].splice(handIdx, 1)[0];
+  st.trick.push({ seat: seat, card: c });
+  st.played.push(c);
+  if (st.trick.length === st.n) {
+    var wi = currentWinner(st);
+    st.lastTrick = { cards: st.trick.slice(), winner: st.trick[wi].seat };
+    st.phase = 'trickdone'; st.turn = -1;
+  } else {
+    st.turn = (st.turn + 1) % st.n;
+  }
+}
+
+function collectTrick(st) {
+  if (st.phase !== 'trickdone') throw new Error('no trick to collect');
+  var w = st.lastTrick.winner;
+  st.won[w]++; st.trick = []; st.trickNo++;
+  var R = ROUNDS[st.round];
+  if (st.trickNo === R.cards) {
+    scoreRound(st);
+  } else {
+    st.leader = w; st.turn = w; st.phase = 'play';
+  }
+}
+
+/* +1 a trick, +10 for hitting your nom */
+function scoreRound(st) {
+  var row = [], p;
+  for (p = 0; p < st.n; p++) {
+    var pts = st.won[p] + (st.won[p] === st.noms[p] ? 10 : 0);
+    st.totals[p] += pts;
+    row.push({ nom: st.noms[p], won: st.won[p], pts: pts, total: st.totals[p] });
+  }
+  st.sheet.push(row);
+  st.phase = 'scored';
+}
+
+function advanceRound(st) {
+  if (st.phase !== 'scored') throw new Error('round not finished');
+  if (st.round === ROUNDS.length - 1) {
+    st.phase = 'gameover';
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
+    return false;
+  }
+  st.dealer = (st.dealer + 1) % st.n;
+  startRound(st);
+  return true;
+}
+
+/* ---------------- scorer mode (real-table scoring) ---------------- */
+
+function scorerStart(st, dealer) {
+  st.mode = 'scorer';
+  var d = ((dealer % st.n) + st.n) % st.n;   // keep it inside the table
+  st.dealer = d; st.dealer0 = d;
+  st.round = 0;
+  st.phase = 'scorer-entry';
+}
+
+function checkScorerEntry(st, R, noms, won) {
+  var i, ns = 0, ws = 0;
+  for (i = 0; i < st.n; i++) {
+    if (noms[i] == null || noms[i] < 0 || noms[i] > R.cards) throw new Error('bad nom');
+    if (won[i] == null || won[i] < 0 || won[i] > R.cards) throw new Error('bad tricks');
+    ns += noms[i]; ws += won[i];
+  }
+  if (ns === R.cards) throw new Error('noms cannot total ' + R.cards + ' — the dealer must change theirs');
+  if (ws !== R.cards) throw new Error('tricks must total ' + R.cards);
+}
+
+function scorerApply(st, noms, won) {
+  if (st.phase !== 'scorer-entry') throw new Error('not ready for entry');
+  checkScorerEntry(st, ROUNDS[st.round], noms, won);
+  st.noms = noms.slice(); st.won = won.slice();
+  scoreRound(st); // -> phase 'scored'
+}
+
+function recomputeSheet(st) {
+  var run = new Array(st.n).fill(0), r, p;
+  for (r = 0; r < st.sheet.length; r++) {
+    for (p = 0; p < st.n; p++) { run[p] += st.sheet[r][p].pts; st.sheet[r][p].total = run[p]; }
+  }
+  st.totals = run;
+}
+
+/* Correct any already-saved round; rescores it and recomputes every running total. */
+function scorerEdit(st, roundIdx, noms, won) {
+  if (roundIdx == null || roundIdx < 0 || roundIdx >= st.sheet.length) throw new Error('that round is not on the sheet yet');
+  var R = ROUNDS[roundIdx];
+  checkScorerEntry(st, R, noms, won);
+  var row = [], p;
+  for (p = 0; p < st.n; p++) {
+    var pts = won[p] + (won[p] === noms[p] ? 10 : 0);
+    row.push({ nom: noms[p], won: won[p], pts: pts, total: 0 });
+  }
+  st.sheet[roundIdx] = row;
+  recomputeSheet(st);
+  if (st.phase === 'gameover') st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
+  return true;
+}
+
+function scorerNext(st) {
+  if (st.phase !== 'scored') throw new Error('round not saved');
+  if (st.round === ROUNDS.length - 1) {
+    st.phase = 'gameover';
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
+    return false;
+  }
+  st.round++;
+  st.dealer = (st.dealer0 + st.round) % st.n;
+  st.phase = 'scorer-entry';
+  return true;
+}
+
+function scorerUndo(st) {
+  if (!st.sheet.length) return false;
+  var row = st.sheet.pop(), i;
+  for (i = 0; i < st.n; i++) st.totals[i] -= row[i].pts;
+  st.round = st.sheet.length;
+  st.dealer = (st.dealer0 + st.round) % st.n;
+  st.phase = 'scorer-entry';
+  st.payouts = null;
+  return true;
+}
+
+/* ---------------- money ----------------
+   £2 each in the pot. 1st and 2nd take half each.
+   Winner also collects a few pence per point off every other player,
+   rounded UP to the nearest 50p per player.
+   ratePence: 5 normally, 10 for a double-money night.      */
+/* Shave 10p at a time until the money divides into whole pence each way.
+   Whatever comes off is left in the pot for next week. */
+function splitEvenly(pounds, w) {
+  var p = Math.round(pounds * 100), cut = 0;
+  if (w <= 1) return { each: p / 100, left: 0 };
+  while (cut < 10 * w && (p - cut) % w !== 0) cut += 10;
+  if ((p - cut) % w !== 0) cut = 0;          // never shave money away for nothing
+  return { each: (p - cut) / w / 100, left: cut / 100 };
+}
+
+function computePayouts(names, totals, ratePence, opts) {
+  var rate = ratePence || 5;
+  opts = opts || {};
+  var buyIn = opts.buyIn != null ? opts.buyIn : 2;   // £ per player
+  var extra = opts.extra || 0;                        // fines already in the pot
+  var carryIn = opts.carry || 0;                      // coins left over last time
+  var n = names.length, pot = buyIn * n + extra + carryIn, i;
+  var carryOut = 0;
+  var order = [];
+  for (i = 0; i < n; i++) order.push(i);
+  order.sort(function (a, b) { return totals[b] - totals[a] || a - b; });
+  var top = totals[order[0]];
+  var winners = order.filter(function (p) { return totals[p] === top; });
+  var rows = names.map(function (nm, p) {
+    return { seat: p, name: nm, total: totals[p], stake: buyIn, potShare: 0, side: 0, net: 0, sidePaid: 0 };
+  });
+  var note = '', sideList = [];
+  if (winners.length > 1) {
+    // The tied winners share the whole pot — buy-ins and fines alike — and
+    // everyone below them still pays per point, split between the winners.
+    var W = winners.length;
+    var potSplit = splitEvenly(pot, W);
+    carryOut += potSplit.left;
+    winners.forEach(function (p) { rows[p].potShare = potSplit.each; });
+    for (i = 0; i < n; i++) {
+      var q = order[i];
+      if (winners.indexOf(q) !== -1) continue;
+      var gap = top - totals[q];
+      var owed = Math.ceil((gap * rate) / 50) * 50 / 100;
+      var s = splitEvenly(owed, W);        // the loser pays in full either way
+      carryOut += s.left;
+      rows[q].side -= owed;
+      rows[q].sidePaid = owed;
+      winners.forEach(function (w) {
+        rows[w].side += s.each;
+        sideList.push({ from: q, to: w, diff: gap, amount: s.each });
+      });
+    }
+    note = 'Tie for first \u2014 ' + winners.map(function (p) { return names[p]; }).join(' & ') +
+      ' share the pot, and the per-point money between them.' +
+      (carryOut > 0 ? ' ' + Math.round(carryOut * 100) + 'p would not split evenly, so it stays in the pot for next time.' : '');
+  } else {
+    var W = winners[0];
+    rows[W].potShare = pot / 2;
+    var rest = order.slice(1);
+    var secondVal = totals[rest[0]];
+    var seconds = rest.filter(function (p) { return totals[p] === secondVal; });
+    seconds.forEach(function (p) { rows[p].potShare = (pot / 2) / seconds.length; });
+    if (seconds.length > 1) note = 'Tie for second — that half of the pot is split.';
+    for (i = 0; i < n; i++) {
+      var p = order[i];
+      if (p === W) continue;
+      var diff = top - totals[p];
+      // worked in whole pence so the rounding never drifts
+      var pay = Math.ceil((diff * rate) / 50) * 50 / 100;
+      rows[p].side -= pay; rows[p].sidePaid = pay;
+      rows[W].side += pay;
+      sideList.push({ from: p, to: W, diff: diff, amount: pay });
+    }
+  }
+  // settle-up view: the £2 a head is already in the pot, so net is what
+  // each player collects or pays at the end — not profit vs their stake.
+  rows.forEach(function (r) { r.net = r.potShare + r.side; });
+  return { pot: pot, rows: rows, rank: order, note: note, sideList: sideList,
+           rate: rate, buyIn: buyIn, extra: extra, carryIn: carryIn, carryOut: carryOut };
+}
+
+/* ================= the Pro player (difficulty 6) =================
+   Everything below is used ONLY by difficulty 6. Levels 1-5 never reach it,
+   so the ladder the crew already knows plays exactly as it always has.
+
+   The Pro reads a round by simulation: deal the unseen cards out at random,
+   play the round through, repeat. It uses only what a player at the table
+   could legitimately know — its own hand, the turn-up, the cards played and
+   the noms already spoken. It never looks at anybody's actual hand. */
+
+function unseenCards(st, seat) {
+  var seen = {}, i;
+  function mark(c) { seen[c.s + c.r] = 1; }
+  for (i = 0; i < st.hands[seat].length; i++) mark(st.hands[seat][i]);
+  for (i = 0; i < st.played.length; i++) mark(st.played[i]);
+  for (i = 0; i < st.trick.length; i++) mark(st.trick[i].card);
+  if (st.trumpCard) mark(st.trumpCard);
+  return makeDeck().filter(function (c) { return !seen[c.s + c.r]; });
+}
+
+/* Can the unseen cards cover everyone else's hands? Guards the simulation
+   against being run on a half-built state. */
+function dealAddsUp(st, seat) {
+  var need = 0, p;
+  for (p = 0; p < st.n; p++) if (p !== seat) need += st.hands[p].length;
+  return need > 0 && need <= unseenCards(st, seat).length;
+}
+
+function simBase(st, seat, rng) {
+  var n = st.n, p, j;
+  var sim = newGame({ names: st.names, difficulty: 4, seed: 1 });
+  sim.mc = 1;                       // a simulation never simulates inside itself
+  sim.rng = rng;
+  sim.round = st.round;
+  sim.trump = st.trump; sim.trumpCard = st.trumpCard;
+  sim.dealer = st.dealer;
+  sim.won = st.won.slice();
+  sim.played = st.played.slice();
+  sim.trick = st.trick.slice();
+  sim.trickNo = st.trickNo;
+  sim.leader = st.leader;
+  sim.hands = [];
+  var pool = shuffle(unseenCards(st, seat), rng), idx = 0;
+  for (p = 0; p < n; p++) {
+    if (p === seat) { sim.hands[p] = st.hands[seat].slice(); continue; }
+    var k = st.hands[p].length, h = [];
+    for (j = 0; j < k; j++) h.push(pool[idx++]);
+    sortHand(h);
+    sim.hands[p] = h;
+  }
+  return sim;
+}
+function playOut(sim) {
+  var guard = 0;
+  while (sim.phase === 'play' || sim.phase === 'trickdone') {
+    if (++guard > 400) break;
+    if (sim.phase === 'trickdone') collectTrick(sim);
+    else playCard(sim, sim.turn, aiPlay(sim, sim.turn));
+  }
+}
+
+/* One playout of the whole round, with this seat nomming myNom. */
+function simulateRound(st, seat, myNom, rng) {
+  var sim = simBase(st, seat, rng), j, p;
+  sim.noms = st.noms.slice();
+  sim.noms[seat] = myNom;
+  for (j = 1; j <= st.n; j++) {          // seats yet to call guess from their fake hands
+    p = (st.dealer + j) % st.n;
+    if (sim.noms[p] == null) sim.noms[p] = aiNom(sim, p);
+  }
+  sim.turn = st.phase === 'play' ? st.turn : st.leader;
+  sim.phase = 'play';
+  playOut(sim);
+  return sim.won[seat];
+}
+
+/* One playout from here, with a given card played first. */
+function simulateFromPlay(st, seat, handIdx, rng) {
+  var sim = simBase(st, seat, rng);
+  sim.noms = st.noms.slice();
+  sim.turn = st.turn;
+  sim.phase = 'play';
+  playCard(sim, seat, handIdx);
+  playOut(sim);
+  return sim.won[seat];
+}
+
+/* Expected score for every nom this seat could make. */
+function nomAnalysis(st, seat, samples) {
+  var R = ROUNDS[st.round];
+  var legal = legalNoms(st, seat);
+  var rng = mulberry32(Math.floor(st.rng() * 4294967296));
+  var hits = {}, tricks = {}, dist = new Array(R.cards + 1).fill(0), k, s, i;
+  for (i = 0; i < legal.length; i++) { hits[legal[i]] = 0; tricks[legal[i]] = 0; }
+  samples = samples || 24;
+  for (s = 0; s < samples; s++) {
+    var deal = rng.getState();        // every candidate is judged on the same deal
+    for (i = 0; i < legal.length; i++) {
+      rng.setState(deal);
+      k = legal[i];
+      var got = simulateRound(st, seat, k, rng);
+      tricks[k] += got;
+      if (got === k) hits[k]++;
+      if (i === 0) dist[got]++;
+    }
+  }
+  var rows = legal.map(function (v) {
+    return { nom: v, hit: hits[v] / samples, tricks: tricks[v] / samples,
+             expected: tricks[v] / samples + 10 * (hits[v] / samples) };
+  });
+  var best = rows[0];
+  for (i = 1; i < rows.length; i++) if (rows[i].expected > best.expected) best = rows[i];
+  return { rows: rows, best: best, dist: dist.map(function (c) { return c / samples; }), samples: samples };
+}
+
+/* Which card leaves this seat best placed to land its nom? */
+function playAnalysis(st, seat, samples) {
+  var legal = legalPlayIdxs(st, seat);
+  var nom = st.noms[seat];
+  var rng = mulberry32(Math.floor(st.rng() * 4294967296));
+  samples = samples || 14;
+  var rows = [], i, s;
+  for (i = 0; i < legal.length; i++) rows.push({ idx: legal[i], hit: 0, tricks: 0 });
+  for (s = 0; s < samples; s++) {
+    var deal = rng.getState();
+    for (i = 0; i < rows.length; i++) {
+      rng.setState(deal);
+      var got = simulateFromPlay(st, seat, rows[i].idx, rng);
+      rows[i].tricks += got;
+      if (got === nom) rows[i].hit++;
+    }
+  }
+  for (i = 0; i < rows.length; i++) {
+    rows[i].hit /= samples;
+    rows[i].tricks /= samples;
+    rows[i].expected = rows[i].tricks + 10 * rows[i].hit;   // the nom is worth ten, a trick one
+  }
+  var best = rows[0];
+  for (i = 1; i < rows.length; i++) if (rows[i].expected > best.expected) best = rows[i];
+  return { rows: rows, best: best };
+}
+
+/* What the noms already spoken say about the tricks going spare. */
+function tableRead(st, seat) {
+  var R = ROUNDS[st.round], made = nomsCount(st), claimed = nomsSum(st);
+  return { made: made, claimed: claimed, toCome: st.n - made - 1,
+           loose: R.cards - claimed, cards: R.cards };
+}
+
+/* ---------------- fines ----------------
+   A misdeal costs whoever caused it, and the money goes into the same pot. */
+function fineTotal(st) {
+  var t = 0, i;
+  if (!st.fines) return 0;
+  for (i = 0; i < st.fines.length; i++) t += st.fines[i].amount;
+  return Math.round(t * 100) / 100;
+}
+function addFine(st, name, amount, reason) {
+  if (!st.fines) st.fines = [];
+  st.fines.push({ name: name, amount: amount, round: st.round, reason: reason || 'misdeal' });
+  if (st.phase === 'gameover') {
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
+  }
+  return fineTotal(st);
+}
+function removeFine(st, idx) {
+  if (!st.fines || idx < 0 || idx >= st.fines.length) return false;
+  st.fines.splice(idx, 1);
+  if (st.phase === 'gameover') {
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
+  }
+  return true;
+}
+
+/* ---------------- training: rewind and replay a round ---------------- */
+function snapshotRound(st) {
+  return {
+    round: st.round, dealer: st.dealer,
+    hands: st.hands.map(function (h) { return h.map(function (c) { return { r: c.r, s: c.s }; }); }),
+    trump: st.trump,
+    trumpCard: st.trumpCard ? { r: st.trumpCard.r, s: st.trumpCard.s } : null,
+    noms: st.noms.slice(), won: st.won.slice(),
+    totals: st.totals.slice(), sheetLen: st.sheet.length,
+    leader: st.leader, nomTurn: st.nomTurn, turn: st.turn,
+    rngState: st.rng.getState ? st.rng.getState() : null
+  };
+}
+function restoreRound(st, snap) {
+  st.round = snap.round; st.dealer = snap.dealer;
+  st.hands = snap.hands.map(function (h) { return h.map(function (c) { return { r: c.r, s: c.s }; }); });
+  st.trump = snap.trump;
+  st.trumpCard = snap.trumpCard ? { r: snap.trumpCard.r, s: snap.trumpCard.s } : null;
+  st.noms = snap.noms.slice(); st.won = snap.won.slice();
+  st.totals = snap.totals.slice();
+  st.sheet = st.sheet.slice(0, snap.sheetLen);
+  st.leader = snap.leader; st.nomTurn = snap.nomTurn; st.turn = snap.turn;
+  st.trick = []; st.trickNo = 0; st.played = []; st.lastTrick = null;
+  st.payouts = null;
+  if (snap.rngState != null && st.rng.setState) st.rng.setState(snap.rngState);
+  st.phase = 'nom';
+  return st;
+}
+
+/* Advice for a human seat, using only what that seat could legitimately know. */
+function coachNom(st, seat, samples) {
+  var a = nomAnalysis(st, seat, samples || 60);
+  var R = ROUNDS[st.round], t = tableRead(st, seat);
+  var rows = a.rows.slice().sort(function (x, y) { return y.expected - x.expected; });
+  var best = rows[0], runnerUp = rows[1] || null, zero = null, i, mean = 0;
+  for (i = 0; i < a.rows.length; i++) if (a.rows[i].nom === 0) zero = a.rows[i];
+  for (i = 0; i < a.dist.length; i++) mean += i * a.dist[i];
+  return {
+    rows: a.rows, best: best, runnerUp: runnerUp, meanTricks: mean, dist: a.dist,
+    safeZero: !!(zero && zero.hit >= 0.75),
+    clear: !!(runnerUp && best.expected - runnerUp.expected >= 2.5),
+    forced: a.rows.length === 1,
+    heard: t.made, claimed: t.claimed, loose: t.loose, toCome: t.toCome,
+    cards: R.cards, blind: R.blind, nt: R.nt
+  };
+}
+
+/* ---------------- AI: nominations ---------------- */
+
+function estimateTricks(hand, trump, cards, nPlayers) {
+  var e = 0, i, sc = {};
+  for (i = 0; i < hand.length; i++) sc[hand[i].s] = (sc[hand[i].s] || 0) + 1;
+  for (i = 0; i < hand.length; i++) {
+    var c = hand[i];
+    if (trump && c.s === trump) {
+      e += c.r === 14 ? 1.0 : c.r === 13 ? 0.85 : c.r === 12 ? 0.7 : c.r >= 10 ? 0.45 : 0.22;
+    } else {
+      if (c.r === 14) e += cards <= 3 ? 0.9 : 0.72;
+      else if (c.r === 13) e += cards <= 3 ? 0.55 : 0.42;
+      else if (c.r === 12) e += 0.18;
+    }
+  }
+  if (trump) { // ruffing potential from short side suits + spare trumps
+    var spare = Math.max(0, (sc[trump] || 0) - 1);
+    for (i = 0; i < SUITS.length; i++) {
+      var s = SUITS[i];
+      if (s === trump || spare <= 0) continue;
+      var k = sc[s] || 0;
+      if (k === 0 && cards >= 4) { e += 0.5; spare--; }
+      else if (k === 1 && cards >= 6) { e += 0.22; spare--; }
+    }
+  }
+  e *= (nPlayers >= 6 ? 0.92 : nPlayers >= 4 ? 0.97 : 1.02);
+  if (e > cards) e = cards;
+  if (e < 0) e = 0;
+  return e;
+}
+
+function aiNom(st, seat) {
+  var R = ROUNDS[st.round], d = seatDiff(st, seat), rng = st.rng, cards = R.cards;
+  if (d >= 6 && !R.blind && cards >= 2 && !st.mc && dealAddsUp(st, seat)) {
+    try { return nomAnalysis(st, seat, cards <= 3 ? 34 : cards <= 5 ? 26 : 20).best.nom; }
+    catch (e) {}                     // anything odd: fall back to the level-5 estimate
+  }
+  var base = R.blind ? cards / st.n : estimateTricks(st.hands[seat], st.trump, cards, st.n);
+  var x;
+  if (d <= 1) {
+    x = rng() * Math.min(cards, cards * 0.6 + 0.8);
+  } else {
+    var noise = d === 2 ? 1.1 : d === 3 ? 0.55 : d === 4 ? 0.3 : 0.12;
+    x = base + (rng() * 2 - 1) * noise;
+  }
+  if (d >= 4 && !R.blind) { // crowded round: shade down late in the order
+    if (nomsCount(st) >= Math.floor(st.n / 2) && nomsSum(st) >= cards) x -= 0.35;
+  }
+  var nom = Math.round(x);
+  if (nom < 0) nom = 0;
+  if (nom > cards) nom = cards;
+  var f = forbiddenNom(st, seat);
+  if (nom === f) {
+    var cand = [nom - 1, nom + 1].filter(function (v) { return v >= 0 && v <= cards; });
+    if (cand.length === 0) {
+      var L = legalNoms(st, seat);
+      nom = L[Math.floor(rng() * L.length)];
+    } else if (cand.length === 1) {
+      nom = cand[0];
+    } else {
+      nom = (x >= nom) ? cand[1] : cand[0];
+    }
+  }
+  return nom;
+}
+
+/* ---------------- AI: card play ---------------- */
+
+function highestOutstanding(st, seat, suit) {
+  var mine = {}, played = {}, i, r;
+  for (i = 0; i < st.hands[seat].length; i++) { var c = st.hands[seat][i]; if (c.s === suit) mine[c.r] = 1; }
+  for (i = 0; i < st.played.length; i++) { var q = st.played[i]; if (q.s === suit) played[q.r] = 1; }
+  for (r = 14; r >= 2; r--) if (!mine[r] && !played[r]) return r;
+  return 0;
+}
+
+function isSafeWinner(st, seat, c) {
+  var t = st.trump;
+  if (t) {
+    if (c.s === t) return c.r > highestOutstanding(st, seat, t);
+    return false;
+  }
+  var led = st.trick.length ? st.trick[0].card.s : c.s;
+  return c.s === led && c.r > highestOutstanding(st, seat, led);
+}
+
+function aiPlay(st, seat) {
+  var legal = legalPlayIdxs(st, seat), h = st.hands[seat];
+  var d = seatDiff(st, seat), rng = st.rng, trump = st.trump;
+  if (legal.length === 1) return legal[0];
+  if (d >= 6 && !st.mc && h.length <= 6 && legal.length > 1 && dealAddsUp(st, seat)) {
+    st.mc = 1;
+    try { var pa = playAnalysis(st, seat, h.length <= 2 ? 22 : 14); st.mc = 0; return pa.best.idx; }
+    catch (e) { st.mc = 0; }         // fall back to the level-5 rule of thumb
+  }
+  if (d <= 1) return legal[Math.floor(rng() * legal.length)];
+  if (d === 2 && rng() < 0.45) return legal[Math.floor(rng() * legal.length)];
+
+  var cards = legal.map(function (i) { return { i: i, c: h[i] }; });
+  function power(a, b) {
+    var at = trump && a.c.s === trump ? 1 : 0, bt = trump && b.c.s === trump ? 1 : 0;
+    if (at !== bt) return at - bt;
+    return a.c.r - b.c.r;
+  }
+  function lowest(list) { return list.slice().sort(power)[0]; }
+  function highest(list) { var s = list.slice().sort(power); return s[s.length - 1]; }
+
+  var need = st.noms[seat] - st.won[seat];
+  // Past its nom the bonus has gone, so every extra trick is a free point.
+  // Pro chases them; levels 1-5 behave exactly as they always did.
+  var want = d >= 6 ? (need > 0 || need < 0) : (need > 0);
+  var mustWinAll = d >= 6 && need > 0 && need >= h.length;
+
+  if (st.trick.length === 0) { // leading
+    if (want) {
+      if (d >= 5) {
+        var bosses = cards.filter(function (x) {
+          if (x.c.r <= highestOutstanding(st, seat, x.c.s)) return false;
+          if (!trump) return true;
+          return x.c.s === trump || highestOutstanding(st, seat, trump) === 0;
+        });
+        // The top trump wins whenever it is played, so Pro keeps it back — late
+        // on it takes a trick AND wrecks somebody else's nom.
+        if (d >= 6 && bosses.length && !mustWinAll) {
+          var keep = bosses.filter(function (x) { return !(trump && x.c.s === trump && x.c.r === 14); });
+          if (keep.length) return highest(keep).i;
+          var side = cards.filter(function (x) { return !(trump && x.c.s === trump); });
+          if (side.length && need < h.length) return highest(side).i;
+        }
+        if (bosses.length) return highest(bosses).i;
+      }
+      if (d >= 6 && trump && !mustWinAll) {
+        var notTop = cards.filter(function (x) { return !(x.c.s === trump && x.c.r === 14); });
+        if (notTop.length) return highest(notTop).i;
+      }
+      return highest(cards).i;
+    }
+    return lowest(cards).i;
+  }
+
+  var bestCard = st.trick[currentWinner(st)].card;
+  var winners = cards.filter(function (x) { return beats(x.c, bestCard, trump); });
+  var losers = cards.filter(function (x) { return !beats(x.c, bestCard, trump); });
+  var last = st.trick.length === st.n - 1;
+
+  if (want) {
+    if (winners.length) {
+      var pool = winners;
+      if (d >= 6 && trump && !mustWinAll && winners.length > 1) {
+        var cheaper = winners.filter(function (x) { return !(x.c.s === trump && x.c.r === 14); });
+        if (cheaper.length) pool = cheaper;      // don't spend the ace on a trick a six wins
+      }
+      if (d >= 4 && !last) {
+        var safe = pool.filter(function (x) { return isSafeWinner(st, seat, x.c); });
+        if (safe.length) return lowest(safe).i;
+      }
+      return lowest(pool).i;
+    }
+    return lowest(losers.length ? losers : cards).i;
+  }
+  if (losers.length) return highest(losers).i; // duck as high as possible
+  if (d >= 6 && winners.length > 1) {          // forced to win: give up the least useful card
+    var notBoss = winners.filter(function (x) { return !(trump && x.c.s === trump && x.c.r === 14); });
+    if (notBoss.length) return highest(notBoss).i;
+  }
+  return highest(winners).i;                   // forced to win: dump the biggest
+}
+
+/* ---------------- exports ---------------- */
+
+var api = {
+  SUITS: SUITS, SUIT_SYM: SUIT_SYM, SUIT_RED: SUIT_RED, CREW: CREW, ROUNDS: ROUNDS,
+  rankLabel: rankLabel, makeDeck: makeDeck, shuffle: shuffle, mulberry32: mulberry32,
+  sortHand: sortHand,
+  newGame: newGame, aceHunt: aceHunt, startRound: startRound,
+  nomsSum: nomsSum, nomsCount: nomsCount, forbiddenNom: forbiddenNom,
+  legalNoms: legalNoms, submitNom: submitNom,
+  legalPlayIdxs: legalPlayIdxs, beats: beats, currentWinner: currentWinner,
+  playCard: playCard, collectTrick: collectTrick, advanceRound: advanceRound,
+  scorerStart: scorerStart, scorerApply: scorerApply, scorerNext: scorerNext, scorerUndo: scorerUndo, scorerEdit: scorerEdit,
+  computePayouts: computePayouts,
+  estimateTricks: estimateTricks, aiNom: aiNom, aiPlay: aiPlay,
+  unseenCards: unseenCards, dealAddsUp: dealAddsUp, tableRead: tableRead,
+  simulateRound: simulateRound, simulateFromPlay: simulateFromPlay,
+  nomAnalysis: nomAnalysis, playAnalysis: playAnalysis,
+  snapshotRound: snapshotRound, restoreRound: restoreRound, coachNom: coachNom,
+  fineTotal: fineTotal, addFine: addFine, removeFine: removeFine, splitEvenly: splitEvenly
+};
+
+if (typeof module !== 'undefined' && module.exports) module.exports = api;
+else root.NOMS = api;
+
+})(this);
+// === ENGINE END ===
+
+/* ============================================================
+   NOMS v3.7.3 — UI layer — S77FFY
+   Note: no persistence by design (storage APIs are blocked in
+   the claude.ai preview). A save/resume can be added for the
+   GitHub Pages build.
+   ============================================================ */
+(function () {
+'use strict';
+var E = window.NOMS;
+var VERSION = '3.7.3';
+
+/* ---------- tiny helpers ---------- */
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+var toastT = null;
+function toast(t) {
+  var el = $('toast');
+  el.textContent = t;
+  el.classList.add('on');
+  clearTimeout(toastT);
+  toastT = setTimeout(function () { el.classList.remove('on'); }, 2600);
+}
+function show(id) {
+  var scr = document.querySelectorAll('.screen'), i;
+  for (i = 0; i < scr.length; i++) scr[i].classList.toggle('on', scr[i].id === id);
+  var cog = $('cogFab');
+  if (cog) cog.style.display = (id === 'scr-scorer' || id === 'scr-scorer-setup') ? 'block' : 'none';
+  window.scrollTo(0, 0);
+}
+function modal(id, on) { $(id).classList.toggle('on', !!on); }
+var SUIT_NAME = { S: 'spades', H: 'hearts', D: 'diamonds', C: 'clubs' };
+var RANK_NAME = { 14: 'Ace', 13: 'King', 12: 'Queen', 11: 'Jack' };
+function cardLabel(c) { return (RANK_NAME[c.r] || c.r) + ' of ' + SUIT_NAME[c.s]; }
+function ordinal(n) { return n + (n === 1 ? 'st' : n === 2 ? 'nd' : n === 3 ? 'rd' : 'th'); }
+function money(v) {
+  var sign = v < 0 ? '\u2212' : '';
+  return sign + '\u00A3' + Math.abs(v).toFixed(2);
+}
+
+/* ---------- fullscreen round flash ---------- */
+function roundFlash(r, done) {
+  var R = E.ROUNDS[r];
+  var big = R.nt ? 'NO TRUMPS' : R.blind ? 'BLIND' : R.cards + (R.cards === 1 ? ' CARD' : ' CARDS');
+  var sub = R.nt ? 'highest of the suit led takes it' :
+            R.blind ? 'nom before you look' :
+            'trumps as turned up';
+  $('flashRd').textContent = 'Round ' + (r + 1) + ' of 16';
+  $('flashBig').textContent = big;
+  $('flashSub').textContent = sub;
+  var dealer = st.names[seatAt(st.dealer0 + r, st.n)];
+  $('flashDeal').innerHTML = 'Dealer: <b style="color:var(--bone)">' + esc(dealer) + '</b>';
+  var el = $('flash');
+  el.classList.add('on');
+  var closed = false;
+  function close() {
+    if (closed) return;
+    closed = true;
+    el.classList.remove('on');
+    el.onclick = null;
+    clearTimeout(flashT);
+    if (done) done();
+  }
+  el.onclick = close;
+  var flashT = setTimeout(close, 1900);
+}
+
+/* ---------- card renderer ---------- */
+var PIPS = {
+  2: [[50, 22], [50, 78, 1]],
+  3: [[50, 22], [50, 50], [50, 78, 1]],
+  4: [[33, 22], [67, 22], [33, 78, 1], [67, 78, 1]],
+  5: [[33, 22], [67, 22], [50, 50], [33, 78, 1], [67, 78, 1]],
+  6: [[33, 22], [67, 22], [33, 50], [67, 50], [33, 78, 1], [67, 78, 1]],
+  7: [[33, 22], [67, 22], [50, 36], [33, 50], [67, 50], [33, 78, 1], [67, 78, 1]],
+  8: [[33, 22], [67, 22], [50, 36], [33, 50], [67, 50], [50, 64, 1], [33, 78, 1], [67, 78, 1]],
+  9: [[33, 20], [67, 20], [33, 41], [67, 41], [50, 50], [33, 59, 1], [67, 59, 1], [33, 80, 1], [67, 80, 1]],
+  10: [[33, 20], [67, 20], [50, 30], [33, 41], [67, 41], [33, 59, 1], [67, 59, 1], [50, 70, 1], [33, 80, 1], [67, 80, 1]]
+};
+function cardFaceHTML(c) {
+  var sym = E.SUIT_SYM[c.s], rl = E.rankLabel(c.r);
+  var h = '<span class="corner"><b>' + rl + '</b><i>' + sym + '</i></span>';
+  if (c.r === 14) {
+    h += '<span class="apip' + (c.s === 'S' ? ' asp' : '') + '">' + sym + '</span>';
+  } else if (c.r >= 11) {
+    h += '<span class="court"><span class="cl">' + rl + '</span><span class="cs">' + sym + '</span></span>';
+  } else {
+    var pp = PIPS[c.r], i;
+    for (i = 0; i < pp.length; i++) {
+      h += '<span class="pip' + (pp[i][2] ? ' f' : '') + '" style="left:' + pp[i][0] + '%;top:' + pp[i][1] + '%">' + sym + '</span>';
+    }
+  }
+  h += '<span class="corner br"><b>' + rl + '</b><i>' + sym + '</i></span>';
+  return h;
+}
+function cardEl(c, tag) {
+  var el = document.createElement(tag || 'div');
+  el.className = 'card' + (E.SUIT_RED[c.s] ? ' red' : '');
+  el.innerHTML = cardFaceHTML(c);
+  el.setAttribute('aria-label', cardLabel(c));
+  return el;
+}
+function backEl() {
+  var el = document.createElement('div');
+  el.className = 'card back';
+  el.setAttribute('aria-hidden', 'true');
+  return el;
+}
+
+/* ---------- app state ---------- */
+/* ---------- league store ----------
+   Guarded: real browser storage on a proper host (GitHub Pages), and a
+   memory-only fallback where storage is blocked, so nothing ever throws. */
+var STORE_KEY = 'noms.league.v1';
+var storeOK = (function () {
+  try {
+    var k = '__noms_probe';
+    window.localStorage.setItem(k, '1');
+    window.localStorage.removeItem(k);
+    return true;
+  } catch (e) { return false; }
+})();
+function blankLeague() { return { v: 1, roster: E.CREW.slice(), games: [], paid: {} }; }
+var league = (function () {
+  if (!storeOK) return blankLeague();
+  try {
+    var raw = window.localStorage.getItem(STORE_KEY);
+    if (!raw) return blankLeague();
+    var o = JSON.parse(raw);
+    if (!o || !o.games) return blankLeague();
+    o.roster = o.roster || E.CREW.slice();
+    o.paid = o.paid || {};
+    return o;
+  } catch (e) { return blankLeague(); }
+})();
+function saveLeague() {
+  league.roster = ROSTER.slice();
+  if (!storeOK) return;
+  try { window.localStorage.setItem(STORE_KEY, JSON.stringify(league)); } catch (e) {}
+}
+
+/* ---------- dates ---------- */
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function todayKey() {
+  var d = new Date();
+  return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
+}
+var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function monthKeyOf(dateKey) { return dateKey.slice(0, 7); }
+function monthLabel(mk) {
+  var p = mk.split('-');
+  return MONTHS[+p[1] - 1] + ' ' + p[0];
+}
+function niceDate(dateKey) {
+  var p = dateKey.split('-');
+  var d = new Date(+p[0], +p[1] - 1, +p[2]);
+  return DAYS[d.getDay()] + ' ' + (+p[2]) + ' ' + MONTHS[+p[1] - 1].slice(0, 3);
+}
+function shiftMonth(mk, delta) {
+  var p = mk.split('-'), y = +p[0], m = +p[1] - 1 + delta;
+  y += Math.floor(m / 12); m = ((m % 12) + 12) % 12;
+  return y + '-' + pad2(m + 1);
+}
+
+/* ---------- league points ----------
+   Winner takes the number of players that night, down to 1 for last.
+   Drawn players all take the higher score. */
+function gamePoints(totals) {
+  var n = totals.length, i, k;
+  var idx = totals.map(function (t, j) { return j; })
+    .sort(function (a, b) { return totals[b] - totals[a]; });
+  var pts = new Array(n).fill(0);
+  i = 0;
+  while (i < n) {
+    var j = i;
+    while (j + 1 < n && totals[idx[j + 1]] === totals[idx[i]]) j++;
+    var value = n - i; // best position in the drawn block
+    for (k = i; k <= j; k++) pts[idx[k]] = value;
+    i = j + 1;
+  }
+  return pts;
+}
+/* League points are shared out among the PAID players in that game only.
+   Somebody who hasn't paid doesn't take up a place, so if six play and five
+   are paid up, the winner of those five gets 5 — not 6. */
+function pointsForGame(g, paid) {
+  var idx = [], totals = [], out = {};
+  g.names.forEach(function (nm, i) {
+    if (!paid || paid.indexOf(nm) !== -1) { idx.push(i); totals.push(g.totals[i]); }
+  });
+  if (!idx.length) return out;
+  var pts = gamePoints(totals);
+  idx.forEach(function (i, k) { out[g.names[i]] = pts[k]; });
+  return out;
+}
+function gamesInMonth(mk) {
+  return league.games.filter(function (g) { return monthKeyOf(g.date) === mk; })
+    .sort(function (a, b) { return a.date < b.date ? -1 : a.date > b.date ? 1 : 0; });
+}
+function monthStandings(mk) {
+  var paid = league.paid[mk] || [];
+  var tally = {};
+  paid.forEach(function (nm) { tally[nm] = { name: nm, pts: 0, games: 0, best: 0 }; });
+  gamesInMonth(mk).forEach(function (g) {
+    var pts = pointsForGame(g, paid);
+    g.names.forEach(function (nm) {
+      if (!tally[nm] || pts[nm] == null) return;   // not paid up: no league points
+      tally[nm].pts += pts[nm];
+      tally[nm].games++;
+      if (pts[nm] > tally[nm].best) tally[nm].best = pts[nm];
+    });
+  });
+  return Object.keys(tally).map(function (k) { return tally[k]; })
+    .sort(function (a, b) { return b.pts - a.pts || b.best - a.best || a.name.localeCompare(b.name); });
+}
+
+var ROSTER = league.roster ? league.roster.slice() : E.CREW.slice(); // crew names, extendable
+var st = null;          // engine state
+var pumpT = null;       // CPU driver timer
+var justDealt = false;  // stagger the next hand render
+var blindReveal = false;
+var uiNote = '';        // transient table-talk line
+var training = false, roundSnap = null, rewound = 0, lastAdvice = null;
+var tips = true;
+var theme = (league.theme === 'felt') ? 'felt' : 'neon';
+function applyTheme() {
+  document.body.classList.toggle('theme-felt', theme === 'felt');
+  var b = $('themeRow').querySelectorAll('button'), i;
+  for (i = 0; i < b.length; i++) b[i].classList.toggle('sel', b[i].dataset.th === theme);
+}
+var setup = { who: 0, size: 7, diff: 3, train: 0, tips: true };
+
+/* Levels 6-10 seat Pro players alongside level-5 ones. 10 is a full table of Pros. */
+function proCount(level, cpus) {
+  if (level < 6) return 0;
+  if (level >= 10) return cpus;
+  return Math.min(cpus, level - 5);
+}
+function diffHintText(level) {
+  var cpus = Math.max(1, setup.size - 1);
+  if (level <= 5) return DIFF_HINTS[level];
+  var pc = proCount(level, cpus);
+  return level + ' \u2014 ' + pc + ' Pro ' + (pc === 1 ? 'player' : 'players') +
+    (cpus - pc > 0 ? ' and ' + (cpus - pc) + ' at level 5.' : ' \u2014 everyone but you.');
+}
+var DIFF_HINTS = {
+  1: '1 \u2014 Pub novice: noms are a guess, plays are a punt.',
+  2: '2 \u2014 Casual: half thinks, half vibes.',
+  3: '3 \u2014 Regular: counts their hand, plays sensibly.',
+  4: '4 \u2014 Sharp: shades noms, hunts safe winners.',
+  5: '5 \u2014 Shark: counts cards and remembers everything.'
+};
+
+function stopPump() { clearTimeout(pumpT); pumpT = null; }
+function resetToTitle() {
+  stopPump();
+  st = null;
+  modal('nomModal', false); modal('sheetModal', false); modal('resultsModal', false);
+  show('scr-title');
+}
+
+/* ============================================================
+   GAME MODE
+   ============================================================ */
+function buildSetup() {
+  var wc = $('whoChips');
+  wc.innerHTML = '';
+  ROSTER.forEach(function (nm, i) {
+    var b = document.createElement('button');
+    b.className = 'chipbtn' + (i === setup.who ? ' sel' : '');
+    b.textContent = nm;
+    b.onclick = function () { setup.who = i; buildSetup(); };
+    wc.appendChild(b);
+  });
+  $('sizeVal').textContent = setup.size;
+  var segs = $('diffSeg').querySelectorAll('button');
+  for (var i = 0; i < segs.length; i++) {
+    segs[i].classList.toggle('sel', +segs[i].dataset.d === setup.diff);
+    segs[i].classList.toggle('pro', +segs[i].dataset.d >= 6);
+  }
+  $('diffHint').textContent = diffHintText(setup.diff);
+  var tsegs = $('trainSeg').querySelectorAll('button');
+  for (var ti = 0; ti < tsegs.length; ti++) tsegs[ti].classList.toggle('sel', +tsegs[ti].dataset.t === setup.train);
+  $('tipsRow').style.display = setup.train ? '' : 'none';
+  $('tipsBox').checked = setup.tips !== false;
+}
+
+function startGame() {
+  // must come from ROSTER, not the original crew — anyone added since lives here
+  if (setup.who < 0 || setup.who >= ROSTER.length) setup.who = 0;
+  var me = ROSTER[setup.who];
+  var others = ROSTER.filter(function (n) { return n !== me; }).slice(0, setup.size - 1);
+  var names = [me].concat(others).filter(function (n) { return !!n; });
+  var diffs = null;
+  if (setup.diff >= 6) {
+    var cpus = names.length - 1, pc = proCount(setup.diff, cpus), k;
+    diffs = [5];                               // seat 0 is you; the value is never used
+    for (k = 1; k < names.length; k++) diffs.push(k <= pc ? 6 : 5);
+  }
+  st = E.newGame({
+    names: names, humanSeat: 0,
+    difficulty: setup.diff >= 6 ? 5 : setup.diff,
+    diffs: diffs
+  });
+  training = !!setup.train;
+  tips = setup.tips !== false;
+  runHunt();
+}
+
+/* ---------- the table ---------- */
+/* Walk the outline of a stadium — two straight sides joined by semicircular
+   ends — so seats sit where people actually sit, not on an ellipse.
+   k is 0 at the top centre and runs clockwise; scale pulls it inwards. */
+function stadiumPoint(k, ratio, inset) {
+  var H = 1 - 2 * inset, W = ratio - 2 * inset;   // inset in table-height units
+  var r = H / 2, L = W - H;                 // straight run between the two arcs
+  var P = 2 * L + 2 * Math.PI * r;
+  var s = (((k % 1) + 1) % 1) * P;
+  var x, y, a;
+  if (s < L / 2) { x = s; y = -r; }
+  else if (s < L / 2 + Math.PI * r) {
+    a = (s - L / 2) / r - Math.PI / 2;
+    x = L / 2 + r * Math.cos(a); y = r * Math.sin(a);
+  } else if (s < L / 2 + Math.PI * r + L) {
+    x = L / 2 - (s - (L / 2 + Math.PI * r)); y = r;
+  } else if (s < L / 2 + 2 * Math.PI * r + L) {
+    a = (s - (L / 2 + Math.PI * r + L)) / r + Math.PI / 2;
+    x = -L / 2 + r * Math.cos(a); y = r * Math.sin(a);
+  } else { x = -L / 2 + (s - (L / 2 + 2 * Math.PI * r + L)); y = -r; }
+  return { x: 50 + (x / ratio) * 100, y: 50 + y * 100 };
+}
+function seatTable(names, hostId, youSeat) {
+  var host = $(hostId);
+  host.innerHTML = '';
+  var n = names.length, RATIO = 1.85;
+  names.forEach(function (nm, i) {
+    // whoever was picked first sits at the top, the rest go round clockwise
+    var p = stadiumPoint(i / n, RATIO, 0.055);      // on the leather rail
+    var d = document.createElement('div');
+    d.className = 'tseat' + (i === youSeat ? ' you' : ''); d.id = 'ts' + i;
+    d.style.left = p.x + '%';
+    d.style.top = p.y + '%';
+    // the crew cut for seats, ace first — show that card rather than a bare number
+    d.innerHTML = '<span class="pipcard">' + E.rankLabel(i === 0 ? 14 : i + 1) +
+      '<i>\u2660</i></span><span class="tn">' + esc(nm) + '</span>';
+    host.appendChild(d);
+  });
+  // steel cup holders sunk into the oak, between the rail and the baize
+  var tbl = $('huntTable');
+  var old = tbl.querySelectorAll('.cup'), c;
+  for (c = 0; c < old.length; c++) old[c].parentNode.removeChild(old[c]);
+  for (c = 0; c < 8; c++) {
+    var q = stadiumPoint(c / 8 + 1 / 16, RATIO, 0.21);   // middle of the oak band
+    var cup = document.createElement('div');
+    cup.className = 'cup';
+    cup.style.left = q.x + '%';
+    cup.style.top = q.y + '%';
+    tbl.appendChild(cup);
+  }
+}
+function trailAdd(card, lap) {
+  var t = $('dealTrail');
+  var el = cardEl(card);
+  if (lap) el.classList.add('lap');
+  el.classList.add('dealin');
+  t.appendChild(el);
+}
+
+/* ---------- jack hunt ---------- */
+function runHunt() {
+  show('scr-hunt');
+  var hunt = E.aceHunt(st);
+  $('huntSub').textContent = 'Cards go round until a jack turns \u2014 that seat deals first.';
+  seatTable(st.names, 'huntSeats', 0);
+  var go = $('btnHuntGo');
+  dealRound(hunt, st.names, function () {
+    go.style.visibility = 'visible';
+    go.focus();
+  });
+  go.onclick = function () {
+    E.startRound(st);
+    blindReveal = false;
+    uiNote = '';
+    show('scr-game');
+    roundFlash(st.round, dealSequence);
+  };
+}
+
+/* ---------- render ---------- */
+function roundText() {
+  var R = E.ROUNDS[st.round];
+  var special = R.nt ? 'No Trumps' : R.blind ? 'Blind' : null;
+  return 'R' + (st.round + 1) + '/16 \u00B7 ' + (special ? special + ' \u00B7 ' : '') + R.cards + (R.cards === 1 ? ' card' : ' cards');
+}
+function trumpText() {
+  if (!st.trumpCard) return 'no trumps';
+  var c = st.trumpCard;
+  return '<span class="sym" style="color:' + (E.SUIT_RED[c.s] ? 'var(--red-hi)' : 'var(--bone)') + '">' +
+    E.rankLabel(c.r) + E.SUIT_SYM[c.s] + '</span> trumps';
+}
+function renderTop() {
+  $('roundChip').textContent = roundText();
+  $('trumpChip').innerHTML = trumpText();
+  var rc = $('roundChip');
+  if (training) { rc.classList.add('trainchip'); rc.textContent += rewound ? ' \u00B7 take ' + (rewound + 1) : ' \u00B7 training'; }
+  else rc.classList.remove('trainchip');
+  var R = E.ROUNDS[st.round];
+  var sum = E.nomsSum(st), cnt = E.nomsCount(st);
+  var tc = $('tallyChip');
+  tc.className = 'chip';
+  var txt = 'noms ' + sum + '/' + R.cards;
+  if (cnt === st.n) {
+    if (sum > R.cards) { txt += ' \u25B2'; tc.classList.add('over'); }
+    else { txt += ' \u25BC'; tc.classList.add('under'); }
+  }
+  tc.textContent = txt;
+}
+function seatStatus(p) {
+  if (st.noms[p] == null) return 'nom \u2014';
+  var w = st.won[p], nm = st.noms[p];
+  var cls = w > nm ? 'bust' : (w === nm ? 'hit' : '');
+  return 'nom <b>' + nm + '</b> \u00B7 won <b class="' + cls + '">' + w + '</b>';
+}
+function renderSeats() {
+  var host = $('seats');
+  host.innerHTML = '';
+  for (var p = 1; p < st.n; p++) {
+    var d = document.createElement('div');
+    var active = (st.phase === 'nom' && st.nomTurn === p) || (st.phase === 'play' && st.turn === p);
+    d.className = 'seat' + (active ? ' active' : '');
+    var backs = '';
+    for (var k = 0; k < st.hands[p].length; k++) backs += '<div class="card back"></div>';
+    var isPro = st.diffs && st.diffs[p] >= 6;
+    d.innerHTML =
+      '<div class="snm">' + esc(st.names[p]) +
+        (isPro ? '<span class="protag">PRO</span>' : '') +
+        (st.dealer === p ? '<span class="dbadge">D</span>' : '') + '</div>' +
+      '<div class="sback">' + backs + '</div>' +
+      '<div class="snw">' + seatStatus(p) + '</div>';
+    host.appendChild(d);
+  }
+}
+function renderTrick() {
+  var host = $('trick');
+  host.innerHTML = '';
+  st.trick.forEach(function (t) {
+    var w = document.createElement('div');
+    w.className = 'tplay' + (st.phase === 'trickdone' && st.lastTrick && st.lastTrick.winner === t.seat ? ' winner' : '');
+    var c = cardEl(t.card);
+    c.classList.add('dealin');
+    w.appendChild(c);
+    var nm = document.createElement('div');
+    nm.className = 'tnm';
+    nm.textContent = t.seat === 0 ? 'you' : st.names[t.seat];
+    w.appendChild(nm);
+    host.appendChild(w);
+  });
+}
+function renderMsg() {
+  var m = $('msg');
+  m.className = 'msg';
+  var R = E.ROUNDS[st.round];
+  if (st.phase === 'trickdone') {
+    m.classList.add('gold');
+    m.textContent = (st.lastTrick.winner === 0 ? 'You take' : st.names[st.lastTrick.winner] + ' takes') + ' the trick';
+    return;
+  }
+  if (uiNote) { m.textContent = uiNote; return; }
+  if (st.phase === 'nom') {
+    m.textContent = R.blind ? 'Blind round \u2014 noms before anyone looks' :
+      R.nt ? 'No trumps this round' :
+      st.nomTurn === 0 ? 'Your nom' : st.names[st.nomTurn] + ' is weighing it up\u2026';
+  } else if (st.phase === 'play') {
+    m.textContent = st.turn === 0 ? (st.trick.length === 0 ? 'Your lead' : 'Your turn') : st.names[st.turn] + ' to play\u2026';
+  } else {
+    m.innerHTML = '&nbsp;';
+  }
+}
+function renderMe() {
+  var R = E.ROUNDS[st.round];
+  var info = 'You \u2014 <b>' + esc(st.names[0]) + '</b>' + (st.dealer === 0 ? ' <span class="dbadge">D</span>' : '');
+  if (st.noms[0] != null) {
+    var w = st.won[0], nm = st.noms[0];
+    var cls = w > nm ? 'bust' : (w === nm ? 'hit' : '');
+    info += ' \u00B7 nom <b>' + nm + '</b> \u00B7 won <b class="' + cls + '">' + w + '</b>';
+  }
+  $('meInfo').innerHTML = info;
+
+  var host = $('hand');
+  host.innerHTML = '';
+  var hideBlind = R.blind && st.phase === 'nom';
+  if (hideBlind) blindReveal = true;
+  var legal = (st.phase === 'play' && st.turn === 0) ? E.legalPlayIdxs(st, 0) : null;
+  st.hands[0].forEach(function (c, i) {
+    var el;
+    if (hideBlind) {
+      el = backEl();
+    } else {
+      el = cardEl(c, 'button');
+      if (blindReveal) { el.classList.add('flipin'); el.style.animationDelay = (i * 45) + 'ms'; }
+      else if (justDealt) { el.classList.add('dealin'); el.style.animationDelay = (i * 45) + 'ms'; }
+      if (legal) {
+        if (legal.indexOf(i) !== -1) {
+          el.classList.add('can');
+          el.onclick = (function (idx) {
+            return function () { humanPlay(idx); };
+          })(i);
+        } else {
+          el.classList.add('dim');
+          el.disabled = true;
+        }
+      }
+    }
+    host.appendChild(el);
+  });
+  if (!hideBlind) { blindReveal = false; justDealt = false; }
+}
+function renderAll() {
+  renderTop(); renderSeats(); renderTrick(); renderMsg(); renderMe();
+}
+
+/* ---------- human actions ---------- */
+function renderCoach() {
+  var host = $('coach');
+  if (!training || !tips) { host.innerHTML = ''; lastAdvice = null; return; }
+  var R = E.ROUNDS[st.round];
+  if (R.blind) {
+    host.innerHTML = '<div class="coachbox"><div class="coachline">Blind round \u2014 nobody can read this one. ' +
+      'With ' + st.n + ' at the table, <b>' + Math.round(R.cards / st.n) + '</b> is the neutral call.</div></div>';
+    lastAdvice = null;
+    return;
+  }
+  var a = E.coachNom(st, 0, 220);
+  lastAdvice = a;
+  if (a.forced) {
+    host.innerHTML = '<div class="coachbox"><div class="coachline">You deal, and the calls in front of you leave ' +
+      '<b>' + a.best.nom + '</b> as your only legal one \u2014 anything else would make the table total ' +
+      a.cards + '.</div></div>';
+    return;
+  }
+
+  var lines = [];
+  var pct = function (v) { return Math.round(v * 100) + '%'; };
+  var second = a.runnerUp;
+  var margin = second ? a.best.expected - second.expected : 99;
+
+  // the headline: the call, its odds, and the nearest rival
+  var head = '<b>' + a.best.nom + '</b> at ' + pct(a.best.hit);
+  if (second && margin < 2.5) head += ', then <b>' + second.nom + '</b> at ' + pct(second.hit) + ' \u2014 it is close';
+  else if (second) head += ', clear of <b>' + second.nom + '</b> at ' + pct(second.hit);
+  lines.push(head + '.');
+
+  // why: the thing about this hand that decides it
+  var why = coachReason(a);
+  if (why) lines.push(why);
+
+  // the table, only when it says something
+  if (a.heard > 0) {
+    var t = a.claimed + ' of ' + a.cards + ' claimed by ' + a.heard +
+      (a.heard === 1 ? ' player' : ' players') + ' so far';
+    if (a.loose <= 0) t += ' \u2014 already overbid, so somebody goes down';
+    else if (a.loose === a.cards) t += ' \u2014 the tricks are all still going spare';
+    lines.push(t + '.');
+  }
+
+  // the caveat, ONLY when a big call is on the table and people can still surprise you
+  if (a.toCome > 0 && a.best.nom >= 2 && a.best.hit < 0.6) {
+    lines.push(a.toCome + ' still to call behind you, so a call this big can still be spoiled.');
+  }
+
+  var h = '<div class="coachbox">';
+  lines.forEach(function (l) { h += '<div class="coachline">' + l + '</div>'; });
+  h += '<div class="oddswrap"><div class="odds">';
+  var top = 0, i;
+  for (i = 0; i < a.rows.length; i++) if (a.rows[i].hit > top) top = a.rows[i].hit;
+  for (i = 0; i < a.rows.length; i++) {
+    var r = a.rows[i];
+    var bar = top > 0 ? Math.round((r.hit / top) * 100) : 0;
+    h += '<div class="' + (r.nom === a.best.nom ? 'pick' : '') + '" style="height:' + Math.max(2, bar) + '%">' +
+      '<span>' + r.nom + '</span></div>';
+  }
+  h += '</div></div></div>';
+  host.innerHTML = h;
+}
+
+/* One line on what actually decides this hand — never the same line twice running. */
+function coachReason(a) {
+  var hand = st.hands[0], i, c;
+  var trump = st.trump, cards = a.cards;
+  var topTrumps = 0, aces = 0, voids = 0, counts = {};
+  for (i = 0; i < hand.length; i++) {
+    c = hand[i];
+    counts[c.s] = (counts[c.s] || 0) + 1;
+    if (trump && c.s === trump && c.r >= 12) topTrumps++;
+    if (c.r === 14 && c.s !== trump) aces++;
+  }
+  ['S', 'H', 'D', 'C'].forEach(function (s) { if (!counts[s]) voids++; });
+
+  if (a.best.nom === 0 && a.best.hit >= 0.5 && aces > 0 && st.n >= 5) {
+    return 'You are holding ' + (aces === 1 ? 'an ace' : aces + ' aces') + ' off-suit, but with ' + st.n +
+      ' players on ' + cards + ' cards somebody is usually void \u2014 ' +
+      (aces === 1 ? 'it gets' : 'they get') + ' ruffed more often than not.';
+  }
+  if (a.best.nom === 0 && a.best.hit >= 0.7) {
+    return 'Nothing here really wants to win a trick.';
+  }
+  if (topTrumps >= 2) {
+    return 'Your top trumps are the reliable part \u2014 they win whenever you choose to play them.';
+  }
+  if (voids >= 2 && trump && counts[trump]) {
+    return 'Two suits missing with trumps in hand \u2014 the ruffs are where your tricks come from.';
+  }
+  if (aces >= 2 && a.best.nom >= 2) {
+    return 'Two aces carry this, provided nobody is short enough to trump them.';
+  }
+  if (a.best.hit < 0.4) {
+    return 'No call is comfortable here \u2014 it is a hand for damage limitation.';
+  }
+  return '';
+}
+
+function openNomModal() {
+  var R = E.ROUNDS[st.round];
+  $('nomTitle').textContent = R.blind ? 'Blind nom' : 'Your nom';
+  $('nomSub').innerHTML = R.blind ?
+    'Before you look: ' + R.cards + ' cards coming \u00B7 ' + trumpText() :
+    R.cards + (R.cards === 1 ? ' card' : ' cards') + ' \u00B7 ' + trumpText();
+  var nh = $('nomHand');
+  nh.innerHTML = '';
+  st.hands[0].forEach(function (c) {
+    nh.appendChild(R.blind ? backEl() : cardEl(c));
+  });
+  var fit = 88 / (1 + (st.hands[0].length - 1) * 0.55);
+  nh.style.setProperty('--cw', 'min(' + fit.toFixed(1) + 'vw, 118px)');
+  var grid = $('nomGrid');
+  grid.innerHTML = '';
+  var f = E.forbiddenNom(st, 0);
+  for (var v = 0; v <= R.cards; v++) {
+    var b = document.createElement('button');
+    b.className = 'nombtn';
+    b.textContent = v;
+    if (v === f) b.disabled = true;
+    else b.onclick = (function (val) {
+      return function () {
+        E.submitNom(st, 0, val);
+        modal('nomModal', false);
+        uiNote = '';
+        renderAll();
+        pump();
+      };
+    })(v);
+    grid.appendChild(b);
+  }
+  $('nomWarn').textContent = f >= 0 ? 'Dealer can\u2019t make it ' + f + ' \u2014 the noms can\u2019t total ' + R.cards + '.' : '';
+  renderCoach();
+  modal('nomModal', true);
+}
+function humanPlay(idx) {
+  if (!st || st.phase !== 'play' || st.turn !== 0) return;
+  if (E.legalPlayIdxs(st, 0).indexOf(idx) === -1) return;
+  E.playCard(st, 0, idx);
+  uiNote = '';
+  renderAll();
+  pump();
+}
+
+/* ---------- CPU driver ---------- */
+function dealSequence() {
+  if (training) { roundSnap = E.snapshotRound(st); rewound = 0; }
+  renderTop();
+  renderSeats();
+  $('meInfo').innerHTML = '';
+  $('hand').innerHTML = '';
+  var host = $('trick');
+  host.innerHTML = '';
+  var w = document.createElement('div');
+  w.className = 'shuffling';
+  for (var i = 0; i < 5; i++) w.appendChild(backEl());
+  host.appendChild(w);
+  var m = $('msg');
+  m.className = 'msg';
+  m.textContent = 'Shuffling\u2026';
+  pumpT = setTimeout(function () {
+    justDealt = true;
+    renderAll();
+    pump();
+  }, 900);
+}
+function pump() {
+  stopPump();
+  if (!st || st.mode !== 'game') return;
+  if (st.phase === 'nom') {
+    if (st.nomTurn === 0) { openNomModal(); return; }
+    pumpT = setTimeout(function () {
+      var s = st.nomTurn;
+      var v = E.aiNom(st, s);
+      E.submitNom(st, s, v);
+      uiNote = st.names[s] + ' noms ' + v;
+      renderAll();
+      pump();
+    }, 460);
+  } else if (st.phase === 'play') {
+    if (st.turn === 0) { renderAll(); return; }
+    pumpT = setTimeout(function () {
+      var s = st.turn;
+      E.playCard(st, s, E.aiPlay(st, s));
+      uiNote = '';
+      renderAll();
+      pump();
+    }, 520);
+  } else if (st.phase === 'trickdone') {
+    renderAll();
+    pumpT = setTimeout(function () {
+      E.collectTrick(st);
+      renderAll();
+      pump();
+    }, 1050);
+  } else if (st.phase === 'scored') {
+    openSheet('continue');
+  } else if (st.phase === 'gameover') {
+    openResults();
+  }
+}
+
+/* ============================================================
+   SCORESHEET (shared by both modes)
+   ============================================================ */
+/* hand-drawn crying face, for anyone sat on nothing */
+function cryFace(em) {
+  var size = (em || 1.1) + 'em';
+  return '<svg class="cry" width="' + size + '" height="' + size + '" viewBox="0 0 40 40" ' +
+    'fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" ' +
+    'role="img" aria-label="nothing yet">' +
+    // wobbly hand-drawn head
+    '<path d="M20.4 3.6C11 3.2 3.5 10.8 3.7 20.2c.2 9 7.2 16.4 16.4 16.3 9.4-.1 16.4-7.2 16.1-16.5C36 10.9 29.3 3.9 20.4 3.6z"/>' +
+    // screwed-shut eyes
+    '<path d="M10.9 17.4c1.5-2.6 4.4-2.7 6.1-.2"/>' +
+    '<path d="M23.2 17.2c1.6-2.5 4.5-2.5 6 .1"/>' +
+    // open wail of a mouth
+    '<path d="M14.2 29.8c1.3-4.2 9.6-4.4 11.4-.2"/>' +
+    '</svg>';
+}
+/* JS gives a negative result for (-1 % 4), which then indexes past the end of
+   the names array and prints "undefined". Everything that turns a rotation
+   into a seat goes through here. */
+function seatAt(i, n) { return ((i % n) + n) % n; }
+function sheetOrder(g) {
+  // names in round-one nom order: left of the first dealer first, first dealer last
+  var o = [], k;
+  for (k = 1; k <= g.n; k++) o.push(seatAt(g.dealer0 + k, g.n));
+  return o;
+}
+function buildSheetHTML(g) {
+  g = g || st;
+  var ord = sheetOrder(g);
+  var clean = [];                              // who has landed every nom so far
+  for (var ci = 0; ci < g.n; ci++) clean.push(true);
+  var h = '<table class="sheetT p' + g.n + '" id="sheetTbl"><thead><tr><th class="rlab">Rd</th><th class="dcol">Deal</th>';
+  ord.forEach(function (p, i) {
+    var tilt = [-2.4, 1.6, -1.1, 2.2, -1.8, 1.2, -2.0][i % 7];
+    h += '<th class="pname"><span style="transform:rotate(' + tilt + 'deg)">' + esc(g.names[p]) + '</span></th>';
+  });
+  h += '</tr></thead><tbody>';
+  for (var r = 0; r < 16; r++) {
+    var cur = g.phase !== 'gameover' && r === g.round ? ' class="cur"' : '';
+    h += '<tr' + cur + '><td class="rlab">' + E.ROUNDS[r].label + '</td>' +
+      '<td class="dcol">' + esc(g.names[seatAt(g.dealer0 + r, g.n)]) + '</td>';
+    ord.forEach(function (p) {
+      if (r < g.sheet.length) {
+        var c = g.sheet[r][p];
+        var cls = c.won === c.nom ? 'hit' : 'miss';
+        if (c.won !== c.nom) clean[p] = false;
+        if (clean[p]) cls += ' perfect';         // has not gone down yet
+        var shown = c.total === 0 ? cryFace(1.35) : c.total;
+        h += '<td class="' + cls + '"><span class="tt">' + shown + '<sup>' + c.nom + '</sup></span></td>';
+      } else {
+        h += '<td class="pend">\u00B7</td>';
+      }
+    });
+    h += '</tr>';
+  }
+  h += '</tbody>';
+  if (g.sheet.length === 16) { // final tally only once the last round is in
+    h += '<tfoot><tr><td class="rlab">Tot</td><td class="dcol"></td>';
+    ord.forEach(function (p) {
+      h += '<td' + (clean[p] ? ' class="perfect"' : '') + '>' +
+        (g.totals[p] === 0 ? cryFace(1.45) : g.totals[p]) + '</td>';
+    });
+    h += '</tr></tfoot>';
+  }
+  h += '</table>';
+  return h;
+}
+var selRound = -1;
+function applySheetSelection() {
+  var trs = $('sheetHost').querySelectorAll('tbody tr'), i;
+  for (i = 0; i < trs.length; i++) trs[i].classList.toggle('sel', i === selRound);
+  var ub = $('btnSheetUndo');
+  if (st.mode !== 'scorer' || selRound < 0 || selRound >= st.sheet.length) {
+    ub.style.display = 'none';
+    ub.onclick = null;
+    return;
+  }
+  ub.style.display = '';
+  ub.innerHTML = '\u21BA Undo round ' + (selRound + 1);
+  ub.onclick = function () { beginEdit(selRound); };
+}
+function sheetLegend() {
+  return castOn ? ' \u00B7 big number is the running score, small is the nom \u00B7 red = went down' : '';
+}
+function openSheet(modeStr) {
+  $('sheetHost').innerHTML = buildSheetHTML();
+  var go = $('btnSheetGo');
+  if (modeStr === 'continue') {
+    var last = st.round === 15;
+    // rewind belongs to training against the CPUs only — never to a real table
+    var rb = $('btnRewind');
+    if (training && st.mode === 'game' && roundSnap) {
+      rb.style.display = '';
+      rb.onclick = rewindRound;
+    } else {
+      rb.style.display = 'none';
+      rb.onclick = null;
+    }
+    $('sheetSub').textContent = 'After round ' + (st.round + 1) + ' \u2014 ' +
+      (E.ROUNDS[st.round].nt ? 'No Trumps' : E.ROUNDS[st.round].blind ? 'Blind' : E.ROUNDS[st.round].cards + ' cards') +
+      (st.mode === 'scorer' ? ' \u00B7 tap any round to fix it' : '') + sheetLegend();
+    go.textContent = last ? 'Final reckoning \u2192' : (st.mode === 'scorer' ? 'Round ' + (st.round + 2) + ' \u2192' : 'Deal round ' + (st.round + 2) + ' \u2192');
+    if (training && st.mode === 'game') $('sheetSub').textContent += trainingVerdict();
+    go.onclick = function () {
+      modal('sheetModal', false);
+      if (st.mode === 'scorer') {
+        if (!E.scorerNext(st)) { openResults(); return; }
+        roundFlash(st.round, function () { renderScorer(); });
+      } else {
+        if (!E.advanceRound(st)) { openResults(); return; }
+        uiNote = '';
+        roundFlash(st.round, dealSequence);
+      }
+    };
+  } else {
+    $('sheetSub').textContent = (st.mode === 'scorer' ?
+      (st.sheet.length ? 'Tap any round to fix it' : 'Round ' + (st.round + 1) + ' in progress') : roundText()) + sheetLegend();
+    go.textContent = 'Close';
+    $('btnRewind').style.display = 'none';
+    go.onclick = function () {
+      modal('sheetModal', false);
+      if (st.phase === 'gameover') openResults();
+    };
+  }
+  // the just-saved round starts highlighted between rounds
+  selRound = (modeStr === 'continue' && st.mode === 'scorer' && st.round < st.sheet.length) ? st.round : -1;
+  if (st.mode === 'scorer') {
+    var trs = $('sheetHost').querySelectorAll('tbody tr');
+    for (var r2 = 0; r2 < trs.length && r2 < st.sheet.length; r2++) {
+      (function (rr) {
+        trs[rr].style.cursor = 'pointer';
+        trs[rr].onclick = function () {
+          selRound = (rr === selRound) ? -1 : rr;
+          applySheetSelection();
+          if (selRound >= 0) scrollSheetToCurrent();
+        };
+      })(r2);
+    }
+  }
+  applySheetSelection();
+  modal('sheetModal', true);
+  scrollSheetToCurrent();
+  markSheetOverflow();
+}
+/* Say so when the sheet runs off the side, rather than quietly hiding a player. */
+function markSheetOverflow() {
+  var wrap = $('sheetHost');
+  if (!wrap) return;
+  setTimeout(function () {
+    var over = wrap.scrollWidth > wrap.clientWidth + 2;
+    if (wrap.classList) wrap.classList.toggle('scrolls', over);
+    var sub = $('sheetSub');
+    if (over && sub && String(sub.textContent).indexOf('swipe') === -1) {
+      sub.innerHTML = esc(String(sub.textContent)) +
+        ' <span class="swipehint">\u00B7 swipe across for the rest of the table</span>';
+    }
+  }, 30);
+}
+function scrollSheetToCurrent() {
+  setTimeout(function () {
+    var wrap = $('sheetHost');
+    if (!wrap) return;
+    var row = wrap.querySelector('tbody tr.sel') || wrap.querySelector('tbody tr.cur');
+    if (!row) return;
+    var head = wrap.querySelector('thead');
+    var hh = head ? head.offsetHeight : 0;
+    var mid = row.offsetTop - hh - (wrap.clientHeight - hh) / 2 + row.offsetHeight / 2;
+    wrap.scrollTop = Math.max(0, mid);
+  }, 40);
+}
+
+function trainingVerdict() {
+  var row = st.sheet[st.sheet.length - 1];
+  if (!row) return '';
+  var me = row[0];
+  var s = ' \u00B7 you nommed ' + me.nom + ', won ' + me.won;
+  if (me.won === me.nom) return s + ' \u2014 landed it.';
+  if (me.won > me.nom) return s + ' \u2014 they pushed ' + (me.won - me.nom) + ' extra on you.';
+  return s + ' \u2014 ' + (me.nom - me.won) + ' short.';
+}
+function rewindRound() {
+  if (!roundSnap) return;
+  stopPump();
+  modal('sheetModal', false);
+  E.restoreRound(st, roundSnap);
+  rewound++;
+  uiNote = 'Same cards again \u2014 try a different call';
+  justDealt = true;
+  blindReveal = false;
+  renderAll();
+  toast('Round ' + (st.round + 1) + ' again, same deal');
+  pump();
+}
+
+/* ============================================================
+   RESULTS
+   ============================================================ */
+function archiveGame() {
+  if (st.payouts) { league.carry = st.payouts.carryOut || 0; }   // coins stay for next week
+  if (st.mode !== 'scorer') return; // league is for real nights, not CPU practice
+  if (!st.gameId) st.gameId = 'g' + Date.now().toString(36) + Math.floor(Math.random() * 46656).toString(36);
+  var rec = {
+    id: st.gameId,
+    date: st.date || todayKey(),
+    names: st.names.slice(),
+    totals: st.totals.slice(),
+    dealer0: st.dealer0,
+    sheet: st.sheet.map(function (row) {
+      return row.map(function (c) { return { nom: c.nom, won: c.won, pts: c.pts, total: c.total }; });
+    })
+  };
+  var at = -1, i;
+  for (i = 0; i < league.games.length; i++) if (league.games[i].id === rec.id) at = i;
+  if (at >= 0) league.games[at] = rec; else league.games.push(rec);
+  saveLeague();
+}
+function openResults() {
+  archiveGame();
+  var pay = st.payouts;
+  var order = pay.rank;
+  var winName = st.names[order[0]];
+  $('resSub').textContent = winName + ' takes it \u2014 ' + st.totals[order[0]] + ' points.';
+  var standHTML = '';
+  var prevTotal = null, shownPos = 0;
+  order.forEach(function (p, i) {
+    var tied = st.totals[p] === prevTotal;
+    if (!tied) shownPos = i + 1;
+    prevTotal = st.totals[p];
+    var row = pay.rows[p];
+    standHTML += '<div class="standrow' + (shownPos === 1 ? ' first' : '') + '">' +
+      '<span class="pos">' + (tied ? '=' : '') + ordinal(shownPos) + '</span>' +
+      '<span class="nm">' + esc(st.names[p]) + '</span>' +
+      '<span class="pts">' + st.totals[p] + ' pts</span>' +
+      '<span class="net ' + (row.net >= 0 ? 'plus' : 'minus') + '">' + money(row.net) + '</span></div>';
+  });
+  $('resStand').innerHTML = standHTML;
+
+  var fines = (st.fines || []);
+  var mh = '<div class="mhead">Settle up \u2014 \u00A3' + pay.pot.toFixed(2).replace(/\.00$/, '') + ' pot' +
+    (pay.rate === 10 ? ' \u00B7 double money' : '') + '</div>';
+  mh += '<div class="mline">' + poundStr(pay.buyIn) + ' a head already in' +
+    (pay.extra > 0 ? ', plus ' + poundStr(pay.extra) + ' of fines' : '') +
+    (pay.carryIn > 0 ? ', plus ' + poundStr(pay.carryIn) + ' carried over' : '') + '</div>';
+  fines.forEach(function (f) {
+    mh += '<div class="mline" style="opacity:.75">\u2022 ' + esc(f.name) + ' \u2014 ' + poundStr(f.amount) +
+      ' (' + esc(f.reason) + ', round ' + (f.round + 1) + ')</div>';
+  });
+  pay.rows.forEach(function (r) {
+    if (r.potShare > 0) {
+      mh += '<div class="mline"><b>' + esc(r.name) + '</b> takes ' + money(r.potShare) + ' from the pot</div>';
+    }
+  });
+  if (pay.sideList.length) {
+    var payees = {}, nPayees = 0, k2;
+    pay.sideList.forEach(function (s) { if (!payees[s.to]) { payees[s.to] = 1; nPayees++; } });
+    mh += '<div class="mhead" style="margin-top:12px">Then, out of pocket' +
+      (nPayees === 1 ? ' to ' + esc(st.names[pay.sideList[0].to]) : '') + '</div>';
+    pay.sideList.forEach(function (s) {
+      mh += '<div class="mline"><b>' + esc(st.names[s.from]) + '</b> pays ' +
+        (nPayees > 1 ? '<b>' + esc(st.names[s.to]) + '</b> ' : '') + money(s.amount) +
+        ' <span style="opacity:.7">(' + s.diff + ' behind)</span></div>';
+    });
+  }
+  if (pay.carryOut > 0) {
+    mh += '<div class="mline" style="margin-top:10px;color:var(--gold-hi)">' +
+      poundStr(pay.carryOut) + ' would not split evenly \u2014 it stays in the pot for next time.</div>';
+  }
+  $('resMoney').innerHTML = mh;
+  $('resNote').textContent = pay.note || '';
+  $('btnResSheet').style.display = st.mode === 'scorer' ? '' : 'none';
+  modal('resultsModal', true);
+}
+
+/* ============================================================
+   SCORER MODE
+   ============================================================ */
+var pick = { sel: [], dealer: null, rate: 5 }; // sel: row indices in tap order
+league.settings = league.settings || { buyIn: 2, fine: 0.5 };
+league.aliases = league.aliases || {};        // scorer -> { realName: shown }
+if (league.scorer === undefined) league.scorer = 'Caitlyn';        // she usually keeps the book
+if (!league.aliases['Caitlyn']) league.aliases['Caitlyn'] = { Kev: 'Dad' };
+var scorer = league.scorer || null;            // who is keeping score tonight
+
+/* The scorer can have their own name for someone — Caitlyn calls Kev "Dad".
+   Entry screens use it; the scoresheet always shows the real name. */
+function shownName(real) {
+  var map = scorer && league.aliases[scorer];
+  return (map && map[real]) ? map[real] : real;
+}
+function poundStr(v) {
+  return v < 1 ? Math.round(v * 100) + 'p' : '\u00A3' + (v % 1 === 0 ? v : v.toFixed(2));
+}
+var scNoms = [], scTricks = [], undoArmed = 0;
+
+function buildPickRows() {
+  var host = $('pickRows');
+  host.innerHTML = '';
+  ROSTER.forEach(function (nm, i) {
+    var row = document.createElement('div');
+    var pos = pick.sel.indexOf(i);
+    row.className = 'prow' + (pos !== -1 ? ' sel' : '');
+    var b = document.createElement('button');
+    b.className = 'obadge';
+    b.textContent = pos !== -1 ? (pos + 1) : '+';
+    b.setAttribute('aria-label', (pos !== -1 ? 'Remove ' : 'Add ') + nm);
+    b.onclick = function () {
+      var at = pick.sel.indexOf(i);
+      if (at !== -1) pick.sel.splice(at, 1);
+      else if (pick.sel.length < 7) pick.sel.push(i);
+      else { toast('Seven seats at most'); return; }
+      if (pick.dealer != null && pick.sel.indexOf(pick.dealer) === -1) pick.dealer = null;
+      buildPickRows();
+    };
+    var inp = document.createElement('input');
+    inp.value = nm; inp.id = 'pn' + i; inp.maxLength = 12;
+    inp.onchange = buildDealerChips;
+    row.appendChild(b);
+    row.appendChild(inp);
+    host.appendChild(row);
+  });
+  buildDealerChips();
+}
+function pickName(i) {
+  var v = $('pn' + i) ? $('pn' + i).value.trim() : '';
+  return v || ROSTER[i];
+}
+function renderStakes() {
+  var segs = $('stakeSeg').querySelectorAll('button'), i;
+  for (i = 0; i < segs.length; i++) segs[i].classList.toggle('sel', +segs[i].dataset.s === pick.rate);
+  $('stakeHint').textContent = pick.rate === 10
+    ? '\u00A32 a head in the pot as usual \u2014 but 10p a point to the winner, still rounded up to 50p each.'
+    : '\u00A32 a head in the pot, 5p a point to the winner, rounded up to 50p each.';
+}
+function buildDealerChips() {
+  var host = $('dealerChips');
+  host.innerHTML = '';
+  if (pick.dealer == null) {          // Caitlyn deals first unless told otherwise
+    for (var di = 0; di < pick.sel.length; di++) {
+      if (pickName(pick.sel[di]) === 'Caitlyn') { pick.dealer = pick.sel[di]; break; }
+    }
+  }
+  pick.sel.forEach(function (i) {
+    var b = document.createElement('button');
+    b.className = 'chipbtn' + (pick.dealer === i ? ' sel' : '');
+    b.textContent = pickName(i);
+    b.onclick = function () { pick.dealer = i; $('huntNote').textContent = ''; buildDealerChips(); };
+    host.appendChild(b);
+  });
+  $('btnScorerStart').disabled = !(pick.sel.length >= 2 && pick.dealer != null);
+}
+function scorerAceHunt() {
+  if (pick.sel.length < 2) { toast('Pick at least two players first'); return; }
+  var names = pick.sel.map(pickName);
+  var tmp = E.newGame({ names: names });
+  // start dealing from whoever sits after the player who turned the jack last game
+  var start = 0;
+  if (league.lastJack) {
+    var at = names.indexOf(league.lastJack);
+    if (at >= 0) start = (at + 1) % names.length;
+  }
+  var hunt = E.aceHunt(tmp, start);
+  pick.dealer = pick.sel[hunt.dealer];
+  var jack = hunt.sequence[hunt.sequence.length - 1].card;
+  $('huntNote').textContent = 'Jack of ' + SUIT_NAME[jack.s] + ' turned on card ' + hunt.sequence.length +
+    ' \u2014 ' + pickName(pick.dealer) + ' deals first.';
+  buildDealerChips();
+  league.lastJack = names[hunt.dealer];
+  saveLeague();
+  dealForJack(names, hunt, function () { buildDealerChips(); show('scr-scorer-setup'); });
+}
+
+/* Cards go round the table face up until a jack lands, then the dealer's
+   name lands on the screen like a comic book and the jack slides up. */
+function dealForJack(names, hunt, done) {
+  show('scr-hunt');
+  $('huntSub').textContent = 'Cards go round until a jack turns \u2014 that seat deals first.';
+  seatTable(names, 'huntSeats', -1);
+  dealRound(hunt, names, done);
+}
+/* Cards go round the table one at a time. Each lands on the felt, then joins
+   the run of dealt cards below so the tension builds if no jack shows. */
+function dealRound(hunt, names, done) {
+  $('huntSlot').innerHTML = '';
+  $('dealTrail').innerHTML = '';
+  $('trailCount').innerHTML = '&nbsp;';
+  var msg = $('huntMsg');
+  msg.className = ''; msg.innerHTML = '&nbsp;';
+  $('btnHuntGo').style.visibility = 'hidden';
+  var n = names.length, i = 0, prev = null;
+  function step() {
+    var s = hunt.sequence[i];
+    var slot = $('huntSlot');
+    if (prev) trailAdd(prev.card, prev.lap);
+    var c = cardEl(s.card);
+    c.classList.add('flipin');
+    slot.innerHTML = '';
+    slot.appendChild(c);
+    var seats = $('huntSeats').querySelectorAll('.tseat'), k;
+    for (k = 0; k < seats.length; k++) seats[k].classList.remove('hot');
+    var seat = $('ts' + s.seat);
+    var lap = Math.floor(i / n);
+    var last = i === hunt.sequence.length - 1;
+    if (lap > 0) {
+      $('trailCount').textContent = 'round the table ' + (lap + 1) + ' time' + (lap ? 's' : '') +
+        ' \u2014 ' + (i + 1) + ' cards out';
+    } else if (i >= 2) {
+      $('trailCount').textContent = (i + 1) + ' cards out';
+    }
+    if (last) {
+      seat.classList.add('ace');
+      c.classList.add('pop');
+      msg.className = 'done';
+      msg.textContent = 'Jack!';
+      pumpT = setTimeout(function () { punch(names[hunt.dealer], s.card, done); }, 640);
+    } else {
+      seat.classList.add('hot');
+      msg.textContent = names[s.seat] + '\u2026';
+      prev = { card: s.card, lap: (i + 1) % n === 0 };
+      i++;
+      // slow down a touch on each lap so it builds
+      pumpT = setTimeout(step, lap === 0 ? 330 : lap === 1 ? 400 : 470);
+    }
+  }
+  step();
+}
+function punch(name, card, done) {
+  $('punchName').textContent = name;
+  $('punchCard').innerHTML = '';
+  $('punchCard').appendChild(cardEl(card));
+  var el = $('punch');
+  el.classList.add('on');
+  var closed = false;
+  function close() {
+    if (closed) return;
+    closed = true;
+    el.classList.remove('on');
+    el.onclick = null;
+    if (done) done();
+  }
+  el.onclick = close;      // stays up until somebody taps it
+}
+function startScorer() {
+  var names = pick.sel.map(pickName);
+  if (pick.dealer == null) { toast('Pick who deals first'); return; }
+  var dealerIdx = pick.sel.indexOf(pick.dealer);
+  if (dealerIdx < 0) dealerIdx = 0;          // never leave it unresolved
+  st = E.newGame({ names: names, mode: 'scorer', rate: pick.rate,
+                   buyIn: league.settings.buyIn, carry: league.carry || 0 });
+  st.date = todayKey();
+  E.scorerStart(st, dealerIdx);
+  show('scr-scorer');
+  scorerShuffle(function () { roundFlash(0, function () { renderScorer(); }); });
+}
+/* a shuffle before the first card is dealt */
+function scorerShuffle(done) {
+  var el = $('flash');
+  $('flashRd').textContent = '';
+  $('flashBig').textContent = 'SHUFFLE';
+  $('flashSub').textContent = 'one card each, coming up';
+  $('flashDeal').innerHTML = '';
+  el.classList.add('on');
+  pumpT = setTimeout(function () { el.classList.remove('on'); if (done) done(); }, 1100);
+}
+function stepRow(name, isDealer, arr, seat, max, after, showNom, lockable) {
+  var row = document.createElement('div');
+  row.className = 'srow' + (lockable && !nomSaid[seat] ? ' pending' : '');
+  row.id = 'srow' + (lockable ? 'n' : 't') + seat;
+  row.innerHTML = '<span class="snm2">' + esc(name) + (isDealer ? '<span class="dbadge">D</span>' : '') +
+    (lockable ? '<span class="' + (nomSaid[seat] ? 'locktag">in' : 'pendtag">\u2014') + '</span>' : '') +
+    (showNom ? '<span class="nomtag" data-seat="' + seat + '">' + scNoms[seat] + '</span>' : '') + '</span>';
+  var step = document.createElement('div');
+  step.className = 'mini-step';
+  var minus = document.createElement('button'); minus.textContent = '\u2212';
+  minus.setAttribute('aria-label', name + ' down');
+  var val = document.createElement('b'); val.textContent = arr[seat];
+  var plus = document.createElement('button'); plus.textContent = '+';
+  plus.setAttribute('aria-label', name + ' up');
+  function touched() {
+    if (lockable) lockNomsUpTo(seat);
+    after();
+  }
+  minus.onclick = function () { if (arr[seat] > 0) { arr[seat]--; val.textContent = arr[seat]; } touched(); };
+  plus.onclick = function () { if (arr[seat] < max) { arr[seat]++; val.textContent = arr[seat]; } touched(); };
+  step.appendChild(minus); step.appendChild(val); step.appendChild(plus);
+  row.appendChild(step);
+  return row;
+}
+var castOn = !!league.cast, castStep = 0;
+/* Hold the screen awake while the game is up on the telly. Safari drops the
+   lock whenever the tab is hidden, so it is taken again on the way back. */
+var wakeLock = null;
+function keepAwake(on) {
+  try {
+    if (!navigator.wakeLock) return;
+    if (on) {
+      navigator.wakeLock.request('screen').then(function (lock) {
+        wakeLock = lock;
+        if (lock.addEventListener) lock.addEventListener('release', function () { wakeLock = null; });
+      }).catch(function () {});
+    } else if (wakeLock) {
+      var l = wakeLock;
+      wakeLock = null;
+      if (l.release) l.release();
+    }
+  } catch (e) {}
+}
+if (document.addEventListener) {
+  document.addEventListener('visibilitychange', function () {
+    if (castOn && !document.hidden && !wakeLock) keepAwake(true);
+  });
+}
+
+/* Ask the browser for true fullscreen while casting. Guarded: iOS Safari
+   won't do element fullscreen, in which case the layout is edge-to-edge anyway. */
+function goFullscreen(on) {
+  try {
+    var d = document, el = d.documentElement;
+    var isFull = d.fullscreenElement || d.webkitFullscreenElement;
+    if (on && !isFull) {
+      var req = el.requestFullscreen || el.webkitRequestFullscreen;
+      if (req) { var p = req.call(el); if (p && p.catch) p.catch(function () {}); }
+    } else if (!on && isFull) {
+      var ex = d.exitFullscreen || d.webkitExitFullscreen;
+      if (ex) { var q = ex.call(d); if (q && q.catch) q.catch(function () {}); }
+    }
+  } catch (e) {}
+}
+function applyCast() {
+  document.body.classList.toggle('cast', castOn);
+  $('btnCast').classList.toggle('on', castOn);
+  $('btnCast').textContent = castOn ? 'TV on' : 'TV';
+}
+/* In cast mode the noms and the tricks get a page each, so both can be big. */
+function applyStep() {
+  var split = castOn;
+  $('nomSection').style.display = (!split || castStep === 0) ? '' : 'none';
+  $('trickSection').style.display = (!split || castStep === 1) ? '' : 'none';
+  var isEdit = editing >= 0;
+  $('btnStepNext').style.display = (split && castStep === 0) ? '' : 'none';
+  $('btnStepBack').style.display = (split && castStep === 1) ? '' : 'none';
+  $('btnSaveRound').style.display = (!split || castStep === 1) ? '' : 'none';
+  $('btnSaveRound').textContent = isEdit ? 'Save correction \u2192' : 'Save round \u2192';
+  $('btnCancelEdit').style.display = isEdit ? '' : 'none';
+  window.scrollTo(0, 0);
+}
+function stepToTricks() {
+  var R = E.ROUNDS[entryRound];
+  var ns = scNoms.reduce(function (a, b) { return a + b; }, 0);
+  if (ns === R.cards) { toast('Noms can\u2019t total ' + R.cards + ' \u2014 the dealer has to change theirs'); return; }
+  var q;
+  if (st) for (q = 0; q < st.n; q++) nomSaid[q] = true;   // turning the page confirms every nom
+  castStep = 1;
+  applyStep();
+}
+var editing = -1, entryRound = 0, stash = null;
+/* Keep the whole table on one screen: one column up to four players, two up to
+   six, three beyond that — always filled downwards before moving across. */
+function layoutColumns(host, n) {
+  var cols = n <= 4 ? 1 : n <= 6 ? 2 : (castOn ? 3 : 2);
+  if (cols === 1) {
+    host.className = '';
+    host.style.gridTemplateColumns = '';
+    host.style.gridTemplateRows = '';
+    return;
+  }
+  var rows = Math.ceil(n / cols);
+  host.className = 'colgrid';
+  host.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
+  host.style.gridTemplateRows = 'repeat(' + rows + ',auto)';
+}
+
+var nomSaid = [];      // which noms have actually been said out loud
+/* Nobody bothers saying "nought". So the moment a later player's nom goes in,
+   everyone before them is locked in at whatever their counter shows. */
+function lockNomsUpTo(seat) {
+  var dealer = seatAt(st.dealer0 + entryRound, st.n), k, p;
+  var pos = -1, order = [];
+  for (k = 1; k <= st.n; k++) order.push((dealer + k) % st.n);
+  pos = order.indexOf(seat);
+  for (k = 0; k <= pos; k++) nomSaid[order[k]] = true;
+  refreshNomLocks();
+}
+function refreshNomLocks() {
+  var dealer = seatAt(st.dealer0 + entryRound, st.n), k;
+  for (k = 0; k < st.n; k++) {
+    var row = $('srown' + k);
+    if (!row) continue;
+    row.classList.toggle('pending', !nomSaid[k]);
+    var tag = row.querySelector('.pendtag') || row.querySelector('.locktag');
+    if (tag) {
+      tag.className = nomSaid[k] ? 'locktag' : 'pendtag';
+      tag.textContent = nomSaid[k] ? 'in' : '\u2014';
+    }
+  }
+  updateScorerLive();
+}
+function renderScorer(editRound, prefill) {
+  var isEdit = editRound != null && editRound >= 0;
+  var r = isEdit ? editRound : st.round;
+  entryRound = r;
+  var R = E.ROUNDS[r];
+  var dealer = seatAt(st.dealer0 + r, st.n);
+  $('scRound').textContent = (isEdit ? 'Fixing R' : 'R') + (r + 1);
+  $('scCards').textContent = R.cards + (R.cards === 1 ? ' card' : ' cards') + ' \u00B7 of 16';
+  if (st.rate === 10) {
+    var sp2 = $('scSpecial');
+    sp2.style.display = '';
+    sp2.textContent = (R.nt ? 'No trumps \u00B7 ' : R.blind ? 'Blind noms! \u00B7 ' : '') + 'Double money';
+  }
+  $('scDealer').innerHTML = 'Dealing: <b>' + esc(st.names[dealer]) + '</b> <span class="dbadge">D</span>' +
+    ' \u00B7 noms start with <b>' + esc(st.names[(dealer + 1) % st.n]) + '</b>';
+  var sp = $('scSpecial');
+  if (R.nt) { sp.style.display = ''; sp.textContent = 'No trumps'; }
+  else if (R.blind) { sp.style.display = ''; sp.textContent = 'Blind noms!'; }
+  else sp.style.display = 'none';
+
+  if (isEdit) {
+    scNoms = st.sheet[r].map(function (c) { return c.nom; });
+    scTricks = st.sheet[r].map(function (c) { return c.won; });
+  } else if (prefill) {
+    scNoms = prefill.noms.slice();
+    scTricks = prefill.tricks.slice();
+  } else {
+    scNoms = new Array(st.n).fill(0);
+    scTricks = new Array(st.n).fill(0);
+  }
+  undoArmed = 0;
+
+  var order = [];
+  for (var k = 1; k <= st.n; k++) order.push((dealer + k) % st.n);
+
+  var nr = $('nomsRows');
+  nr.innerHTML = '';
+  layoutColumns(nr, st.n);
+  order.forEach(function (seat) {
+    nr.appendChild(stepRow(shownName(st.names[seat]), seat === dealer, scNoms, seat, R.cards, updateScorerLive, false, true));
+  });
+  var tr = $('tricksRows');
+  tr.innerHTML = '';
+  layoutColumns(tr, st.n);
+  order.forEach(function (seat) {
+    tr.appendChild(stepRow(shownName(st.names[seat]), seat === dealer, scTricks, seat, R.cards, updateScorerLive, true));
+  });
+  nomSaid = new Array(st.n).fill(!!(isEdit || prefill));   // a reopened round is already spoken for
+  castStep = 0;
+  applyStep();
+  renderLastRound();
+  updateScorerLive();
+}
+var editReturn = 'entry';
+function beginEdit(r) {
+  if (editing < 0 && st.phase === 'scorer-entry') stash = { noms: scNoms.slice(), tricks: scTricks.slice() };
+  editReturn = st.phase === 'gameover' ? 'results' : (st.phase === 'scored' ? 'sheet' : 'entry');
+  editing = r;
+  modal('sheetModal', false);
+  modal('resultsModal', false);
+  show('scr-scorer');
+  renderScorer(r);
+}
+function endEdit() {
+  editing = -1;
+  if (editReturn === 'results') { openResults(); return; }
+  if (editReturn === 'sheet') { openSheet('continue'); return; }
+  renderScorer(null, stash);
+  stash = null;
+}
+function renderLastRound() {
+  var host = $('lastRound'), host2 = $('lastRoundNom');
+  var prev = (editing >= 0 ? editing : entryRound) - 1;
+  if (prev < 0 || prev >= st.sheet.length) { host.innerHTML = ''; host2.innerHTML = ''; return; }
+  var ord = sheetOrder(st), row = st.sheet[prev], R = E.ROUNDS[prev];
+  var label = R.nt ? 'No Trumps' : R.blind ? 'Blind' : R.cards + (R.cards === 1 ? ' card' : ' cards');
+  var h = '<div class="lastcard"><div class="lasthead">After round ' + (prev + 1) + ' \u00B7 ' + label + '</div>' +
+    '<table class="sheetT lastT"><thead><tr>';
+  ord.forEach(function (p, i) {
+    var tilt = [-2.4, 1.6, -1.1, 2.2, -1.8, 1.2, -2.0][i % 7];
+    h += '<th class="pname"><span style="transform:rotate(' + tilt + 'deg)">' + esc(st.names[p]) + '</span></th>';
+  });
+  h += '</tr></thead><tbody><tr>';
+  ord.forEach(function (p) {
+    var c = row[p], cls = c.won === c.nom ? 'hit' : 'miss';
+    var cleanSoFar = true, rr;
+    for (rr = 0; rr <= prev; rr++) if (st.sheet[rr][p].won !== st.sheet[rr][p].nom) cleanSoFar = false;
+    if (cleanSoFar) cls += ' perfect';
+    h += '<td class="' + cls + '"><span class="tt">' + (c.total === 0 ? cryFace(1.35) : c.total) +
+      '<sup>' + c.nom + '</sup></span></td>';
+  });
+  h += '</tr></tbody></table></div>';
+  host.innerHTML = h;
+  host2.innerHTML = h;
+}
+function updateScorerLive() {
+  var R = E.ROUNDS[entryRound];
+  var ns = scNoms.reduce(function (a, b) { return a + b; }, 0);
+  var ts = scTricks.reduce(function (a, b) { return a + b; }, 0);
+  var nt = $('nomTally');
+  if (ns === R.cards) {
+    nt.innerHTML = '<span style="color:var(--red-hi)">Noms total ' + ns + ' \u2014 can\u2019t equal the cards. The dealer has to change theirs.</span>';
+  } else {
+    nt.textContent = 'Noms ' + ns + ' of ' + R.cards + (ns > R.cards ? ' \u2014 overbid round' : ' \u2014 underbid round');
+  }
+  var unsaid = 0, u;
+  if (st) for (u = 0; u < st.n; u++) if (!nomSaid[u]) unsaid++;
+  if (unsaid > 0 && castStep === 0) {
+    nt.innerHTML += ' <span style="color:var(--bone-dim)">\u00B7 ' + unsaid + ' still to call (counted as 0)</span>';
+  }
+  var left = R.cards - ts;
+  $('trickTally').textContent = left === 0 ? 'All ' + R.cards + ' tricks placed \u2713' :
+    left > 0 ? ts + ' placed \u00B7 ' + left + ' still to place' :
+    ts + ' placed \u00B7 ' + (-left) + ' too many';
+  var tags = document.querySelectorAll('#tricksRows .nomtag'), ti;
+  for (ti = 0; ti < tags.length; ti++) {
+    tags[ti].textContent = scNoms[+tags[ti].getAttribute('data-seat')];
+  }
+  var dealerRows = document.querySelectorAll('#nomsRows .srow');
+  if (dealerRows.length) {
+    var lastRow = dealerRows[dealerRows.length - 1];
+    lastRow.classList.toggle('forbid', ns === R.cards);
+  }
+}
+function saveRound() {
+  try {
+    if (editing >= 0) {
+      E.scorerEdit(st, editing, scNoms, scTricks);
+      toast('Round ' + (editing + 1) + ' corrected');
+      endEdit();
+    } else {
+      E.scorerApply(st, scNoms, scTricks);
+      openSheet('continue');
+    }
+  } catch (e) {
+    toast(e.message);
+  }
+}
+function undoRound() {
+  if (editing >= 0) { toast('Finish the correction first'); return; }
+  if (!st.sheet.length) { toast('Nothing to undo yet'); return; }
+  var now = Date.now();
+  if (now - undoArmed > 3000) {
+    undoArmed = now;
+    toast('Tap undo again to reopen round ' + st.sheet.length);
+    return;
+  }
+  undoArmed = 0;
+  var last = st.sheet[st.sheet.length - 1];
+  var pre = { noms: last.map(function (c) { return c.nom; }), tricks: last.map(function (c) { return c.won; }) };
+  E.scorerUndo(st);
+  renderScorer(null, pre);
+  toast('Round ' + (st.round + 1) + ' reopened with its scores in \u2014 fix and save');
+}
+
+/* ============================================================
+   LEAGUE
+   ============================================================ */
+var curMonth = todayKey().slice(0, 7);
+
+function renderLeague() {
+  $('monthLabel').textContent = monthLabel(curMonth);
+  var games = gamesInMonth(curMonth);
+  var paid = league.paid[curMonth] || [];
+  $('leagueSub').textContent = games.length + (games.length === 1 ? ' game' : ' games') +
+    ' \u00B7 ' + paid.length + ' paid up';
+
+  // who's paid — roster plus anyone who turned up this month
+  var seen = ROSTER.slice();
+  games.forEach(function (g) {
+    g.names.forEach(function (nm) { if (seen.indexOf(nm) === -1) seen.push(nm); });
+  });
+  var pc = $('paidChips');
+  pc.innerHTML = '';
+  seen.forEach(function (nm) {
+    var on = paid.indexOf(nm) !== -1;
+    var b = document.createElement('button');
+    b.className = 'chipbtn' + (on ? ' sel' : '');
+    b.textContent = nm;
+    b.onclick = function () {
+      var list = (league.paid[curMonth] || []).slice();
+      var at = list.indexOf(nm);
+      if (at === -1) list.push(nm); else list.splice(at, 1);
+      league.paid[curMonth] = list;
+      saveLeague();
+      renderLeague();
+    };
+    pc.appendChild(b);
+  });
+
+  // standings
+  var rows = monthStandings(curMonth);
+  var host = $('leagueTable');
+  if (!rows.length) {
+    host.innerHTML = '<div class="hint">Nobody marked as paid yet \u2014 tap the names above to put them in.</div>';
+  } else {
+    var h = '<table class="ltable"><thead><tr><th></th><th>Player</th><th style="text-align:right">Pld</th><th style="text-align:right">Pts</th></tr></thead><tbody>';
+    var prev = null, pos = 0;
+    rows.forEach(function (r, i) {
+      var tied = r.pts === prev;
+      if (!tied) pos = i + 1;
+      prev = r.pts;
+      h += '<tr class="' + (pos === 1 && r.pts > 0 ? 'top' : '') + (r.games === 0 ? ' unpaid' : '') + '">' +
+        '<td class="pos">' + (r.pts > 0 ? (tied ? '=' : '') + pos : '\u2013') + '</td>' +
+        '<td class="nm">' + esc(r.name) + '</td>' +
+        '<td class="gp">' + r.games + '</td>' +
+        '<td class="num">' + r.pts + '</td></tr>';
+    });
+    host.innerHTML = h + '</tbody></table>';
+  }
+
+  // nights
+  var nl = $('nightList');
+  nl.innerHTML = '';
+  if (!games.length) {
+    nl.innerHTML = '<div class="hint">No games logged this month yet.</div>';
+  } else {
+    games.forEach(function (g) {
+      var pts = gamePoints(g.totals);
+      var wi = pts.indexOf(Math.max.apply(null, pts));
+      var b = document.createElement('button');
+      b.className = 'nightrow';
+      b.innerHTML = '<span class="nd">' + esc(niceDate(g.date)) +
+        (g.sheet ? '' : '<span class="tag">entered</span>') +
+        '<br><span class="nw2">' + esc(g.names[wi]) + ' won \u00B7 ' + g.names.length + ' played</span></span>' +
+        '<span class="chev">\u203A</span>';
+      b.onclick = function () { openArchive(g); };
+      nl.appendChild(b);
+    });
+  }
+
+  var sw = $('storeWarn');
+  if (storeOK) {
+    sw.style.display = 'none';
+  } else {
+    sw.style.display = '';
+    sw.textContent = 'Heads up: this browser is blocking saved data, so the season lives in memory only ' +
+      'and goes when you close the tab. On your own hosting it saves properly \u2014 and Back up / restore works either way.';
+  }
+}
+
+function openArchive(g) {
+  var paidThen = league.paid[monthKeyOf(g.date)] || [];
+  var lp = pointsForGame(g, paidThen);
+  var view = {
+    names: g.names, n: g.names.length, totals: g.totals,
+    dealer0: g.dealer0 || 0, sheet: g.sheet || [], phase: 'gameover', round: 15
+  };
+  var pts = gamePoints(g.totals);
+  if (g.sheet) {
+    $('sheetHost').innerHTML = buildSheetHTML(view);
+  } else {
+    var ord = g.names.map(function (n2, i) { return i; }).sort(function (a, b) { return g.totals[b] - g.totals[a]; });
+    var h = '<table class="sheetT"><thead><tr><th class="rlab">#</th><th class="pname">Player</th><th>Score</th><th>Pts</th></tr></thead><tbody>';
+    ord.forEach(function (p, i) {
+      h += '<tr><td class="rlab">' + (i + 1) + '</td><td class="dcol">' + esc(g.names[p]) + '</td>' +
+        '<td><span class="tt">' + (g.totals[p] === 0 ? cryFace(1.35) : g.totals[p]) + '</span></td>' +
+        '<td><span class="tt">' + (lp[g.names[p]] == null ? '\u2013' : lp[g.names[p]]) + '</span></td></tr>';
+    });
+    $('sheetHost').innerHTML = h + '</tbody></table>';
+  }
+  var lpNames = g.names.filter(function (nm) { return lp[nm] != null; });
+  $('sheetSub').textContent = niceDate(g.date) + ' \u00B7 ' + g.names.length + ' played \u00B7 ' +
+    (lpNames.length
+      ? 'points shared between the ' + lpNames.length + ' paid up: ' +
+        lpNames.map(function (nm) { return nm + ' ' + lp[nm]; }).join(', ')
+      : 'nobody marked as paid, so no league points');
+  var go = $('btnSheetGo');
+  go.textContent = 'Close';
+  go.onclick = function () { modal('sheetModal', false); };
+  var ub = $('btnSheetUndo');
+  ub.style.display = '';
+  ub.innerHTML = '\u270E Correct this night';
+  ub.onclick = function () { modal('sheetModal', false); openBackfill(g); };
+  modal('sheetModal', true);
+  markSheetOverflow();
+}
+
+/* ---------- add or correct a night ---------- */
+var bfPicked = {}, bfScores = {}, bfEditId = null, bfNames = [];
+function openBackfill(g) {
+  bfEditId = g ? g.id : null;
+  bfPicked = {}; bfScores = {};
+  // anyone who played that night, even if they've since left the roster
+  bfNames = ROSTER.slice();
+  if (g) g.names.forEach(function (nm) { if (bfNames.indexOf(nm) === -1) bfNames.push(nm); });
+  $('bfDate').value = g ? g.date : todayKey();
+  $('bfTitle').textContent = g ? 'Correct a night' : 'Add a night we missed';
+  $('bfSub').textContent = g ? 'Change who played, the date or the scores. The season table redoes itself.'
+    : 'Tick who played and put in their final scores. League points work themselves out.';
+  $('btnBfSave').textContent = g ? 'Save the correction' : 'Save that night';
+  $('btnBfDelete').style.display = g ? '' : 'none';
+  var warn = $('bfWarn');
+  if (g && g.sheet) {
+    warn.style.display = '';
+    warn.textContent = 'This night has a full round-by-round sheet. Change the players or the final scores ' +
+      'and the sheet no longer matches, so it gets kept as a plain result instead.';
+  } else {
+    warn.style.display = 'none';
+  }
+  if (g) g.names.forEach(function (nm, i) { bfPicked[nm] = true; bfScores[nm] = g.totals[i]; });
+  renderBackfill();
+  show('scr-backfill');
+}
+function renderBackfill() {
+  var host = $('bfRows');
+  host.innerHTML = '';
+  bfNames.forEach(function (nm) {
+    var row = document.createElement('div');
+    var on = !!bfPicked[nm];
+    row.className = 'bfrow' + (on ? '' : ' off');
+    var b = document.createElement('button');
+    b.className = 'obadge';
+    b.textContent = on ? '\u2713' : '+';
+    b.onclick = function () { bfPicked[nm] = !bfPicked[nm]; renderBackfill(); };
+    var lab = document.createElement('span');
+    lab.className = 'bnm';
+    lab.textContent = nm;
+    var inp = document.createElement('input');
+    inp.type = 'number'; inp.inputMode = 'numeric'; inp.min = '0'; inp.placeholder = 'pts';
+    inp.value = bfScores[nm] != null ? bfScores[nm] : '';
+    inp.onchange = function () { bfScores[nm] = inp.value === '' ? null : +inp.value; updateBfHint(); };
+    row.appendChild(b); row.appendChild(lab); row.appendChild(inp);
+    host.appendChild(row);
+  });
+  updateBfHint();
+}
+function updateBfHint() {
+  var picked = bfNames.filter(function (nm) { return bfPicked[nm]; });
+  if (picked.length < 2) { $('bfHint').textContent = 'Tick at least two players.'; return; }
+  var mk = monthKeyOf($('bfDate').value || todayKey());
+  var paid = league.paid[mk] || null;
+  var inLeague = paid ? picked.filter(function (nm) { return paid.indexOf(nm) !== -1; }) : picked;
+  var totals = inLeague.map(function (nm) { return bfScores[nm] != null ? bfScores[nm] : 0; });
+  var pts = totals.length ? gamePoints(totals) : [];
+  $('bfHint').textContent = picked.length + ' playing' +
+    (inLeague.length !== picked.length ? ', ' + inLeague.length + ' paid up' : '') +
+    (inLeague.length
+      ? ' \u2014 points ' + inLeague.map(function (nm, i) { return nm + ' ' + pts[i]; }).join(', ')
+      : ' \u2014 nobody paid up, so no league points');
+}
+function saveBackfill() {
+  var picked = bfNames.filter(function (nm) { return bfPicked[nm]; });
+  if (picked.length < 2) { toast('Tick at least two players'); return; }
+  var missing = picked.filter(function (nm) { return bfScores[nm] == null; });
+  if (missing.length) { toast('Put a score in for ' + missing[0]); return; }
+  var date = $('bfDate').value || todayKey();
+  var totals = picked.map(function (nm) { return bfScores[nm]; });
+  if (bfEditId) {
+    var at = -1, i;
+    for (i = 0; i < league.games.length; i++) if (league.games[i].id === bfEditId) at = i;
+    if (at < 0) { toast('That night has gone missing'); bfEditId = null; return; }
+    var old = league.games[at];
+    // the sheet only still fits if the same players finished on the same scores
+    var same = old.sheet && old.names.length === picked.length &&
+      old.names.every(function (nm, j) { return nm === picked[j]; }) &&
+      old.totals.every(function (t, j) { return t === totals[j]; });
+    league.games[at] = {
+      id: old.id, date: date, names: picked.slice(), totals: totals,
+      dealer0: same ? old.dealer0 : 0, sheet: same ? old.sheet : null
+    };
+    toast(same ? 'Night updated' : 'Night updated \u2014 kept as a plain result');
+  } else {
+    league.games.push({
+      id: 'm' + Date.now().toString(36), date: date,
+      names: picked.slice(), totals: totals, dealer0: 0, sheet: null
+    });
+    toast('Night of ' + niceDate(date) + ' added');
+  }
+  bfEditId = null;
+  saveLeague();
+  curMonth = monthKeyOf(date);
+  renderLeague();
+  show('scr-league');
+}
+
+var delArmed = 0;
+function deleteNight() {
+  if (!bfEditId) return;
+  var now = Date.now();
+  if (now - delArmed > 3000) { delArmed = now; toast('Tap delete again to remove this night for good'); return; }
+  delArmed = 0;
+  league.games = league.games.filter(function (g) { return g.id !== bfEditId; });
+  bfEditId = null;
+  saveLeague();
+  toast('Night deleted');
+  renderLeague();
+  show('scr-league');
+}
+
+/* ---------- options ---------- */
+var BUYS = [1, 2, 3, 5, 10], FINES = [0, 0.2, 0.5, 1, 2];
+function stepList(list, cur, dir) {
+  var i = list.indexOf(cur);
+  if (i < 0) i = 0;
+  i = Math.min(list.length - 1, Math.max(0, i + dir));
+  return list[i];
+}
+function renderOpts() {
+  var s = league.settings;
+  $('buyVal').textContent = poundStr(s.buyIn);
+  $('fineVal').textContent = poundStr(s.fine);
+  var names = (st && st.mode === 'scorer') ? st.names : pick.sel.map(pickName);
+  // the scorer often isn't playing, so offer the whole crew
+  var whoCan = ROSTER.slice();
+  names.forEach(function (nm) { if (whoCan.indexOf(nm) === -1) whoCan.push(nm); });
+  var host = $('scorerChips');
+  host.innerHTML = '';
+  whoCan.forEach(function (nm) {
+    var b = document.createElement('button');
+    b.className = 'chipbtn' + (scorer === nm ? ' sel' : '');
+    b.textContent = nm;
+    b.onclick = function () {
+      scorer = (scorer === nm) ? null : nm;
+      league.scorer = scorer;
+      saveLeague();
+      renderOpts();
+      redrawEntryKeepingNumbers();
+    };
+    host.appendChild(b);
+  });
+  var ab = $('aliasBox');
+  // Caitlyn calls Kev "Dad" — that is the only nickname anybody asked for
+  if (scorer === 'Caitlyn' && names.indexOf('Kev') !== -1) {
+    var on = !!(league.aliases['Caitlyn'] && league.aliases['Caitlyn'].Kev);
+    ab.innerHTML = '<label class="tickrow" id="kevRow"><input type="checkbox" id="kevDad"' +
+      (on ? ' checked' : '') + '><span>Show Kev as &ldquo;Dad&rdquo;</span></label>' +
+      '<div class="hint">Only on the nom and trick screens \u2014 the scoresheet still says Kev.</div>';
+    $('kevDad').onchange = function () {
+      league.aliases['Caitlyn'] = league.aliases['Caitlyn'] || {};
+      if (this.checked) league.aliases['Caitlyn'].Kev = 'Dad';
+      else delete league.aliases['Caitlyn'].Kev;
+      saveLeague();
+      redrawEntryKeepingNumbers();
+    };
+  } else {
+    ab.innerHTML = '';
+  }
+  if (league.carry > 0) {
+    ab.innerHTML += '<div class="hint" style="margin-top:14px">' + poundStr(league.carry) +
+      ' is carried over from last time and goes into this pot.</div>';
+  }
+}
+
+/* Re-draw the entry rows (names may have changed) without throwing away
+   anything already counted in. */
+function redrawEntryKeepingNumbers() {
+  if (!st || st.mode !== 'scorer' || st.phase !== 'scorer-entry') return;
+  var said = nomSaid.slice();
+  var keep = { noms: scNoms.slice(), tricks: scTricks.slice() };
+  var step = castStep;
+  renderScorer(editing >= 0 ? editing : null, keep);
+  nomSaid = said;
+  castStep = step;
+  applyStep();
+  refreshNomLocks();
+}
+function openOpts() {
+  renderOpts();
+  modal('optsModal', true);
+}
+
+/* ---------- misdeal ---------- */
+var misdealWho = null, misdealWhy = 'misdeal';
+function renderMisdeal() {
+  var host = $('misdealChips');
+  host.innerHTML = '';
+  st.names.forEach(function (nm) {
+    var b = document.createElement('button');
+    b.className = 'chipbtn' + (misdealWho === nm ? ' sel' : '');
+    b.textContent = shownName(nm) + (nm === st.names[seatAt(st.dealer0 + entryRound, st.n)] ? ' (dealt)' : '');
+    b.onclick = function () { misdealWho = nm; renderMisdeal(); };
+    host.appendChild(b);
+  });
+  var segs = $('misdealWhy').querySelectorAll('button'), i;
+  for (i = 0; i < segs.length; i++) segs[i].classList.toggle('sel', segs[i].dataset.w === misdealWhy);
+  $('btnMisdealSave').textContent = 'Add ' + poundStr(league.settings.fine) + ' fine & redeal round';
+}
+function redealRound() {
+  modal('misdealModal', false);
+  renderScorer(editing >= 0 ? editing : null);
+  toast('Round ' + (entryRound + 1) + ' cleared \u2014 deal again');
+}
+
+/* ---------- backup ---------- */
+function openData() {
+  $('dataBox').value = JSON.stringify(league);
+  modal('dataModal', true);
+}
+function loadData() {
+  try {
+    var o = JSON.parse($('dataBox').value);
+    if (!o || !o.games) throw new Error('bad');
+    league = o;
+    league.paid = league.paid || {};
+    ROSTER = (league.roster && league.roster.length) ? league.roster.slice() : E.CREW.slice();
+    saveLeague();
+    modal('dataModal', false);
+    renderLeague();
+    toast('Season restored \u2014 ' + league.games.length + ' games');
+  } catch (e) {
+    toast('That doesn\u2019t look like a Noms backup');
+  }
+}
+
+/* ============================================================
+   WIRING
+   ============================================================ */
+$('btnPlayCPU').onclick = function () { buildSetup(); show('scr-setup'); };
+$('btnScorer').onclick = function () {
+  pick = { sel: [], dealer: null, rate: 5 };
+  buildPickRows();
+  renderStakes();
+  $('huntNote').textContent = '';
+  show('scr-scorer-setup');
+};
+$('btnRules').onclick = function () { modal('rulesModal', true); };
+$('btnRulesClose').onclick = function () { modal('rulesModal', false); };
+$('btnBackTitle').onclick = resetToTitle;
+$('btnBackTitle2').onclick = resetToTitle;
+$('sizeMinus').onclick = function () { if (setup.size > 2) { setup.size--; buildSetup(); } };
+$('sizePlus').onclick = function () {
+  var max = Math.min(7, ROSTER.length);
+  if (setup.size < max) { setup.size++; buildSetup(); }
+  else toast(ROSTER.length < 7 ? 'Add more names to the crew first' : 'Seven seats at most');
+};
+$('trainSeg').onclick = function (ev) {
+  var b = ev.target.closest('button');
+  if (b) { setup.train = +b.dataset.t; buildSetup(); }
+};
+$('themeRow').onclick = function (ev) {
+  var b = ev.target.closest('button');
+  if (!b) return;
+  theme = b.dataset.th;
+  league.theme = theme;
+  saveLeague();
+  applyTheme();
+};
+$('tipsBox').onchange = function () { setup.tips = $('tipsBox').checked; };
+$('diffSeg').onclick = function (ev) {
+  var b = ev.target.closest('button');
+  if (b) { setup.diff = +b.dataset.d; buildSetup(); }
+};
+$('btnHunt').onclick = startGame;
+$('btnSheetPeek').onclick = function () { openSheet('peek'); };
+$('btnScSheet').onclick = function () { openSheet('peek'); };
+$('btnSaveRound').onclick = saveRound;
+$('btnStepNext').onclick = stepToTricks;
+$('btnStepBack').onclick = function () { castStep = 0; applyStep(); };
+$('btnCast').onclick = function () {
+  castOn = !castOn;
+  league.cast = castOn;
+  saveLeague();
+  applyCast();
+  goFullscreen(castOn);
+  keepAwake(castOn);
+  castStep = 0;
+  applyStep();
+  if (!castOn) toast('Cast mode off');
+  else if (navigator.wakeLock) toast('Cast mode on \u2014 the screen will stay awake');
+  else toast('Cast mode on \u2014 set Auto-Lock to Never to stop it sleeping');
+};
+$('btnUndoRound').onclick = undoRound;
+$('stakeSeg').onclick = function (ev) {
+  var b = ev.target.closest('button');
+  if (b) { pick.rate = +b.dataset.s; renderStakes(); }
+};
+$('btnAceHunt').onclick = scorerAceHunt;
+$('btnScorerStart').onclick = startScorer;
+function addName(inputId, after) {
+  var inp = $(inputId);
+  var v = inp.value.trim().replace(/\s+/g, ' ');
+  if (!v) { toast('Type a name first'); return; }
+  if (v.length > 12) v = v.slice(0, 12);
+  var clash = ROSTER.some(function (n) { return n.toLowerCase() === v.toLowerCase(); });
+  if (clash) { toast(v + ' is already in the crew'); return; }
+  ROSTER.push(v);
+  saveLeague();
+  inp.value = '';
+  inp.blur();
+  toast(v + ' added to the crew');
+  after();
+}
+$('btnAddName1').onclick = function () { addName('newName1', buildSetup); };
+$('btnAddName2').onclick = function () { addName('newName2', buildPickRows); };
+$('newName1').onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); addName('newName1', buildSetup); } };
+$('newName2').onkeydown = function (e) { if (e.key === 'Enter') { e.preventDefault(); addName('newName2', buildPickRows); } };
+$('btnLeague').onclick = function () { curMonth = todayKey().slice(0, 7); renderLeague(); show('scr-league'); };
+$('btnLeagueBack').onclick = resetToTitle;
+$('monthPrev').onclick = function () { curMonth = shiftMonth(curMonth, -1); renderLeague(); };
+$('monthNext').onclick = function () { curMonth = shiftMonth(curMonth, 1); renderLeague(); };
+$('btnBackfill').onclick = function () { openBackfill(null); };
+$('btnBfDelete').onclick = deleteNight;
+$('btnBfSave').onclick = saveBackfill;
+$('btnBfCancel').onclick = function () { bfEditId = null; renderLeague(); show('scr-league'); };
+$('cogFab').onclick = openOpts;
+$('btnOptsClose').onclick = function () { modal('optsModal', false); };
+$('buyMinus').onclick = function () { league.settings.buyIn = stepList(BUYS, league.settings.buyIn, -1); saveLeague(); renderOpts(); };
+$('buyPlus').onclick  = function () { league.settings.buyIn = stepList(BUYS, league.settings.buyIn,  1); saveLeague(); renderOpts(); };
+$('fineMinus').onclick = function () { league.settings.fine = stepList(FINES, league.settings.fine, -1); saveLeague(); renderOpts(); };
+$('finePlus').onclick  = function () { league.settings.fine = stepList(FINES, league.settings.fine,  1); saveLeague(); renderOpts(); };
+$('btnMisdeal').onclick = function () {
+  if (!st || st.mode !== 'scorer') return;
+  misdealWho = st.names[seatAt(st.dealer0 + entryRound, st.n)];
+  misdealWhy = 'misdeal';
+  renderMisdeal();
+  modal('misdealModal', true);
+};
+$('misdealWhy').onclick = function (ev) {
+  var b = ev.target.closest('button');
+  if (b) { misdealWhy = b.dataset.w; renderMisdeal(); }
+};
+$('btnMisdealCancel').onclick = function () { modal('misdealModal', false); };
+$('btnMisdealNoFine').onclick = redealRound;
+$('btnMisdealSave').onclick = function () {
+  if (!misdealWho) { toast('Tap whoever pays'); return; }
+  E.addFine(st, misdealWho, league.settings.fine, misdealWhy);
+  toast(misdealWho + ' puts ' + poundStr(league.settings.fine) + ' in \u2014 pot now \u00A3' +
+    (st.buyIn * st.n + E.fineTotal(st)).toFixed(2));
+  redealRound();
+};
+$('btnData').onclick = openData;
+$('btnDataLoad').onclick = loadData;
+$('btnDataClose').onclick = function () { modal('dataModal', false); };
+$('btnDataCopy').onclick = function () { var b = $('dataBox'); b.focus(); b.select(); toast('Selected \u2014 hold and copy'); };
+applyCast();
+applyTheme();
+keepAwake(castOn);            // TV mode may already be on from last time
+$('btnNewGame').onclick = resetToTitle;
+$('btnCancelEdit').onclick = endEdit;
+$('btnResSheet').onclick = function () { modal('resultsModal', false); openSheet('peek'); };
+
+})();
+</script>
+</body>
+</html>
