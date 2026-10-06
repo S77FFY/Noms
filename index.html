@@ -9,11 +9,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Noms">
 <meta name="app-repo" content="Noms">
-<meta name="app-version" content="3.7.6">
-<title>NOMS · v3.7.6 · S77FFY</title>
+<meta name="app-version" content="3.7.8">
+<title>NOMS · v3.7.8 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v3.7.6 — S77FFY
+   NOMS v3.7.8 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 /* Two skins. Neon is the default; Felt is the original table. */
@@ -373,6 +373,7 @@ body.theme-felt .card.back{
 .sheetwrap.scrolls{box-shadow:inset -20px 0 20px -20px rgba(0,0,0,.55)}
 #sheetModal .sheetwrap.scrolls{box-shadow:inset -22px 0 22px -22px rgba(0,0,0,.5)}
 .swipehint{color:#a2621e;font-size:12px;letter-spacing:.05em}
+#resSub .swipehint{color:var(--gold-hi);font-size:13px;font-style:italic}
 
 /* pre-printed white sheet, filled in with a black biro */
 .sheetwrap{overflow-x:auto;background:#fff;border-radius:10px;border:1px solid #cfcfd6;
@@ -439,9 +440,31 @@ body.theme-felt .card.back{
 .moneyblock .mline b{color:var(--bone)}
 .moneyblock .mhead{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:7px}
 #resSub{font-size:16px}
-/* the bigger figures can push the panel past the screen, so keep the buttons in reach */
-#resultsModal .setupfoot{position:sticky;bottom:calc(-22px - env(safe-area-inset-bottom));
-  background:var(--panel);padding:12px 0 calc(6px + env(safe-area-inset-bottom));margin-top:14px}
+/* The reckoning scrolls between the heading and the buttons, so the buttons are
+   always reachable and can never cover who pays what. */
+#resultsModal .panel{display:flex;flex-direction:column;padding-bottom:0}
+#resultsModal .resbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:none;
+  margin:0 -2px;padding:0 2px 2px}
+#resultsModal .setupfoot{flex:none;margin-top:0;padding:13px 0 calc(16px + env(safe-area-inset-bottom));
+  background:var(--panel);border-top:1px solid var(--line);position:relative}
+#resultsModal .resbody.more + .setupfoot::before{content:'';position:absolute;left:0;right:0;top:-26px;
+  height:26px;background:linear-gradient(transparent,var(--panel));pointer-events:none}
+/* claw back room on a phone so as little as possible is left below the fold */
+@media (max-width:699px),(max-height:620px){
+  #resultsModal .ptitle{font-size:22px}
+  #resultsModal .standrow{padding:9px 4px}
+  #resultsModal .moneyblock{padding:11px 12px;margin-top:14px}
+  #resultsModal .moneyblock .mline{padding:3px 0}
+  #resultsModal .panel{max-height:96dvh}
+}
+.rescols{display:flex;flex-direction:column}
+@media (min-width:700px){
+  #resultsModal .panel{max-width:880px}
+  .rescols{flex-direction:row;align-items:flex-start;gap:20px}
+  .rescols #resStand{flex:1.15;min-width:0}
+  .rescols .moneyblock{flex:1;min-width:0;margin-top:0}
+  .rescols .standrow:first-child{padding-top:0}
+}
 #resultsModal .ptitle{font-size:26px}
 
 /* ---------- scorer entry ---------- */
@@ -583,7 +606,7 @@ body.cast .lastcard{padding:12px 15px 15px;margin-top:26px}
 body.cast .lastT td{padding-top:13px}
 body.cast .lasthead{font-size:clamp(12px,1.6vw,19px)}
 /* the reckoning gets read out across the room */
-body.cast #resultsModal .panel{max-width:760px}
+body.cast #resultsModal .panel{max-width:1120px}
 body.cast #resultsModal .ptitle{font-size:clamp(28px,3.4vw,42px)}
 body.cast #resSub{font-size:clamp(17px,2vw,24px)}
 body.cast .standrow{padding:15px 4px}
@@ -672,7 +695,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v3.7.6 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.7.8 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -911,9 +934,13 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
   <div class="panel">
     <div class="ptitle">Final reckoning</div>
     <div class="psub" id="resSub"></div>
-    <div id="resStand"></div>
-    <div class="moneyblock" id="resMoney"></div>
-    <div class="hint" id="resNote"></div>
+    <div class="resbody">
+      <div class="rescols">
+        <div id="resStand"></div>
+        <div class="moneyblock" id="resMoney"></div>
+      </div>
+      <div class="hint" id="resNote"></div>
+    </div>
     <div class="setupfoot">
       <button class="btn ghost wide" id="btnResSheet" style="display:none">Check the sheet / fix a round</button>
       <button class="btn wide" id="btnNewGame">Back to start</button>
@@ -1006,7 +1033,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
   <div class="fdeal" id="flashDeal"></div>
 </div></div>
 
-<div id="vtag">v3.7.6</div>
+<div id="vtag">v3.7.8</div>
 
 <button id="cogFab" aria-label="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.1 14.8a1.5 1.5 0 0 0 .3 1.66l.05.05a1.83 1.83 0 1 1-2.59 2.59l-.05-.05a1.5 1.5 0 0 0-1.66-.3 1.5 1.5 0 0 0-.91 1.38v.14a1.83 1.83 0 1 1-3.66 0v-.07a1.5 1.5 0 0 0-.98-1.38 1.5 1.5 0 0 0-1.66.3l-.05.05a1.83 1.83 0 1 1-2.59-2.59l.05-.05a1.5 1.5 0 0 0 .3-1.66 1.5 1.5 0 0 0-1.38-.91H3.9a1.83 1.83 0 1 1 0-3.66h.07a1.5 1.5 0 0 0 1.38-.98 1.5 1.5 0 0 0-.3-1.66l-.05-.05A1.83 1.83 0 1 1 7.59 4.9l.05.05a1.5 1.5 0 0 0 1.66.3h.07a1.5 1.5 0 0 0 .91-1.38V3.9a1.83 1.83 0 1 1 3.66 0v.07a1.5 1.5 0 0 0 .91 1.38 1.5 1.5 0 0 0 1.66-.3l.05-.05a1.83 1.83 0 1 1 2.59 2.59l-.05.05a1.5 1.5 0 0 0-.3 1.66v.07a1.5 1.5 0 0 0 1.38.91h.14a1.83 1.83 0 1 1 0 3.66h-.07a1.5 1.5 0 0 0-1.38.91z"/></svg></button>
 
@@ -1826,7 +1853,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v3.7.6 — UI layer — S77FFY
+   NOMS v3.7.8 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1834,7 +1861,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '3.7.6';
+var VERSION = '3.7.8';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -2825,6 +2852,16 @@ function openResults() {
   $('resNote').textContent = pay.note || '';
   $('btnResSheet').style.display = st.mode === 'scorer' ? '' : 'none';
   modal('resultsModal', true);
+  setTimeout(function () {
+    var body = document.querySelector('#resultsModal .resbody');
+    if (!body) return;
+    var more = body.scrollHeight > body.clientHeight + 2;
+    body.classList.toggle('more', more);
+    if (more) {
+      $('resSub').innerHTML = esc($('resSub').textContent) +
+        ' <span class="swipehint">\u00B7 scroll down for who pays what</span>';
+    }
+  }, 40);
 }
 
 /* ============================================================
