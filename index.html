@@ -9,11 +9,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Noms">
 <meta name="app-repo" content="Noms">
-<meta name="app-version" content="3.7.8">
-<title>NOMS · v3.7.8 · S77FFY</title>
+<meta name="app-version" content="3.7.9">
+<title>NOMS · v3.7.9 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v3.7.8 — S77FFY
+   NOMS v3.7.9 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 /* Two skins. Neon is the default; Felt is the original table. */
@@ -470,15 +470,57 @@ body.theme-felt .card.back{
 /* ---------- scorer entry ---------- */
 #scorerBody{max-width:560px;margin:0 auto;width:100%;padding:0 16px}
 /* pinned to the bottom of the screen so Save is always reachable */
-#scorerBody .setupfoot{flex-direction:row;flex-wrap:wrap;gap:10px;margin:18px -16px 0;
+#scorerBody .setupfoot{flex-direction:row;flex-wrap:wrap;gap:10px;margin:12px -16px 0;
   position:sticky;bottom:0;z-index:6;padding:12px 16px calc(12px + env(safe-area-inset-bottom));
   background:var(--felt-edge);box-shadow:0 -14px 18px -6px var(--felt-edge);border-top:1px solid var(--line)}
-#scorerBody .setupfoot .btn{flex:1 1 45%;display:block;width:auto;padding:14px 10px}
+#scorerBody .setupfoot .btn{flex:1 1 45%;display:block;width:auto;padding:12px 10px}
 /* Columns are filled top to bottom, then across, so the nom order still reads
    down the page. Set from JS to suit the number playing. */
 .colgrid{display:grid;grid-auto-flow:column;gap:0 26px}
 body.cast .colgrid{gap:0 44px}
 .srow{display:flex;align-items:center;gap:10px;padding:6px 0}
+/* the scorer screen is read at a glance, so it stays tight enough to show the
+   round just gone without scrolling */
+#scr-scorer .lbl{margin:12px 0 6px}
+#scr-scorer .srow{padding:3px 0}
+#scr-scorer .tallyline{margin:6px 0 0}
+#scr-scorer .lastcard{margin-top:12px;padding:8px 10px 9px}
+#scr-scorer .lasthead{margin-bottom:3px}
+#scr-scorer .lastT th.pname{padding:0 4px 2px}
+#scr-scorer .lastT td{padding:5px 4px 1px}
+body.cast #scr-scorer .lbl{margin:16px 0 8px}
+body.cast #scr-scorer .srow{padding:5px 0}
+body.cast #scr-scorer .lastcard{margin-top:14px}
+@media (max-width:620px){         /* a phone: one column, so the rows run tighter */
+  #scr-scorer .topbar{padding:6px 62px 2px 8px;gap:6px}
+  #scr-scorer .topbar .iconbtn{padding:5px 9px;font-size:13px}
+  #scr-scorer .mini-step button{width:40px;height:40px;font-size:18px}
+  #scr-scorer .mini-step b{font-size:20px;min-width:24px}
+  #scr-scorer .srow{padding:1px 0}
+  #scr-scorer .tallyline{line-height:1.35}
+  #scr-scorer .schead{padding-top:6px}
+  #scr-scorer .schead .scr{font-size:28px}
+  #scr-scorer .schead .sccards{font-size:16px}
+  #scr-scorer .schead .scd{font-size:14px;margin-top:3px}
+  #scr-scorer .lbl{margin:9px 0 5px}
+  #scr-scorer .tallyline{font-size:12px;margin:3px 0 0}
+  #scr-scorer .lastcard{margin-top:4px;padding:5px 9px 5px}
+  #scr-scorer .lasthead{font-size:10px;margin-bottom:2px}
+  #scr-scorer .lastT td{padding:4px 4px 0}
+}
+@media (max-height:620px){        /* a short screen as well: tighter still */
+  #scr-scorer .mini-step button{width:38px;height:38px;font-size:17px}
+  #scr-scorer .mini-step b{font-size:19px}
+  #scr-scorer .schead .scr{font-size:26px}
+}
+@media (max-width:480px){         /* cast mode on a phone is still a phone */
+  body.cast #scr-scorer .srow .snm2{font-size:19px}
+  body.cast #scr-scorer .mini-step button{width:44px;height:44px;font-size:19px}
+  body.cast #scr-scorer .mini-step b{font-size:22px;min-width:26px}
+  body.cast #scr-scorer .lbl{margin:10px 0 6px;font-size:13px}
+  body.cast #scr-scorer .schead .scr{font-size:30px}
+  body.cast #scr-scorer .nomtag{font-size:14px;min-width:30px}
+}
 .srow .snm2{flex:1;font-weight:600;font-size:15px;display:flex;align-items:center;gap:6px}
 .srow.forbid .snm2{color:var(--red-hi)}
 .mini-step{display:flex;align-items:center;gap:8px}
@@ -540,11 +582,11 @@ body.cast .colgrid{gap:0 44px}
 #flash .fsuits .r{color:var(--red-hi)}
 
 /* ---------- scorer big header ---------- */
-.schead{padding:14px 16px 4px;max-width:560px;margin:0 auto;width:100%}
+.schead{padding:9px 16px 2px;max-width:560px;margin:0 auto;width:100%}
 .schead .scline1{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .schead .scr{font-family:Georgia,serif;font-size:clamp(30px,8.5vw,44px);line-height:1;letter-spacing:.02em}
 .schead .sccards{font-family:Georgia,serif;font-style:italic;font-size:clamp(16px,4.5vw,21px);color:var(--gold-hi)}
-.schead .scd{font-size:clamp(15px,4vw,18px);color:var(--bone-dim);margin-top:8px}
+.schead .scd{font-size:clamp(15px,4vw,18px);color:var(--bone-dim);margin-top:5px}
 .schead .scd b{color:var(--bone);font-weight:700}
 .schead .scd .dbadge{vertical-align:1px}
 
@@ -695,7 +737,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v3.7.8 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.7.9 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -797,6 +839,13 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
     </div>
     <div class="hint" id="stakeHint"></div>
 
+    <div class="lbl">The pot</div>
+    <div class="seg" id="potSeg">
+      <button data-p="split" class="sel">1st &amp; 2nd share</button><button data-p="winner">Winner takes all</button>
+    </div>
+    <div class="hint" id="potHint"></div>
+    <label class="tickrow" id="leagueRow"><input type="checkbox" id="leagueBox" checked><span>Counts towards the monthly table</span></label>
+
     <div class="lbl">First dealer</div>
     <div class="chips" id="dealerChips"></div>
     <div style="margin-top:12px">
@@ -893,6 +942,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
 
     <div class="lbl">Who played &amp; final scores</div>
     <div id="bfRows"></div>
+    <label class="tickrow" id="bfLeagueRow"><input type="checkbox" id="bfLeagueBox" checked><span>Counts towards the monthly table</span></label>
     <div class="hint" id="bfHint"></div>
 
     <div class="setupfoot">
@@ -926,6 +976,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
       <button class="btn wide" id="btnSheetGo">Close</button>
       <button class="btn ghost wide" id="btnSheetUndo" style="display:none">&#8630; Undo this round</button>
       <button class="btn ghost wide" id="btnRewind" style="display:none">&#8630; Rewind &amp; try another nom</button>
+      <button class="btn ghost wide" id="btnSheetMoney" style="display:none">&pound; Final reckoning</button>
     </div>
   </div>
 </div>
@@ -1033,7 +1084,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
   <div class="fdeal" id="flashDeal"></div>
 </div></div>
 
-<div id="vtag">v3.7.8</div>
+<div id="vtag">v3.7.9</div>
 
 <button id="cogFab" aria-label="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.1 14.8a1.5 1.5 0 0 0 .3 1.66l.05.05a1.83 1.83 0 1 1-2.59 2.59l-.05-.05a1.5 1.5 0 0 0-1.66-.3 1.5 1.5 0 0 0-.91 1.38v.14a1.83 1.83 0 1 1-3.66 0v-.07a1.5 1.5 0 0 0-.98-1.38 1.5 1.5 0 0 0-1.66.3l-.05.05a1.83 1.83 0 1 1-2.59-2.59l.05-.05a1.5 1.5 0 0 0 .3-1.66 1.5 1.5 0 0 0-1.38-.91H3.9a1.83 1.83 0 1 1 0-3.66h.07a1.5 1.5 0 0 0 1.38-.98 1.5 1.5 0 0 0-.3-1.66l-.05-.05A1.83 1.83 0 1 1 7.59 4.9l.05.05a1.5 1.5 0 0 0 1.66.3h.07a1.5 1.5 0 0 0 .91-1.38V3.9a1.83 1.83 0 1 1 3.66 0v.07a1.5 1.5 0 0 0 .91 1.38 1.5 1.5 0 0 0 1.66-.3l.05-.05a1.83 1.83 0 1 1 2.59 2.59l-.05.05a1.5 1.5 0 0 0-.3 1.66v.07a1.5 1.5 0 0 0 1.38.91h.14a1.83 1.83 0 1 1 0 3.66h-.07a1.5 1.5 0 0 0-1.38.91z"/></svg></button>
 
@@ -1108,6 +1159,8 @@ function newGame(opts) {
     mode: opts.mode || 'game',
     rate: opts.rate || 5,          // pence per point on the side bets
     buyIn: opts.buyIn != null ? opts.buyIn : 2,
+    potMode: opts.potMode || 'split',   // 'split' = 1st and 2nd, 'winner' = takes the lot
+    noLeague: !!opts.noLeague,          // a friendly that stays out of the month
     carry: opts.carry || 0,        // coins carried over from a previous night
     fines: [],                     // {name, amount, round, reason}
     names: names.slice(), n: n,
@@ -1271,7 +1324,7 @@ function advanceRound(st) {
   if (st.phase !== 'scored') throw new Error('round not finished');
   if (st.round === ROUNDS.length - 1) {
     st.phase = 'gameover';
-    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry, potMode: st.potMode });
     return false;
   }
   st.dealer = (st.dealer + 1) % st.n;
@@ -1327,7 +1380,7 @@ function scorerEdit(st, roundIdx, noms, won) {
   }
   st.sheet[roundIdx] = row;
   recomputeSheet(st);
-  if (st.phase === 'gameover') st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
+  if (st.phase === 'gameover') st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry, potMode: st.potMode });
   return true;
 }
 
@@ -1335,7 +1388,7 @@ function scorerNext(st) {
   if (st.phase !== 'scored') throw new Error('round not saved');
   if (st.round === ROUNDS.length - 1) {
     st.phase = 'gameover';
-    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry, potMode: st.potMode });
     return false;
   }
   st.round++;
@@ -1376,6 +1429,7 @@ function computePayouts(names, totals, ratePence, opts) {
   var buyIn = opts.buyIn != null ? opts.buyIn : 2;   // £ per player
   var extra = opts.extra || 0;                        // fines already in the pot
   var carryIn = opts.carry || 0;                      // coins left over last time
+  var winnerTakesAll = opts.potMode === 'winner';     // otherwise 1st and 2nd split it
   var n = names.length, pot = buyIn * n + extra + carryIn, i;
   var carryOut = 0;
   var order = [];
@@ -1413,12 +1467,17 @@ function computePayouts(names, totals, ratePence, opts) {
       (carryOut > 0 ? ' ' + Math.round(carryOut * 100) + 'p would not split evenly, so it stays in the pot for next time.' : '');
   } else {
     var W = winners[0];
-    rows[W].potShare = pot / 2;
-    var rest = order.slice(1);
-    var secondVal = totals[rest[0]];
-    var seconds = rest.filter(function (p) { return totals[p] === secondVal; });
-    seconds.forEach(function (p) { rows[p].potShare = (pot / 2) / seconds.length; });
-    if (seconds.length > 1) note = 'Tie for second — that half of the pot is split.';
+    if (winnerTakesAll) {
+      rows[W].potShare = pot;
+      note = 'Winner takes the whole pot.';
+    } else {
+      rows[W].potShare = pot / 2;
+      var rest = order.slice(1);
+      var secondVal = totals[rest[0]];
+      var seconds = rest.filter(function (p) { return totals[p] === secondVal; });
+      seconds.forEach(function (p) { rows[p].potShare = (pot / 2) / seconds.length; });
+      if (seconds.length > 1) note = 'Tie for second \u2014 that half of the pot is split.';
+    }
     for (i = 0; i < n; i++) {
       var p = order[i];
       if (p === W) continue;
@@ -1434,7 +1493,8 @@ function computePayouts(names, totals, ratePence, opts) {
   // each player collects or pays at the end — not profit vs their stake.
   rows.forEach(function (r) { r.net = r.potShare + r.side; });
   return { pot: pot, rows: rows, rank: order, note: note, sideList: sideList,
-           rate: rate, buyIn: buyIn, extra: extra, carryIn: carryIn, carryOut: carryOut };
+           rate: rate, buyIn: buyIn, extra: extra, carryIn: carryIn, carryOut: carryOut,
+           potMode: winnerTakesAll ? 'winner' : 'split' };
 }
 
 /* ================= the Pro player (difficulty 6) =================
@@ -1597,7 +1657,7 @@ function addFine(st, name, amount, reason) {
   if (!st.fines) st.fines = [];
   st.fines.push({ name: name, amount: amount, round: st.round, reason: reason || 'misdeal' });
   if (st.phase === 'gameover') {
-    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry, potMode: st.potMode });
   }
   return fineTotal(st);
 }
@@ -1605,7 +1665,7 @@ function removeFine(st, idx) {
   if (!st.fines || idx < 0 || idx >= st.fines.length) return false;
   st.fines.splice(idx, 1);
   if (st.phase === 'gameover') {
-    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry });
+    st.payouts = computePayouts(st.names, st.totals, st.rate, { buyIn: st.buyIn, extra: fineTotal(st), carry: st.carry, potMode: st.potMode });
   }
   return true;
 }
@@ -1853,7 +1913,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v3.7.8 — UI layer — S77FFY
+   NOMS v3.7.9 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1861,7 +1921,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '3.7.8';
+var VERSION = '3.7.9';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -2056,6 +2116,7 @@ function monthStandings(mk) {
   var tally = {};
   paid.forEach(function (nm) { tally[nm] = { name: nm, pts: 0, games: 0, best: 0 }; });
   gamesInMonth(mk).forEach(function (g) {
+    if (g.counts === false) return;              // a friendly: played, saved, but not counted
     var pts = pointsForGame(g, paid);
     g.names.forEach(function (nm) {
       if (!tally[nm] || pts[nm] == null) return;   // not paid up: no league points
@@ -2672,6 +2733,7 @@ function openSheet(modeStr) {
     var last = st.round === 15;
     // rewind belongs to training against the CPUs only — never to a real table
     var rb = $('btnRewind');
+    $('btnSheetMoney').style.display = 'none';
     if (training && st.mode === 'game' && roundSnap) {
       rb.style.display = '';
       rb.onclick = rewindRound;
@@ -2700,6 +2762,7 @@ function openSheet(modeStr) {
       (st.sheet.length ? 'Tap any round to fix it' : 'Round ' + (st.round + 1) + ' in progress') : roundText()) + sheetLegend();
     go.textContent = 'Close';
     $('btnRewind').style.display = 'none';
+    $('btnSheetMoney').style.display = 'none';
     go.onclick = function () {
       modal('sheetModal', false);
       if (st.phase === 'gameover') openResults();
@@ -2788,6 +2851,12 @@ function archiveGame() {
     names: st.names.slice(),
     totals: st.totals.slice(),
     dealer0: st.dealer0,
+    rate: st.rate, buyIn: st.buyIn, potMode: st.potMode,
+    carryIn: st.payouts ? (st.payouts.carryIn || 0) : 0,
+    fines: (st.fines || []).map(function (f) {
+      return { name: f.name, amount: f.amount, reason: f.reason, round: f.round };
+    }),
+    counts: !st.noLeague,               // a friendly stays out of the monthly table
     sheet: st.sheet.map(function (row) {
       return row.map(function (c) { return { nom: c.nom, won: c.won, pts: c.pts, total: c.total }; });
     })
@@ -2797,28 +2866,31 @@ function archiveGame() {
   if (at >= 0) league.games[at] = rec; else league.games.push(rec);
   saveLeague();
 }
-function openResults() {
-  archiveGame();
-  var pay = st.payouts;
+/* Show a reckoning. With no argument it is the game just finished; pass a
+   stored night and it shows that one, worked out again from what was saved. */
+function openResults(view) {
+  var g = view || st;
+  if (!view) archiveGame();
+  var pay = view ? view.payouts : st.payouts;
   var order = pay.rank;
-  var winName = st.names[order[0]];
-  $('resSub').textContent = winName + ' takes it \u2014 ' + st.totals[order[0]] + ' points.';
+  var winName = g.names[order[0]];
+  $('resSub').textContent = winName + ' takes it \u2014 ' + g.totals[order[0]] + ' points.';
   var standHTML = '';
   var prevTotal = null, shownPos = 0;
   order.forEach(function (p, i) {
-    var tied = st.totals[p] === prevTotal;
+    var tied = g.totals[p] === prevTotal;
     if (!tied) shownPos = i + 1;
-    prevTotal = st.totals[p];
+    prevTotal = g.totals[p];
     var row = pay.rows[p];
     standHTML += '<div class="standrow' + (shownPos === 1 ? ' first' : '') + '">' +
       '<span class="pos">' + (tied ? '=' : '') + ordinal(shownPos) + '</span>' +
-      '<span class="nm">' + esc(st.names[p]) + '</span>' +
-      '<span class="pts">' + st.totals[p] + ' pts</span>' +
+      '<span class="nm">' + esc(g.names[p]) + '</span>' +
+      '<span class="pts">' + g.totals[p] + ' pts</span>' +
       '<span class="net ' + (row.net >= 0 ? 'plus' : 'minus') + '">' + money(row.net) + '</span></div>';
   });
   $('resStand').innerHTML = standHTML;
 
-  var fines = (st.fines || []);
+  var fines = (g.fines || []);
   var mh = '<div class="mhead">Settle up \u2014 \u00A3' + pay.pot.toFixed(2).replace(/\.00$/, '') + ' pot' +
     (pay.rate === 10 ? ' \u00B7 double money' : '') + '</div>';
   mh += '<div class="mline">' + poundStr(pay.buyIn) + ' a head already in' +
@@ -2837,10 +2909,10 @@ function openResults() {
     var payees = {}, nPayees = 0, k2;
     pay.sideList.forEach(function (s) { if (!payees[s.to]) { payees[s.to] = 1; nPayees++; } });
     mh += '<div class="mhead" style="margin-top:12px">Then, out of pocket' +
-      (nPayees === 1 ? ' to ' + esc(st.names[pay.sideList[0].to]) : '') + '</div>';
+      (nPayees === 1 ? ' to ' + esc(g.names[pay.sideList[0].to]) : '') + '</div>';
     pay.sideList.forEach(function (s) {
-      mh += '<div class="mline"><b>' + esc(st.names[s.from]) + '</b> pays ' +
-        (nPayees > 1 ? '<b>' + esc(st.names[s.to]) + '</b> ' : '') + money(s.amount) +
+      mh += '<div class="mline"><b>' + esc(g.names[s.from]) + '</b> pays ' +
+        (nPayees > 1 ? '<b>' + esc(g.names[s.to]) + '</b> ' : '') + money(s.amount) +
         ' <span style="opacity:.7">(' + s.diff + ' behind)</span></div>';
     });
   }
@@ -2850,7 +2922,16 @@ function openResults() {
   }
   $('resMoney').innerHTML = mh;
   $('resNote').textContent = pay.note || '';
-  $('btnResSheet').style.display = st.mode === 'scorer' ? '' : 'none';
+  var rs = $('btnResSheet');
+  if (view && view.game) {
+    rs.style.display = '';
+    rs.textContent = 'Back to the sheet';
+    rs.onclick = function () { modal('resultsModal', false); openArchive(view.game); };
+  } else {
+    rs.style.display = g.mode === 'scorer' ? '' : 'none';
+    rs.textContent = 'Check the sheet / fix a round';
+    rs.onclick = function () { modal('resultsModal', false); openSheet('peek'); };
+  }
   modal('resultsModal', true);
   setTimeout(function () {
     var body = document.querySelector('#resultsModal .resbody');
@@ -2867,8 +2948,9 @@ function openResults() {
 /* ============================================================
    SCORER MODE
    ============================================================ */
-var pick = { sel: [], dealer: null, rate: 5 }; // sel: row indices in tap order
+var pick = { sel: [], dealer: null, rate: 5, potMode: 'split', league: true }; // sel: row indices in tap order
 league.settings = league.settings || { buyIn: 2, fine: 0.5 };
+if (!league.settings.potMode) league.settings.potMode = 'split';
 league.aliases = league.aliases || {};        // scorer -> { realName: shown }
 if (league.scorer === undefined) league.scorer = 'Caitlyn';        // she usually keeps the book
 if (!league.aliases['Caitlyn']) league.aliases['Caitlyn'] = { Kev: 'Dad' };
@@ -2920,9 +3002,18 @@ function pickName(i) {
 function renderStakes() {
   var segs = $('stakeSeg').querySelectorAll('button'), i;
   for (i = 0; i < segs.length; i++) segs[i].classList.toggle('sel', +segs[i].dataset.s === pick.rate);
-  $('stakeHint').textContent = pick.rate === 10
-    ? '\u00A32 a head in the pot as usual \u2014 but 10p a point to the winner, still rounded up to 50p each.'
-    : '\u00A32 a head in the pot, 5p a point to the winner, rounded up to 50p each.';
+  $('stakeHint').textContent = (pick.rate === 10
+    ? poundStr(league.settings.buyIn) + ' a head in the pot as usual \u2014 but 10p a point to the winner'
+    : poundStr(league.settings.buyIn) + ' a head in the pot, 5p a point to the winner') +
+    ', rounded up to 50p each.';
+  var ps = $('potSeg').querySelectorAll('button');
+  for (i = 0; i < ps.length; i++) ps[i].classList.toggle('sel', ps[i].dataset.p === pick.potMode);
+  $('potHint').textContent = (pick.potMode === 'winner'
+    ? 'The whole pot goes to the winner. Second place gets nothing.'
+    : 'First and second take half the pot each.') +
+    (!pick.potTouched && pick.sel.length >= 2
+      ? ' (' + pick.sel.length + ' playing)' : '');
+  $('leagueBox').checked = pick.league !== false;
 }
 function buildDealerChips() {
   var host = $('dealerChips');
@@ -2932,6 +3023,10 @@ function buildDealerChips() {
       if (pickName(pick.sel[di]) === 'Caitlyn') { pick.dealer = pick.sel[di]; break; }
     }
   }
+  // four or fewer at the table and the winner takes the lot, as the crew plays it
+  if (!pick.potTouched && pick.sel.length >= 2) {
+    pick.potMode = pick.sel.length <= 4 ? 'winner' : 'split';
+  }
   pick.sel.forEach(function (i) {
     var b = document.createElement('button');
     b.className = 'chipbtn' + (pick.dealer === i ? ' sel' : '');
@@ -2939,6 +3034,7 @@ function buildDealerChips() {
     b.onclick = function () { pick.dealer = i; $('huntNote').textContent = ''; buildDealerChips(); };
     host.appendChild(b);
   });
+  renderStakes();
   $('btnScorerStart').disabled = !(pick.sel.length >= 2 && pick.dealer != null);
 }
 function scorerAceHunt() {
@@ -3038,7 +3134,8 @@ function startScorer() {
   var dealerIdx = pick.sel.indexOf(pick.dealer);
   if (dealerIdx < 0) dealerIdx = 0;          // never leave it unresolved
   st = E.newGame({ names: names, mode: 'scorer', rate: pick.rate,
-                   buyIn: league.settings.buyIn, carry: league.carry || 0 });
+                   buyIn: league.settings.buyIn, carry: league.carry || 0,
+                   potMode: pick.potMode, noLeague: pick.league === false });
   st.date = todayKey();
   E.scorerStart(st, dealerIdx);
   show('scr-scorer');
@@ -3124,8 +3221,12 @@ function applyCast() {
   $('btnCast').textContent = castOn ? 'TV on' : 'TV';
 }
 /* In cast mode the noms and the tricks get a page each, so both can be big. */
+/* A phone is too narrow for two columns of counters — the second column's
+   buttons ended up off the side of the screen — so it gets one column and
+   takes the noms and the tricks a page at a time, as cast mode does. */
+function narrowEntry() { return window.innerWidth < 620; }
 function applyStep() {
-  var split = castOn;
+  var split = castOn || narrowEntry();
   $('nomSection').style.display = (!split || castStep === 0) ? '' : 'none';
   $('trickSection').style.display = (!split || castStep === 1) ? '' : 'none';
   var isEdit = editing >= 0;
@@ -3149,7 +3250,7 @@ var editing = -1, entryRound = 0, stash = null;
 /* Keep the whole table on one screen: one column up to four players, two up to
    six, three beyond that — always filled downwards before moving across. */
 function layoutColumns(host, n) {
-  var cols = n <= 4 ? 1 : n <= 6 ? 2 : (castOn ? 3 : 2);
+  var cols = narrowEntry() ? 1 : (n <= 4 ? 1 : n <= 6 ? 2 : (castOn ? 3 : 2));
   if (cols === 1) {
     host.className = '';
     host.style.gridTemplateColumns = '';
@@ -3160,6 +3261,15 @@ function layoutColumns(host, n) {
   host.className = 'colgrid';
   host.style.gridTemplateColumns = 'repeat(' + cols + ',1fr)';
   host.style.gridTemplateRows = 'repeat(' + rows + ',auto)';
+}
+
+if (window.addEventListener) {
+  window.addEventListener('resize', function () {
+    if (!st || st.mode !== 'scorer' || st.phase !== 'scorer-entry') return;
+    layoutColumns($('nomsRows'), st.n);
+    layoutColumns($('tricksRows'), st.n);
+    applyStep();
+  });
 }
 
 var nomSaid = [];      // which noms have actually been said out loud
@@ -3351,7 +3461,9 @@ function renderLeague() {
   $('monthLabel').textContent = monthLabel(curMonth);
   var games = gamesInMonth(curMonth);
   var paid = league.paid[curMonth] || [];
+  var counted = games.filter(function (g) { return g.counts !== false; }).length;
   $('leagueSub').textContent = games.length + (games.length === 1 ? ' game' : ' games') +
+    (counted !== games.length ? ' (' + counted + ' counted)' : '') +
     ' \u00B7 ' + paid.length + ' paid up';
 
   // who's paid — roster plus anyone who turned up this month
@@ -3411,6 +3523,7 @@ function renderLeague() {
       b.className = 'nightrow';
       b.innerHTML = '<span class="nd">' + esc(niceDate(g.date)) +
         (g.sheet ? '' : '<span class="tag">entered</span>') +
+        (g.counts === false ? '<span class="tag">friendly</span>' : '') +
         '<br><span class="nw2">' + esc(g.names[wi]) + ' won \u00B7 ' + g.names.length + ' played</span></span>' +
         '<span class="chev">\u203A</span>';
       b.onclick = function () { openArchive(g); };
@@ -3461,8 +3574,29 @@ function openArchive(g) {
   ub.style.display = '';
   ub.innerHTML = '\u270E Correct this night';
   ub.onclick = function () { modal('sheetModal', false); openBackfill(g); };
+  var mb = $('btnSheetMoney');
+  mb.style.display = '';
+  mb.onclick = function () { openArchiveMoney(g); };
   modal('sheetModal', true);
   markSheetOverflow();
+}
+
+/* A finished night keeps everything its money depended on, so the reckoning can
+   be worked out again. Older nights fall back to today's settings. */
+function reckoningFor(g) {
+  var fines = g.fines || [];
+  var extra = fines.reduce(function (a, f) { return a + f.amount; }, 0);
+  var pay = E.computePayouts(g.names, g.totals, g.rate || 5, {
+    buyIn: g.buyIn != null ? g.buyIn : league.settings.buyIn,
+    extra: Math.round(extra * 100) / 100,
+    carry: g.carryIn || 0,
+    potMode: g.potMode || 'split'
+  });
+  return { names: g.names, totals: g.totals, fines: fines, mode: 'archive', payouts: pay, game: g };
+}
+function openArchiveMoney(g) {
+  modal('sheetModal', false);
+  openResults(reckoningFor(g));
 }
 
 /* ---------- add or correct a night ---------- */
@@ -3488,6 +3622,7 @@ function openBackfill(g) {
     warn.style.display = 'none';
   }
   if (g) g.names.forEach(function (nm, i) { bfPicked[nm] = true; bfScores[nm] = g.totals[i]; });
+  $('bfLeagueBox').checked = !(g && g.counts === false);
   renderBackfill();
   show('scr-backfill');
 }
@@ -3546,13 +3681,17 @@ function saveBackfill() {
       old.totals.every(function (t, j) { return t === totals[j]; });
     league.games[at] = {
       id: old.id, date: date, names: picked.slice(), totals: totals,
-      dealer0: same ? old.dealer0 : 0, sheet: same ? old.sheet : null
+      dealer0: same ? old.dealer0 : 0, sheet: same ? old.sheet : null,
+      rate: old.rate, buyIn: old.buyIn, potMode: old.potMode,
+      carryIn: old.carryIn, fines: same ? old.fines : null,
+      counts: $('bfLeagueBox').checked
     };
     toast(same ? 'Night updated' : 'Night updated \u2014 kept as a plain result');
   } else {
     league.games.push({
       id: 'm' + Date.now().toString(36), date: date,
-      names: picked.slice(), totals: totals, dealer0: 0, sheet: null
+      names: picked.slice(), totals: totals, dealer0: 0, sheet: null,
+      counts: $('bfLeagueBox').checked
     });
     toast('Night of ' + niceDate(date) + ' added');
   }
@@ -3697,7 +3836,8 @@ function loadData() {
    ============================================================ */
 $('btnPlayCPU').onclick = function () { buildSetup(); show('scr-setup'); };
 $('btnScorer').onclick = function () {
-  pick = { sel: [], dealer: null, rate: 5 };
+  pick = { sel: [], dealer: null, rate: 5,
+           potMode: league.settings.potMode || 'split', league: true };
   buildPickRows();
   renderStakes();
   $('huntNote').textContent = '';
@@ -3758,6 +3898,16 @@ $('stakeSeg').onclick = function (ev) {
   var b = ev.target.closest('button');
   if (b) { pick.rate = +b.dataset.s; renderStakes(); }
 };
+$('potSeg').onclick = function (ev) {
+  var b = ev.target.closest('button');
+  if (!b) return;
+  pick.potMode = b.dataset.p;
+  pick.potTouched = true;                      // from here it is your call, not the table size
+  league.settings.potMode = pick.potMode;
+  saveLeague();
+  renderStakes();
+};
+$('leagueBox').onchange = function () { pick.league = $('leagueBox').checked; };
 $('btnAceHunt').onclick = scorerAceHunt;
 $('btnScorerStart').onclick = startScorer;
 function addName(inputId, after) {
@@ -3838,7 +3988,7 @@ applyTheme();
 keepAwake(castOn);            // TV mode may already be on from last time
 $('btnNewGame').onclick = resetToTitle;
 $('btnCancelEdit').onclick = endEdit;
-$('btnResSheet').onclick = function () { modal('resultsModal', false); openSheet('peek'); };
+/* #btnResSheet is wired per reckoning — a live game or a stored night */
 
 })();
 </script>
