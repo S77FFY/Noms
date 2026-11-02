@@ -9,11 +9,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Noms">
 <meta name="app-repo" content="Noms">
-<meta name="app-version" content="3.7.16">
-<title>NOMS · v3.7.16 · S77FFY</title>
+<meta name="app-version" content="3.7.19">
+<title>NOMS · v3.7.19 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v3.7.16 — S77FFY
+   NOMS v3.7.19 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 /* Two skins. Neon is the default; Felt is the original table. */
@@ -427,6 +427,11 @@ body.theme-felt .card.back{
 
 /* ---------- results ---------- */
 .standrow{display:flex;align-items:center;gap:10px;padding:12px 4px;border-bottom:1px solid var(--line)}
+/* Everybody's finishing place has to be on screen at once, so a full table
+   trades a little size for the extra rows. */
+#resultsModal.seats7 .standrow{padding:8px 4px}
+#resultsModal.seats8 .standrow{padding:6px 4px}
+#resultsModal.seats9 .standrow{padding:4px 4px}
 .standrow .pos{font-family:Georgia,serif;font-size:21px;font-weight:700;width:46px;color:var(--bone-dim)}
 .standrow.first .pos{color:var(--gold-hi)}
 .standrow .nm{flex:1;font-weight:700;font-size:19px}
@@ -442,9 +447,14 @@ body.theme-felt .card.back{
    always reachable and can never cover who pays what. */
 #resultsModal .panel{display:flex;flex-direction:column;padding-bottom:0}
 #resultsModal .resbody{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:none;
-  margin:0 -2px;padding:0 2px 2px}
-#resultsModal .setupfoot{flex:none;margin-top:0;padding:13px 0 calc(16px + env(safe-area-inset-bottom));
-  background:var(--panel);border-top:1px solid var(--line);position:relative}
+  margin:0 -2px;padding:0 2px 2px;display:flex;flex-direction:column}
+#resultsModal .rescols{flex:1 0 auto;min-height:0}
+#resultsModal .setupfoot{flex:none;margin-top:0;padding:11px 0 calc(13px + env(safe-area-inset-bottom));
+  background:var(--panel);border-top:1px solid var(--line);position:relative;
+  flex-direction:row;flex-wrap:wrap;gap:10px}
+/* side by side and smaller: the reckoning is what people are reading, not these */
+#resultsModal .setupfoot .btn{flex:1 1 42%;display:block;width:auto;text-align:center;
+  padding:11px 14px;font-size:16px}
 #resultsModal .resbody.more + .setupfoot::before{content:'';position:absolute;left:0;right:0;top:-26px;
   height:26px;background:linear-gradient(transparent,var(--panel));pointer-events:none}
 /* claw back room on a phone so as little as possible is left below the fold */
@@ -456,12 +466,21 @@ body.theme-felt .card.back{
   #resultsModal .panel{max-height:96dvh}
 }
 .rescols{display:flex;flex-direction:column}
+.restand{min-width:0}
 @media (min-width:700px){
   #resultsModal .panel{max-width:880px}
+  /* Side by side, both starting at the top: the heading sits over the places,
+     not over empty space beside them. */
   .rescols{flex-direction:row;align-items:flex-start;gap:20px}
-  .rescols #resStand{flex:1.15;min-width:0}
-  .rescols .moneyblock{flex:1;min-width:0;margin-top:0}
-  .rescols .standrow:first-child{padding-top:0}
+  .rescols .restand{flex:1.15;min-width:0}
+  /* outranks the short-screen stacking rule, which adds a top margin */
+  #resultsModal .rescols .moneyblock{flex:1;min-width:0;margin-top:0}
+  #resultsModal .psub{margin-bottom:10px}
+  /* Each column minds its own length: a long list of who pays what scrolls
+     inside its own box, so the finishing places never get dragged off screen. */
+  #resultsModal .resbody{overflow:hidden}
+  #resultsModal .rescols{flex:1 1 auto;align-items:stretch}
+  .rescols .restand,.rescols .moneyblock{overflow-y:auto;overscroll-behavior:contain;min-height:0}
 }
 #resultsModal .ptitle{font-size:26px}
 
@@ -671,6 +690,49 @@ body.cast .standrow .pos{font-size:clamp(23px,2.4vw,30px);width:58px}
 body.cast .standrow .nm{font-size:clamp(21px,2.4vw,30px)}
 body.cast .standrow .pts{font-size:clamp(19px,2.1vw,26px)}
 body.cast .standrow .net{font-size:clamp(25px,2.9vw,36px)}
+/* the club screen reads from across the room, but eight or nine places still
+   all have to be on it */
+body.cast #resultsModal.seats7 .standrow{padding:min(9px,1.1vh) 4px}
+body.cast #resultsModal.seats8 .standrow{padding:min(6px,.8vh) 4px}
+body.cast #resultsModal.seats9 .standrow{padding:min(4px,.6vh) 4px}
+body.cast #resultsModal.seats8 .standrow .pos,
+body.cast #resultsModal.seats9 .standrow .pos{font-size:clamp(15px,min(2vw,3.4vh),26px);width:clamp(38px,4vw,52px)}
+body.cast #resultsModal.seats8 .standrow .nm,
+body.cast #resultsModal.seats9 .standrow .nm{font-size:clamp(15px,min(2.1vw,3.4vh),26px)}
+body.cast #resultsModal.seats8 .standrow .pts,
+body.cast #resultsModal.seats9 .standrow .pts{font-size:clamp(13px,min(1.8vw,2.9vh),22px)}
+body.cast #resultsModal.seats8 .standrow .net,
+body.cast #resultsModal.seats9 .standrow .net{font-size:clamp(17px,min(2.4vw,4vh),30px)}
+body.cast #resultsModal.seats8 .ptitle,
+body.cast #resultsModal.seats9 .ptitle{font-size:clamp(18px,min(2.6vw,4.4vh),32px)}
+body.cast #resultsModal.seats8 #resSub,
+body.cast #resultsModal.seats9 #resSub{font-size:clamp(12px,min(1.7vw,2.6vh),20px)}
+body.cast #resultsModal .setupfoot .btn{font-size:clamp(14px,min(1.6vw,3vh),20px);
+  padding:min(12px,1.6vh) 16px}
+/* a short screen - a phone turned on its side - shrinks the rest to match */
+@media (max-height:560px){
+  body.cast #resultsModal .standrow{padding:min(5px,.7vh) 4px}
+  body.cast #resultsModal .standrow .pos{font-size:clamp(14px,3.2vh,26px);width:clamp(34px,4vw,52px)}
+  body.cast #resultsModal .standrow .nm{font-size:clamp(14px,3.2vh,26px)}
+  body.cast #resultsModal .standrow .pts{font-size:clamp(12px,2.7vh,22px)}
+  body.cast #resultsModal .standrow .net{font-size:clamp(16px,3.8vh,30px)}
+  body.cast #resultsModal .ptitle{font-size:clamp(17px,4.2vh,32px)}
+  body.cast #resultsModal #resSub{font-size:clamp(11px,2.5vh,20px)}
+  body.cast #resultsModal .moneyblock .mline{font-size:clamp(12px,2.6vh,23px);padding:2px 0}
+  body.cast #resultsModal .moneyblock .mhead{font-size:clamp(11px,2.2vh,18px)}
+  #resultsModal .ptitle{font-size:19px}
+  #resultsModal #resSub{font-size:13px}
+  #resultsModal .psub{margin-bottom:6px}
+  #resultsModal .standrow{padding:4px 4px}
+  #resultsModal .standrow .pos{font-size:16px;width:38px}
+  #resultsModal .standrow .nm{font-size:15px}
+  #resultsModal .standrow .pts{font-size:13px}
+  #resultsModal .standrow .net{font-size:17px}
+  #resultsModal .moneyblock{padding:9px 11px}
+  #resultsModal .moneyblock .mline{font-size:13px;padding:2px 0}
+  #resultsModal .setupfoot{padding:8px 0 calc(9px + env(safe-area-inset-bottom))}
+  #resultsModal .setupfoot .btn{padding:9px 12px;font-size:14px}
+}
 body.cast .moneyblock .mline{font-size:clamp(17px,1.9vw,23px)}
 body.cast .moneyblock .mhead{font-size:clamp(14px,1.5vw,18px)}
 body.cast .dbadge{width:22px;height:22px;font-size:13px}
@@ -758,7 +820,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v3.7.16 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.7.19 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -1005,11 +1067,13 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
 
 <div class="modal" id="resultsModal">
   <div class="panel">
-    <div class="ptitle">Final reckoning</div>
-    <div class="psub" id="resSub"></div>
     <div class="resbody">
       <div class="rescols">
-        <div id="resStand"></div>
+        <div class="restand">
+          <div class="ptitle">Final reckoning</div>
+          <div class="psub" id="resSub"></div>
+          <div id="resStand"></div>
+        </div>
         <div class="moneyblock" id="resMoney"></div>
       </div>
       <div class="hint" id="resNote"></div>
@@ -1106,7 +1170,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
   <div class="fdeal" id="flashDeal"></div>
 </div></div>
 
-<div id="vtag">v3.7.16</div>
+<div id="vtag">v3.7.19</div>
 
 <button id="cogFab" aria-label="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.1 14.8a1.5 1.5 0 0 0 .3 1.66l.05.05a1.83 1.83 0 1 1-2.59 2.59l-.05-.05a1.5 1.5 0 0 0-1.66-.3 1.5 1.5 0 0 0-.91 1.38v.14a1.83 1.83 0 1 1-3.66 0v-.07a1.5 1.5 0 0 0-.98-1.38 1.5 1.5 0 0 0-1.66.3l-.05.05a1.83 1.83 0 1 1-2.59-2.59l.05-.05a1.5 1.5 0 0 0 .3-1.66 1.5 1.5 0 0 0-1.38-.91H3.9a1.83 1.83 0 1 1 0-3.66h.07a1.5 1.5 0 0 0 1.38-.98 1.5 1.5 0 0 0-.3-1.66l-.05-.05A1.83 1.83 0 1 1 7.59 4.9l.05.05a1.5 1.5 0 0 0 1.66.3h.07a1.5 1.5 0 0 0 .91-1.38V3.9a1.83 1.83 0 1 1 3.66 0v.07a1.5 1.5 0 0 0 .91 1.38 1.5 1.5 0 0 0 1.66-.3l.05-.05a1.83 1.83 0 1 1 2.59 2.59l-.05.05a1.5 1.5 0 0 0-.3 1.66v.07a1.5 1.5 0 0 0 1.38.91h.14a1.83 1.83 0 1 1 0 3.66h-.07a1.5 1.5 0 0 0-1.38.91z"/></svg></button>
 
@@ -1965,7 +2029,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v3.7.16 — UI layer — S77FFY
+   NOMS v3.7.19 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -1973,7 +2037,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '3.7.16';
+var VERSION = '3.7.19';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -2946,6 +3010,11 @@ function openResults(view) {
       '<span class="net ' + (row.net >= 0 ? 'plus' : 'minus') + '">' + money(row.net) + '</span></div>';
   });
   $('resStand').innerHTML = standHTML;
+  // Size the places to however many were just written, not to the live game: a
+  // night read back out of the season has its own number at the table.
+  var rm = $('resultsModal'), seats = order.length;
+  rm.classList.remove('seats7', 'seats8', 'seats9');
+  if (seats >= 7) rm.classList.add('seats' + Math.min(9, seats));
 
   var fines = (g.fines || []);
   var mh = '<div class="mhead">Settle up \u2014 \u00A3' + pay.pot.toFixed(2).replace(/\.00$/, '') + ' pot' +
