@@ -9,11 +9,11 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Noms">
 <meta name="app-repo" content="Noms">
-<meta name="app-version" content="3.7.19">
-<title>NOMS · v3.7.19 · S77FFY</title>
+<meta name="app-version" content="3.7.20">
+<title>NOMS · v3.7.20 · S77FFY</title>
 <style>
 /* ============================================================
-   NOMS v3.7.19 — S77FFY
+   NOMS v3.7.20 — S77FFY
    Palette: purple felt / bone card stock / brass / scoresheet ink
    ============================================================ */
 /* Two skins. Neon is the default; Felt is the original table. */
@@ -820,7 +820,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
     <button class="btn ghost wide" id="btnLeague">Season table</button>
     <button class="btn ghost wide" id="btnRules">How it plays</button>
   </div>
-  <div class="foot">NOMS v3.7.19 &middot; S77FFY</div>
+  <div class="foot">NOMS v3.7.20 &middot; S77FFY</div>
 </div>
 
 <!-- ================= GAME SETUP ================= -->
@@ -842,7 +842,8 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
       <b id="sizeVal">7</b>
       <button id="sizePlus" aria-label="More players">+</button>
     </div>
-    <div class="hint">You plus CPUs from the crew. 2&ndash;7 at the table.</div>
+    <div class="hint">You plus CPUs from the crew. 2&ndash;9 at the table.</div>
+    <div class="hint" id="cpuDealNote"></div>
 
     <div class="lbl">CPU difficulty</div>
     <div class="seg wrap" id="diffSeg">
@@ -1170,7 +1171,7 @@ body.cast #cogFab{width:54px;height:54px;padding:12px}
   <div class="fdeal" id="flashDeal"></div>
 </div></div>
 
-<div id="vtag">v3.7.19</div>
+<div id="vtag">v3.7.20</div>
 
 <button id="cogFab" aria-label="Options"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.1"/><path d="M19.1 14.8a1.5 1.5 0 0 0 .3 1.66l.05.05a1.83 1.83 0 1 1-2.59 2.59l-.05-.05a1.5 1.5 0 0 0-1.66-.3 1.5 1.5 0 0 0-.91 1.38v.14a1.83 1.83 0 1 1-3.66 0v-.07a1.5 1.5 0 0 0-.98-1.38 1.5 1.5 0 0 0-1.66.3l-.05.05a1.83 1.83 0 1 1-2.59-2.59l.05-.05a1.5 1.5 0 0 0 .3-1.66 1.5 1.5 0 0 0-1.38-.91H3.9a1.83 1.83 0 1 1 0-3.66h.07a1.5 1.5 0 0 0 1.38-.98 1.5 1.5 0 0 0-.3-1.66l-.05-.05A1.83 1.83 0 1 1 7.59 4.9l.05.05a1.5 1.5 0 0 0 1.66.3h.07a1.5 1.5 0 0 0 .91-1.38V3.9a1.83 1.83 0 1 1 3.66 0v.07a1.5 1.5 0 0 0 .91 1.38 1.5 1.5 0 0 0 1.66-.3l.05-.05a1.83 1.83 0 1 1 2.59 2.59l-.05.05a1.5 1.5 0 0 0-.3 1.66v.07a1.5 1.5 0 0 0 1.38.91h.14a1.83 1.83 0 1 1 0 3.66h-.07a1.5 1.5 0 0 0-1.38.91z"/></svg></button>
 
@@ -2029,7 +2030,7 @@ else root.NOMS = api;
 // === ENGINE END ===
 
 /* ============================================================
-   NOMS v3.7.19 — UI layer — S77FFY
+   NOMS v3.7.20 — UI layer — S77FFY
    Note: no persistence by design (storage APIs are blocked in
    the claude.ai preview). A save/resume can be added for the
    GitHub Pages build.
@@ -2037,7 +2038,7 @@ else root.NOMS = api;
 (function () {
 'use strict';
 var E = window.NOMS;
-var VERSION = '3.7.19';
+var VERSION = '3.7.20';
 
 /* ---------- tiny helpers ---------- */
 function $(id) { return document.getElementById(id); }
@@ -2317,6 +2318,10 @@ function buildSetup() {
     segs[i].classList.toggle('pro', +segs[i].dataset.d >= 6);
   }
   $('diffHint').textContent = diffHintText(setup.diff);
+  var top = E.maxCardsFor(setup.size), held = 8 - top;
+  $('cpuDealNote').textContent = top >= 7 ? '' :
+    'One pack only deals ' + top + ' each at ' + setup.size + ', so the night runs 1 up to ' + top +
+    ' with ' + held + ' rounds of ' + top + ' each way.';
   var tsegs = $('trainSeg').querySelectorAll('button');
   for (var ti = 0; ti < tsegs.length; ti++) tsegs[ti].classList.toggle('sel', +tsegs[ti].dataset.t === setup.train);
   $('tipsRow').style.display = setup.train ? '' : 'none';
@@ -4045,9 +4050,9 @@ $('btnBackTitle').onclick = resetToTitle;
 $('btnBackTitle2').onclick = resetToTitle;
 $('sizeMinus').onclick = function () { if (setup.size > 2) { setup.size--; buildSetup(); } };
 $('sizePlus').onclick = function () {
-  var max = Math.min(7, ROSTER.length);
+  var max = Math.min(9, ROSTER.length);
   if (setup.size < max) { setup.size++; buildSetup(); }
-  else toast(ROSTER.length < 7 ? 'Add more names to the crew first' : 'Seven seats at most');
+  else toast(ROSTER.length < 9 ? 'Add more names to the crew first' : 'Nine seats at most');
 };
 $('trainSeg').onclick = function (ev) {
   var b = ev.target.closest('button');
